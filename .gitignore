@@ -4,3 +4,7 @@
 *.jar
 *.war
 *.ear
+
+Gedit/Vim  Temp Files
+*~
+*.swp
