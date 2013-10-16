@@ -7,10 +7,10 @@ import csci331.team.red.server.People;
  * 
  * @author jourmeob
  */
-public class Server {
+public class ServerEngine {
 
 	/**
-	 * Port to use when connecting to a {@link Server}
+	 * Port to use when connecting to a {@link ServerEngine}
 	 */
 	public static final int INCOMING_PORT = 8585;
 
@@ -18,11 +18,11 @@ public class Server {
 	private People people;
 
 	/**
-	 * Create a new {@link Server} object
+	 * Create a new {@link ServerEngine} object
 	 * 
 	 * @author jourmeob
 	 */
-	public Server() {
+	public ServerEngine() {
 		network = new NetworkEngine();
 		people = new People();
 	}
