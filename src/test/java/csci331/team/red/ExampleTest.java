@@ -10,7 +10,6 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 /**
  * Tester class for {@link Example}
  * 
