@@ -1,6 +1,6 @@
 package csci331.team.red.core;
 
-import csci331.team.red.server.People;
+//import csci331.team.red.server.People;
 
 /**
  * Main game logic class.
@@ -14,8 +14,8 @@ public class ServerEngine {
 	 */
 	public static final int INCOMING_PORT = 8585;
 
-	private NetworkEngine network;
-	private People people;
+//	private NetworkEngine network;
+//	private People people;
 
 	/**
 	 * Create a new {@link ServerEngine} object
@@ -23,8 +23,8 @@ public class ServerEngine {
 	 * @author jourmeob
 	 */
 	public ServerEngine() {
-		network = new NetworkEngine();
-		people = new People();
+//		network = new NetworkEngine();
+//		people = new People();
 	}
 
 	/**
