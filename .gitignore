@@ -5,7 +5,7 @@
 *.war
 *.ear
 
-Gedit/Vim  Temp Files
+# Gedit/Vim  Temp Files
 *~
 *.swp
 
