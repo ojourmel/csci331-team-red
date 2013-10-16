@@ -1,4 +1,4 @@
-package csci331.team.red;
+package csci331.team.red.shared;
 
 /**
  * Enumerated values for message to be passed from client to server.

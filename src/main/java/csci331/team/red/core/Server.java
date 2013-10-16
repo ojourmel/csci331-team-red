@@ -1,8 +1,11 @@
-package csci331.team.red;
+package csci331.team.red.core;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import csci331.team.red.server.People;
+import csci331.team.red.shared.Person;
 
 /**
  * Main game logic class.
@@ -15,57 +18,6 @@ public class Server {
 	 * Stub class for compiler TODO: Implement full class
 	 */
 	private class NetworkEngine {
-	}
-
-	/**
-	 * Stub class for compiler TODO: Implement full class
-	 */
-	private class Person {
-		// Information about one person
-	}
-
-	/**
-	 * A wrapper class for all of the currently created, random people to be use
-	 * for this play through.
-	 * 
-	 * @author jourmeob
-	 * 
-	 */
-	private class People {
-		private Map<Integer, Person> people;
-
-		public People() {
-			// generate some random people.
-			// Hard coded for now.
-			people = new HashMap<Integer, Person>();
-			people.put(2314, new Person());
-		}
-
-		public Person getRandom() {
-			return null;
-		}
-
-		public Person getLevelBoss(int i) {
-			switch (i) {
-			case 1:
-
-				break;
-			case 2:
-
-				break;
-
-			case 3:
-
-				break;
-
-			default:
-				// Tried to get a boss from a level that does not exist!!
-				break;
-
-			}
-
-			return null;
-		}
 	}
 
 	/* ******************* REAL(ISH) CODE********************************* */
@@ -87,6 +39,7 @@ public class Server {
 	public Server() {
 		network = new NetworkEngine();
 		people = new People();
+		Person p = new Person();
 	}
 
 	/**
@@ -171,9 +124,6 @@ public class Server {
 
 		// don't forget to fail the users if they screwed up twice in a row.
 
-		
-		
-		
 		// Boss MODE !!!! This is the (scripted) ending to Level 1
 
 		person = people.getLevelBoss(1);

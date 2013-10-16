@@ -1,4 +1,4 @@
-package csci331.team.red;
+package csci331.team.red.core;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
