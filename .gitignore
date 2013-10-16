@@ -8,3 +8,6 @@
 Gedit/Vim  Temp Files
 *~
 *.swp
+
+# Ignore bin lol
+bin/
