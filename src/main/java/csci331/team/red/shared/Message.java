@@ -14,18 +14,17 @@ public enum Message {
 	 * Requests that clients start a level
 	 */
 	START_WAIT_LEVEL,
-	
+
 	/**
 	 * Requests that clients start level 1
 	 */
 	START_LEVEL_ONE,
-	
+
 	/**
 	 * Requests that clients start level 2
 	 */
 	START_LEVEL_TWO,
-	
-	
+
 	/**
 	 * Requests that clients start level 3
 	 */
@@ -34,15 +33,15 @@ public enum Message {
 	/**
 	 * Ready to start game
 	 */
-	 READY,
-	
-	 /**
-	  * The user has paused the game
-	  */
-	 PAUSE,
-	
-	 /**
-	  * The user has quit the game
-	  */
-	 QUIT
+	READY,
+
+	/**
+	 * The user has paused the game
+	 */
+	PAUSE,
+
+	/**
+	 * The user has quit the game
+	 */
+	QUIT
 }
