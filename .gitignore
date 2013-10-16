@@ -5,6 +5,9 @@
 *.war
 *.ear
 
-Gedit/Vim  Temp Files
+# Gedit/Vim  Temp Files
 *~
 *.swp
+
+# Ignore bin lol
+bin/
