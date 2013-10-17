@@ -44,6 +44,13 @@ public class ClientEngine extends Game {
 		title = new MainMenuScreen(this);
 		theGame = new mainGameScreen(this);
 		
+		// DUN DUN DUN.  Disables compatibility with older (really old) openGL ]
+		// implementations.  This setting disables the requirement for loaded images
+		// to be a strict power of two.  Anything that supports openGL 2.0 (which should
+		// be most things today) shouldn't have a problem.  If we do encounter any hardware
+		// that errors out on it, we should set this to true again and then just refactor
+		// all our images.  Which shouldn't be that much work to do in bulk, just annoying.
+		Texture.setEnforcePotImages(false);
 		
 		batch = new SpriteBatch();
 		// Use LibGDX's default Arial font.
@@ -84,9 +91,15 @@ public class ClientEngine extends Game {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		// System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
 		cfg.title = "FinalProject";
-		cfg.useGL20 = false;
+		cfg.useGL20 = true;
 		cfg.width = 1280;
 		cfg.height = 1024;
+		
+	//	cfg.resizable = false;
+		
+		//cfg.useCPUSynch  = false;
+		
+		//cfg.vSyncEnabled = false;
 
 		new LwjglApplication(new ClientEngine(), cfg);
 	}
