@@ -12,24 +12,41 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+
+import csci331.team.red.client.Raindrop;
 
 public class mainGameScreen implements Screen
 {
 	final ClientEngine theParent;
-	
 	private OrthographicCamera camera;
 	private Texture dropImage;
 	private Texture bucketImage;
@@ -48,12 +65,14 @@ public class mainGameScreen implements Screen
 	final Skin skin = new Skin();
 	
 	FPSLogger logger;
+	Image droptest;
 	
 	public mainGameScreen(final ClientEngine gam) 
 	{
 		this.theParent = gam;
 		
 		theParent.manager = new AssetManager();
+		theParent.pixmapManager = new AssetManager();
 		
 		touchPos = new Vector3();
 		
@@ -63,11 +82,13 @@ public class mainGameScreen implements Screen
 		
 		theParent.manager.load("bucket.png", Texture.class);
 		theParent.manager.load("droplet.png", Texture.class);
+		theParent.pixmapManager.load("droplet.png" , Pixmap.class);
 		theParent.manager.load("drop.wav", Sound.class);
 		theParent.manager.load("rainfall.mp3", Music.class);
 		theParent.manager.load("nova.jpg", Texture.class);
 		
 		theParent.manager.finishLoading();
+		theParent.pixmapManager.finishLoading();
 		
 		rainMusic = theParent.manager.get("rainfall.mp3" , Music.class);
 		dropImage = theParent.manager.get("droplet.png" , Texture.class);
@@ -95,9 +116,24 @@ public class mainGameScreen implements Screen
 		
 		stage = new Stage();
         Gdx.input.setInputProcessor(stage);
+        
+        
+        
+    	skin.add("test", new Texture("droplet.png"));
+        Image droptest = new Image(skin, "test");
+        skin.add("default", new LabelStyle(new BitmapFont(), Color.WHITE));
 
-		
-		
+        
+    	//stage.addActor(droptest);
+    	
+    	
+    	Raindrop theDrop = new Raindrop(theParent.pixmapManager.get("droplet.png" , Pixmap.class));
+
+    	Raindrop theDrop2 = new Raindrop(theParent.pixmapManager.get("droplet.png" , Pixmap.class));
+   	
+    	
+    	stage.addActor(theDrop);
+    	stage.addActor(theDrop2);
 	}
 	
 	
@@ -168,10 +204,9 @@ public class mainGameScreen implements Screen
 		theParent.batch.end();
 		
         stage.act(Gdx.graphics.getDeltaTime());
-    	skin.add("test", new Texture("droplet.png"));
-        Image droptest = new Image(skin, "test");
-        droptest.setBounds(50, 125, 100, 100);
-        stage.addActor(droptest);
+
+     //   droptest.setBounds(50, 125, 100, 100);
+        
         stage.draw();
 
 		
@@ -241,29 +276,9 @@ public class mainGameScreen implements Screen
 		    raindrop.height = 64;
 		    raindrops.add(raindrop);
 		    lastDropTime = TimeUtils.nanoTime();
+		    
 		 }
 
-	 
-	 
-	 
-	 public class raindrop extends Actor {
-	        Texture myself;
-
-	        public raindrop (Texture myself) {
-	        	this.myself = myself;
-	        //	this.setY(Gdx.graphics.getHeight());
-	        	this.setY(500);
-	        	this.setX(MathUtils.random(0, Gdx.graphics.getWidth()-64));
-	        }
-
-	        public void draw (SpriteBatch batch, float parentAlpha) {
-	                Color color = getColor();
-	                batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-	                batch.draw(myself, getX(), getY(), getOriginX(), getOriginY(),
-	                        getWidth(), getHeight(), getScaleX(), getScaleY());
-	        }
-	}
-	 
-	
-	
 }
+
+

@@ -34,6 +34,7 @@ public class ClientEngine extends Game {
 	BitmapFont font;
 	
 	AssetManager manager;
+	AssetManager pixmapManager;
 	
 	mainGameScreen theGame;
 	MainMenuScreen title;
