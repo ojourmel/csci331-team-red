@@ -1,6 +1,7 @@
 package csci331.team.red.client;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
 import csci331.team.red.core.mainGameScreen;
@@ -24,6 +25,14 @@ public class KeyboardHandler implements InputProcessor  {
 			dialgoueWindow button = new dialgoueWindow("They're all around me!", "Bucket:", parent.style , parent.secondStage, true , 0);
 			
 		}
+		
+
+		
+		else if(keycode == Keys.SPACE)
+		{	    	
+			parent.theParent.setScreen(parent.theParent.title);
+	    	
+	    }
 		
 		
 		return false;

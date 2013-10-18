@@ -42,6 +42,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
@@ -62,7 +65,7 @@ import csci331.team.red.client.tweeningFunctions.RaindropTweener;
 
 public class mainGameScreen implements Screen
 {
-	final ClientEngine theParent;
+	public final ClientEngine theParent;
 	private OrthographicCamera camera;
 	private Texture dropImage;
 	private Texture bucketImage;
@@ -94,6 +97,8 @@ public class mainGameScreen implements Screen
 	BitmapFont font12;
 	BitmapFont font25;
 	BitmapFont font35;
+	
+	TextField textfield;
 	
 	public TextButtonStyle style;
 	
@@ -191,8 +196,10 @@ public class mainGameScreen implements Screen
     	style = new TextButtonStyle();
     	style.font = font25;
     	style.up = new NinePatchDrawable(nine);
+    	
     	style.down = style.up;
     	style.over = style.down;
+    	
     	// Instantiate the Button itself.
 
     //	button.setPosition(0, 0);
@@ -201,7 +208,31 @@ public class mainGameScreen implements Screen
     	
     	//secondStage.addActor(button);
     	
-
+    	TextFieldStyle textStyle = new TextFieldStyle();
+    	textStyle.font = font25;
+    	textStyle.fontColor = Color.RED;
+    	textStyle.background = new NinePatchDrawable(nine);
+    	textStyle.cursor= new NinePatchDrawable(nine);
+    	textfield = new TextField("test" , textStyle);
+    	
+    	textfield.setPosition(500,  500);
+    	
+    	textfield.setTextFieldListener(new TextFieldListener() {
+            public void keyTyped (TextField textField, char key) {
+            	
+            //	System.out.println(key);
+            	
+                if(key == '\n' || key == '\r')
+                {
+                	textField.setText("");
+                	textField.getStage().unfocus(textField);
+                	
+                }
+                
+            }
+        });
+    	
+    	secondStage.addActor(textfield);
 	}
 	
 	
@@ -232,21 +263,25 @@ public class mainGameScreen implements Screen
 	    if(Gdx.input.isKeyPressed(Keys.LEFT)) bucket.x -= 200 * Gdx.graphics.getDeltaTime();
 	    if(Gdx.input.isKeyPressed(Keys.RIGHT)) bucket.x += 200 * Gdx.graphics.getDeltaTime();
 	    
-	    if(Gdx.input.isKeyPressed(Keys.D))
-	    {
-	    	
-	    	
-	    	dialgoueWindow button = new dialgoueWindow("They're all around me!", "Bucket:", style , secondStage, true , 20);
-	    	
-	    }
+//	    if(Gdx.input.isKeyPressed(Keys.D))
+//	    {
+//	    	
+//	    	
+//	    	dialgoueWindow button = new dialgoueWindow("They're all around me!", "Bucket:", style , secondStage, true , 20);
+//	    	
+//	    }
+//	    
+	    
+//	    if(Gdx.input.isKeyPressed(Keys.ENTER))
+//	    {
+//	    	
+//	    	
+//	    	dialgoueWindow button = new dialgoueWindow("They're all around me!", "Bucket:", style , secondStage, true , 20);
+//	    	
+//	    }
+//	    
 	    
 	    
-	    if(Gdx.input.isKeyPressed(Keys.SPACE))
-	    {
-	    	
-	    	theParent.setScreen(theParent.title);
-	    	
-	    }
 	    
 	    if(bucket.x < 0) bucket.x = 0;
 	    if(bucket.x > Gdx.graphics.getWidth() - 64) bucket.x = Gdx.graphics.getWidth() - 64;
@@ -313,7 +348,7 @@ public class mainGameScreen implements Screen
         secondStage.draw();
         
         theParent.batch.begin();
-        theParent.batch.draw(foregroundImage , 0 ,0 , Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
+    //    theParent.batch.draw(foregroundImage , 0 ,0 , Gdx.graphics.getWidth() , Gdx.graphics.getHeight());
 
         theParent.batch.end();
 

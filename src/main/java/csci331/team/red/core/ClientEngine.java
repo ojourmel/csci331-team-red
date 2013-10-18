@@ -39,7 +39,7 @@ public class ClientEngine extends Game {
 	AssetManager pixmapManager;
 	
 	mainGameScreen theGame;
-	MainMenuScreen title;
+	public MainMenuScreen title;
 	
 	TweenManager Tweenmanager = new TweenManager();
 
