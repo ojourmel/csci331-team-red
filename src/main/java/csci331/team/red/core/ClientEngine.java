@@ -2,6 +2,8 @@ package csci331.team.red.core;
 
 import java.util.Iterator;
 
+import aurelienribon.tweenengine.TweenManager;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -38,6 +40,9 @@ public class ClientEngine extends Game {
 	
 	mainGameScreen theGame;
 	MainMenuScreen title;
+	
+	TweenManager Tweenmanager = new TweenManager();
+
 
 	@Override
 	public void create() {
@@ -97,8 +102,8 @@ public class ClientEngine extends Game {
 		cfg.height = 1024;
 		
 	//	cfg.resizable = false;
-		
-		//cfg.useCPUSynch  = false;
+		//cfg.foregroundFPS = 1000;
+		cfg.vSyncEnabled = false;
 		
 		//cfg.vSyncEnabled = false;
 

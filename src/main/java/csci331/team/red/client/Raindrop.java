@@ -1,11 +1,18 @@
 package csci331.team.red.client;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Quad;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -14,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
+import csci331.team.red.client.tweeningFunctions.RaindropTweener;
+
 public class Raindrop extends Actor 
 {
        Sprite myself;
@@ -21,19 +30,40 @@ public class Raindrop extends Actor
        Raindrop ref;
        
        static Pixmap alphaMap = null;
+       static Texture alphaTexture = null;
+       static TweenManager tweenmanager = null;
        
+       Vector2 localCords = null;
        
-       public Raindrop (Pixmap incomingPixmap) 
+       public Raindrop ()
        {
-    	   this.myself = new Sprite(new Texture(incomingPixmap));
-    	   ref = this;
+    	   
+    	   this(null , null , null);
+    	   
+
+			Tween.to(this, RaindropTweener.POSITION_XY, 2.0f)
+			    .target(this.getX(), -100).ease(Quad.IN)
+			    .start(tweenmanager);
+
+			
+    	   
+       }
+       
+       public Raindrop (Pixmap incomingPixmap , Texture incomingTexture , TweenManager incomingTweener) 
+       {
     	   if(alphaMap == null)
     	   {
     		   
     		   alphaMap = incomingPixmap;
+    		   alphaTexture = incomingTexture;
+    		   tweenmanager = incomingTweener;
+    		   
     		   
     	   }
     	   
+    	   this.myself = new Sprite(alphaTexture);
+    	   ref = this;
+    	   localCords = new Vector2();
     	   
        //	this.setY();
        	
@@ -41,8 +71,8 @@ public class Raindrop extends Actor
        	setHeight(myself.getHeight());
        	this.setBounds(0, 0, getWidth() , getHeight());
        	
-       	this.setPosition(Gdx.graphics.getWidth()-64, Gdx.graphics.getHeight() -300);
-       	//this.setX(MathUtils.random(0, ));
+       	this.setPosition(MathUtils.random(0, Gdx.graphics.getWidth()-64), Gdx.graphics.getHeight());
+       	//);
        	
 	    setTouchable(Touchable.enabled);
 	    
@@ -81,10 +111,11 @@ public class Raindrop extends Actor
 	    { 
 	    	public void touchDragged (InputEvent event, float x, float y, int pointer) 
 	    	{ 
-	    		float dx = x-ref.getWidth()*0.5f; 
-	    		float dy = y-ref.getHeight()*0.5f; 
-	    		ref.setPosition(ref.getX() + dx, ref.getY() + dy); 
+	    		tweenmanager.killTarget(ref);
 	    		
+	    		float dx = x-getTouchDownX(); 
+	    		float dy = y-getTouchDownY(); 
+	    		ref.setPosition(ref.getX() + dx, ref.getY() + dy); 
 	    		ref.toFront();
 	    	} 
 	    }));
@@ -96,8 +127,17 @@ public class Raindrop extends Actor
                Color color = getColor();
                batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
                batch.draw(myself, getX(), getY());
+               myself.setBounds(getX(), getY(), getWidth(), getHeight());
        }
        
+       public Rectangle getBoundingRectangle()
+       {
+    	   
+    	   
+    	   return myself.getBoundingRectangle();
+    	   
+    	   
+       }
        
        @Override
        public Actor hit(float x, float y, boolean touchable) 
@@ -129,3 +169,4 @@ public class Raindrop extends Actor
        }
        
 }
+
