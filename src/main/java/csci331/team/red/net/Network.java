@@ -1,6 +1,6 @@
 
 package csci331.team.red.net;
-
+ 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;

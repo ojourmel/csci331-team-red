@@ -10,8 +10,10 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
 public class NetServer {
-	Server server;
-	csci331.team.red.shared.Message msg;
+	protected Server server;
+	protected csci331.team.red.shared.Message msg;
+//	protected int _port1 = 54555;
+//	protected int _port2 = 54777;
 //	HashSet<Character> loggedIn = new HashSet();
 
 	public NetServer () throws IOException {
@@ -39,44 +41,45 @@ public class NetServer {
 			        response.text = "Thanks!";
 			        connection.sendTCP(response);
 				}
-				// how am i suppose to work with enum class?
+				// 
 				if (object instanceof csci331.team.red.shared.Message) {
 					msg = (csci331.team.red.shared.Message) object;
-				}
-				// process message
-				switch (msg) {
-					case CONNECTED:
-						
-						break;
-					case START_WAIT_LEVEL:
-						
-						break;
-					case START_LEVEL_ONE:
-						
-						break;
-					case START_LEVEL_TWO:
-						
-						break;
-					case START_LEVEL_THREE:
-						
-						break;
-					case READY:
-						
-						break;
-					case PAUSE:
-						
-						break;
-					case QUIT:
-						
-						break;
-					default:
-						break;
+					// process message
+					switch (msg) {
+						case CONNECTED:
+							
+							break;
+						case START_WAIT_LEVEL:
+							
+							break;
+						case START_LEVEL_ONE:
+							
+							break;
+						case START_LEVEL_TWO:
+							
+							break;
+						case START_LEVEL_THREE:
+							
+							break;
+						case READY:
+							
+							break;
+						case PAUSE:
+							
+							break;
+						case QUIT:
+							
+							break;
+						default:
+							break;
+					}
 				}
 			}
 		});
 
 		server.start();
-		server.bind(54555, 54777);
+//		server.bind(_port1, _port2);
+		server.bind(Network.port);
 		System.out.println("Server up");
 		// register messages
 		Kryo kryo = server.getKryo();

@@ -10,21 +10,23 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 import com.esotericsoftware.minlog.Log;
 
-import csci331.team.red.net.Network.RegistrationRequired;
-
 public class NetClient {
-	UI ui;
+//	UI ui;
 	Client client;
+	csci331.team.red.shared.Message msg;
+	protected String _host = "127.0.0.1";
+	protected int _port1 = 54555;
+	protected int _port2 = 54777;
 	String name;
 
-	public NetClient() {
+	public NetClient(String host) {
+		_host = host;
 		Client client = new Client();
 		client.start();
 
 		// For consistency, the classes to be sent over the network are
 		// registered by the same method for both the client and server.
 		Network.register(client);
-/***********/
 
 		// ThreadedListener runs the listener methods on a different thread.
 		client.addListener(new ThreadedListener(new Listener() {
@@ -32,13 +34,53 @@ public class NetClient {
 			}
 
 			public void received (Connection connection, Object object) {
-				if (object instanceof RegistrationRequired) {
+//				if (object instanceof RegistrationRequired) {
 //					Register register = new Register();
 //					register.name = name;
 //					register.otherStuff = ui.inputOtherStuff();
-					client.sendTCP(register);
+//					client.sendTCP(register);
+//				}
+				if (object instanceof SomeRequest) {
+					SomeRequest request = (SomeRequest)object;
+			        System.out.println(request.text);
+			
+			        SomeResponse response = new SomeResponse();
+			        response.text = "Thanks!";
+			        connection.sendTCP(response);
 				}
-
+				// 
+				if (object instanceof csci331.team.red.shared.Message) {
+					msg = (csci331.team.red.shared.Message) object;
+					// process message
+					switch (msg) {
+						case CONNECTED:
+							
+							break;
+						case START_WAIT_LEVEL:
+							
+							break;
+						case START_LEVEL_ONE:
+							
+							break;
+						case START_LEVEL_TWO:
+							
+							break;
+						case START_LEVEL_THREE:
+							
+							break;
+						case READY:
+							
+							break;
+						case PAUSE:
+							
+							break;
+						case QUIT:
+							
+							break;
+						default:
+							break;
+					}
+				}
 			}
 
 			public void disconnected (Connection connection) {
@@ -46,18 +88,16 @@ public class NetClient {
 			}
 		}));
 
-		ui = new UI();
+//		ui = new UI();
 
-		String host = ui.inputHost();
+//		String host = ui.inputHost();
 		
 /***********/
 		try {
-//			client.connect(5000, host, Network.port);
-			client.connect(5000, "10.5.16.233", 54555, 54777);
+			client.connect(5000, _host, Network.port);
 			// Server communication after connection can go here, or in Listener#connected().
 			System.out.println("Client good");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("Client sucked");
 			e.printStackTrace();
 		}
@@ -71,54 +111,11 @@ public class NetClient {
 		SomeRequest request = new SomeRequest();
 		request.text = "Here is the request!";
 		client.sendTCP(request);		
-/***********/		
-		client.addListener(new Listener() {
-			   public void received (Connection connection, Object object) {
-			      if (object instanceof SomeResponse) {
-			         SomeResponse response = (SomeResponse)object;
-			         System.out.println(response.text);
-			      }
-			   }
-		});
-
-		name = ui.inputName();
-		Login login = new Login();
-		login.name = name;
-		client.sendTCP(login);
-
-		while (true) {
-			int ch;
-			try {
-				ch = System.in.read();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-				break;
-			}
-
-			MoveCharacter msg = new MoveCharacter();
-			switch (ch) {
-			case 'w':
-				msg.y = -1;
-				break;
-			case 's':
-				msg.y = 1;
-				break;
-			case 'a':
-				msg.x = -1;
-				break;
-			case 'd':
-				msg.x = 1;
-				break;
-			default:
-				msg = null;
-			}
-			if (msg != null) client.sendTCP(msg);
-		}
 	}
 
 	public static void main(String[] args) throws IOException {
 		Log.set(Log.LEVEL_DEBUG);
-		new NetClient();
+		new NetClient("192.168.0.17");
 		System.out.println("Client Connected");
 	}
 }
