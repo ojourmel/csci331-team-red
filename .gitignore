@@ -1,7 +1,6 @@
 *.class
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -11,3 +10,5 @@
 
 # Ignore bin lol
 bin/
+
+Thumbs.db
