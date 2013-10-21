@@ -64,8 +64,8 @@ public class ServerEngine extends Thread {
 		stages = new LinkedList<Stage>();
 		people = new People();
 
-		playerOne = new Player(Role.DATABASE);
-		playerTwo = new Player(Role.INTERACTIVE);
+		playerOne = new Player();
+		playerTwo = new Player();
 	}
 
 	/**
@@ -83,6 +83,8 @@ public class ServerEngine extends Thread {
 			} catch (InterruptedException e) {
 				// game shutting down due to clientDisconect.
 				// onClientDisconnect will handle the details, just quit.
+				
+				System.err.println("Quiting");
 
 				return;
 			} finally {
@@ -178,16 +180,13 @@ public class ServerEngine extends Thread {
 
 	public void onPlayerDisconnect() {
 		network.sendMessage(Message.DISCONNECTED);
-		// TODO: This code *might* have some problems interrupting it'self. It
-		// may have security issues that will have to be sorted out...
-
+		
 		// Doing things this way means that all "Condition.await()" blocks will
 		// have to be surrounded with try/catch blocks
 		this.interrupt();
 	}
 
 	public void onPlayerQuit() {
-
 		network.sendMessage(Message.QUIT);
 		// TODO: This code *might* have some problems interrupting it'self. See
 		// onPlayerDisconnect()
