@@ -8,7 +8,7 @@
 *~
 *.swp
 
-# Ignore bin lol
+# Ignore bin
 bin/
 
 Thumbs.db
