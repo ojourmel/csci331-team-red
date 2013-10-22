@@ -14,13 +14,19 @@ public class Player {
 	private Role role;
 	private State state;
 
+	/**
+	 * @param role
+	 *            {@link Role} to set
+	 */
 	public void setRole(Role role) {
 		this.role = role;
 	}
 
+	/**
+	 * @param state
+	 *            {@link State} to set
+	 */
 	public void setState(State state) {
 		this.state = state;
 	}
-	
-
 }

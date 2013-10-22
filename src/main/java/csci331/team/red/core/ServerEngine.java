@@ -19,10 +19,12 @@ import csci331.team.red.shared.Role;
 import csci331.team.red.shared.Stage;
 
 /**
- * Main game logic class.
+ * Main game logic class. Manages flow of information between the two clients,
+ * and manages loading random game assets, as well as keeping client's in sync.
+ * 
+ * Implements {@link Thread} and is runnable via {@link ServerEngine#start()}
  * 
  * @author ojourmel
- * 
  */
 public class ServerEngine extends Thread {
 
@@ -83,7 +85,7 @@ public class ServerEngine extends Thread {
 			} catch (InterruptedException e) {
 				// game shutting down due to clientDisconect.
 				// onClientDisconnect will handle the details, just quit.
-				
+
 				System.err.println("Quiting");
 
 				return;
@@ -106,7 +108,7 @@ public class ServerEngine extends Thread {
 			// the
 			// next stage.
 			Person actor = people.getRandom();
-			double fraudFactor = (actor.fraud / fraudDifficulty);
+			double fraudFactor = actor.FRAUD_CHANCE;
 			double errorFactor = 0;
 
 			Stage stage = new Stage(actor, fraudFactor, errorFactor);
@@ -144,31 +146,56 @@ public class ServerEngine extends Thread {
 		} finally {
 			lock.unlock();
 		}
-	
+
 		// Depending on how the players did...
 		// Yah! Level One is done. On to level 2!
-		//                or...
+		// or...
 		// Ohw. Level One was Too Hard. Game Over!
-		//                Or...
+		// Or...
 		// Well, you did mediocre, but that won't cut it. Level 1 AGAIN!
 	}
 
+	/**
+	 * Callback for when a player executes a database query
+	 * 
+	 * @param query
+	 *            executed
+	 * @return the {@link Result} of the query
+	 */
 	public Result onDatabaseSearch(String query) {
 		// TODO: Handle database queries
 		return Result.INVALID;
 	}
 
+	/**
+	 * Callback for when a player requests additional dialog
+	 * 
+	 * @param incoming
+	 *            {@link Dialog}
+	 * @return Additional {@link Dialog} for the player
+	 */
 	public Dialog onDialogRequest(Dialog incoming) {
 		// TODO: Handle proper dialog requests.
 		return Dialog.GENERIC;
 	}
 
+	/**
+	 * Callback for when a player changes {@link State}
+	 * 
+	 * @deprecated Because this server must know <b> which </b> player has
+	 *             changed state.
+	 * @param state
+	 */
+	@Deprecated
 	public void onStateChange(State state) {
-		
 		// TODO: Allow for state to have an impact on actors.
 
 	}
 
+	/**
+	 * Callback for when a player connects. If two players connect, then the
+	 * main game logic is started.
+	 */
 	public void onPlayerConnect() {
 		numPlayerConnected++;
 		if (numPlayerConnected == MAX_PLAYERS) {
@@ -178,14 +205,24 @@ public class ServerEngine extends Thread {
 		}
 	}
 
+	/**
+	 * Callback for when a player has disconnected. Shut down the other clients,
+	 * and stop this {@link ServerEngine} <br>
+	 * TODO: Consider implementing a reconnect period, where a player could
+	 * resume their game
+	 */
 	public void onPlayerDisconnect() {
 		network.sendMessage(Message.DISCONNECTED);
-		
+
 		// Doing things this way means that all "Condition.await()" blocks will
 		// have to be surrounded with try/catch blocks
 		this.interrupt();
 	}
 
+	/**
+	 * Callback for when a player has quit. Shut down the other clients, and
+	 * stop this {@link ServerEngine}
+	 */
 	public void onPlayerQuit() {
 		network.sendMessage(Message.QUIT);
 		// TODO: This code *might* have some problems interrupting it'self. See
@@ -194,19 +231,28 @@ public class ServerEngine extends Thread {
 	}
 
 	/**
-	 * Callback when a player pauses their game.
-	 * TODO: Determine how to keep track of <b> which</b> player paused, if necessary.
+	 * Callback when a player pauses their game.<br>
+	 * TODO: Determine how to keep track of <b> which</b> player paused, if
+	 * necessary.
 	 */
 	public void onPlayerPause() {
 		// pause any time-counting variables
 		network.sendMessage(Message.PAUSE);
 	}
 
+	/**
+	 * Callback when a player resumes their game. TODO: Determine how to keep
+	 * track of <b> which</b> player resumed, if necessary
+	 */
 	public void onPlayerResume() {
 		// resume any time-counting variables
 		network.sendMessage(Message.RESUME);
 	}
 
+	/**
+	 * Callback when a stage is completed. Causes a new stage to be sent to the
+	 * players
+	 */
 	public void onStageComplete(boolean decition) {
 
 		// update player scores from the outcome of this stage. Update any

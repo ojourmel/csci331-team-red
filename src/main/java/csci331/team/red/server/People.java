@@ -16,6 +16,9 @@ public class People {
 
 	private Map<Integer, Person> people;
 
+	/**
+	 * Default constructor. 
+	 */
 	public People() {
 		// generate some random people.
 		// Hard coded for now.
@@ -23,10 +26,17 @@ public class People {
 		people.put(2314, new Person());
 	}
 
+	/**
+	 * @return a random {@link Person}
+	 */
 	public Person getRandom() {
 		return null;
 	}
 
+	/**
+	 * @param i the level
+	 * @return the boss {@link Person} for the ith level
+	 */
 	public Person getLevelBoss(int i) {
 		switch (i) {
 		case 1:

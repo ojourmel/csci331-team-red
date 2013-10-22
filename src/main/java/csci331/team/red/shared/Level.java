@@ -2,6 +2,9 @@ package csci331.team.red.shared;
 
 /**
  * Java implementation of a game level.<br>
+ * 
+ * Contains several static methods which return hardcoded instances of
+ * {@link Level}<br>
  * FIXME: <b>Stub</b>
  * 
  * @author ojourmel
@@ -13,6 +16,9 @@ public class Level {
 	private Background interactive;
 	private SoundTrack soundTrack;
 
+	/**
+	 * @return a "wait" {@link Level} object
+	 */
 	public static Level getWait() {
 		Level wait = new Level();
 		wait.database = Background.WAITING;
@@ -23,6 +29,9 @@ public class Level {
 		return wait;
 	}
 
+	/**
+	 * @return a "campus" {@link Level} object
+	 */
 	public static Level getCampus() {
 		Level campus = new Level();
 
@@ -33,6 +42,9 @@ public class Level {
 		return campus;
 	}
 
+	/**
+	 * @return a "roadside" {@link Level} object
+	 */
 	public static Level getRoadside() {
 		Level road = new Level();
 
@@ -43,6 +55,9 @@ public class Level {
 		return road;
 	}
 
+	/**
+	 * @return a "space" {@link Level} object
+	 */
 	public static Level getSpace() {
 		Level space = new Level();
 
