@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.sun.org.apache.xpath.internal.operations.Or;
 
+import csci331.team.red.net.NetServer;
 import csci331.team.red.server.People;
 import csci331.team.red.server.Player;
 import csci331.team.red.shared.Dialog;
@@ -34,7 +35,7 @@ public class ServerEngine extends Thread {
 	public static final int MAX_PLAYERS = 2;
 
 	// Core game assets
-	private NetworkEngine network;
+	private NetServer network;
 	private People people;
 	private List<Stage> stages;
 	private List<Level> levels;
@@ -76,7 +77,7 @@ public class ServerEngine extends Thread {
 	@Override
 	public void run() {
 
-		network = new NetworkEngine(this);
+		network = new NetServer(this);
 
 		while (numPlayerConnected < 2) {
 			try {
@@ -95,13 +96,13 @@ public class ServerEngine extends Thread {
 		}
 		// we now have two clients connected.
 		levels.add(Level.getWait());
-		network.sendMessage(Message.START_LEVEL, Level.getWait());
+		network.send(Message.START_LEVEL, Level.getWait());
 
 		// set up the environment for level one. (Campus)
 		Level one = Level.getCampus();
 		levels.add(one);
 		// start level one.
-		network.sendMessage(Message.START_LEVEL, one);
+		network.send(Message.START_LEVEL, one);
 
 		for (int i = 0; i < 3; i++) {
 			// set up a stage. Use the stats from the previous stages to affect
@@ -114,7 +115,7 @@ public class ServerEngine extends Thread {
 			Stage stage = new Stage(actor, fraudFactor, errorFactor);
 
 			// send the stage to the clients
-			network.sendMessage(Message.START_STAGE, stage);
+			network.send(Message.START_STAGE, stage);
 
 			// since everything that can happen in a stage is purly reactive,
 			// (ie.
@@ -137,7 +138,7 @@ public class ServerEngine extends Thread {
 		// A boss should have no detail problems, but alerts have to be
 		// generated... TODO: Deal with generating alerts.
 		Stage stage = new Stage(boss, 0, 0);
-		network.sendMessage(Message.START_STAGE, stage);
+		network.send(Message.START_STAGE, stage);
 		try {
 			lock.lock();
 			stageOver.await();
@@ -212,7 +213,7 @@ public class ServerEngine extends Thread {
 	 * resume their game
 	 */
 	public void onPlayerDisconnect() {
-		network.sendMessage(Message.DISCONNECTED);
+		network.send(Message.DISCONNECTED);
 
 		// Doing things this way means that all "Condition.await()" blocks will
 		// have to be surrounded with try/catch blocks
@@ -224,7 +225,7 @@ public class ServerEngine extends Thread {
 	 * stop this {@link ServerEngine}
 	 */
 	public void onPlayerQuit() {
-		network.sendMessage(Message.QUIT);
+		network.send(Message.QUIT);
 		// TODO: This code *might* have some problems interrupting it'self. See
 		// onPlayerDisconnect()
 		this.interrupt();
@@ -237,7 +238,7 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerPause() {
 		// pause any time-counting variables
-		network.sendMessage(Message.PAUSE);
+		network.send(Message.PAUSE);
 	}
 
 	/**
@@ -246,7 +247,7 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerResume() {
 		// resume any time-counting variables
-		network.sendMessage(Message.RESUME);
+		network.send(Message.RESUME);
 	}
 
 	/**
