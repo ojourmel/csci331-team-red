@@ -1,6 +1,7 @@
 package csci331.team.red.client;
 
 import java.util.HashMap;
+
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
@@ -22,9 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
-import csci331.team.red.client.MainMenuScreen;
-
 /**
+ * Main entry point for the game proper. Handles all shared objects between
+ * scenes.
  * 
  * @author Lduperron
  */
@@ -228,6 +229,9 @@ public class ClientEngine extends Game {
 		}
 	}
 
+	/**
+	 * Finishes init on variables that required resources to be fully loaded.
+	 */
 	private void finishInit() {
 
 		menuNinePatch = new MenuNinePatch(gameTextureManager.get(Textures
@@ -281,6 +285,14 @@ public class ClientEngine extends Game {
 
 		return;
 	}
+
+	/**
+	 * Given a ScreenEnumeration (which is really just a list of all possible
+	 * screens) it ensures it has been generated (lazy init) and then switches
+	 * to it.
+	 * 
+	 * @param newLevel
+	 */
 
 	public void switchToNewScreen(ScreenEnumerations newLevel) {
 		switch (newLevel) {
@@ -349,6 +361,11 @@ public class ClientEngine extends Game {
 	public void resume() {
 	}
 
+	/**
+	 * Entry point for the program. Sets width/height et al.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		// System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
