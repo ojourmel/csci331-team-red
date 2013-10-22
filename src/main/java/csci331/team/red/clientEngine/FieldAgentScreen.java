@@ -64,10 +64,12 @@ public class FieldAgentScreen implements Screen
 	// Used for controlling stuff moving around.  Going to be moved into the game.
 	TweenManager tweenManager;
 	
+	FieldDialogeCallback<Callback> callbackObject;
+	
 
 	public FieldAgentScreen(ClientEngine parent)
 	{
-		fieldDialogCallbacks.entity = this;
+		callbackObject = new FieldDialogeCallback<Callback>(this);
 		
 		// Sets up links to our parent
 		parentEngine = parent;
@@ -188,7 +190,7 @@ public class FieldAgentScreen implements Screen
     		    		 
     		    		
     		    };
-    		    fieldDialogCallbacks.callbacks[] callarr = {null, null, fieldDialogCallbacks.callbacks.approachSecondPerson , null , null , null , null , null , null ,null ,null ,null ,null};
+    		    FieldCallback[] callarr = {null, null, FieldCallback.approachSecondPerson , null , null , null , null , null , null ,null ,null ,null ,null};
     		    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
     		    displayDialogue(d);
     	    	
@@ -226,7 +228,7 @@ public class FieldAgentScreen implements Screen
 	    		{"But I can tell you it is this time.  You should let her go." , "Ominious Voice"},
 	    		
 	    };
-	    fieldDialogCallbacks.callbacks[] callarr = {null, null,fieldDialogCallbacks.callbacks.approachFirstPerson, null,null, null,null, fieldDialogCallbacks.callbacks.giveID, null,null, null , null , null, null};
+	    FieldCallback[] callarr = {null, null,FieldCallback.approachFirstPerson, null,null, null,null, FieldCallback.giveID, null,null, null , null , null, null};
 	    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
 	    displayDialogue(d);
 
@@ -252,7 +254,7 @@ public class FieldAgentScreen implements Screen
 	    
 	}
 	
-	private void displayNewPerson(final int currentdude) // This is just bad and hardcoded.  The server will provide a 'person' in the future.
+	void displayNewPerson(final int currentdude) // This is just bad and hardcoded.  The server will provide a 'person' in the future.
 	{
 		
 
@@ -482,16 +484,16 @@ public class FieldAgentScreen implements Screen
 		DialogueWindow iteratorOld = null;
 		if(dialogueArray.length > 1)
 		{
-			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode());
+			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode(), callbackObject);
 			
 			
 			for(int i = dialogueArray.length-2; i > 0 ; i--)
 			{
-				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld ,dialogueArray[i].getCallbackCode());
+				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld ,dialogueArray[i].getCallbackCode(), callbackObject);
 				iteratorOld = iteratorNew;
 			}
 		}
-		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode());
+		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode(), callbackObject);
 		
 	}
 		
