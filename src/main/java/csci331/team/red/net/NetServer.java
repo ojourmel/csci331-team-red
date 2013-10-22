@@ -1,4 +1,3 @@
-
 package csci331.team.red.net;
 
 import java.io.IOException;
@@ -7,94 +6,99 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.minlog.Log;
 
+import csci331.team.red.core.ClientEngine;
+import csci331.team.red.core.ServerEngine;
+import csci331.team.red.shared.Message;
+
+
+/**
+ * Server end for KryoNet network communications
+ * 
+ * @see https://code.google.com/p/kryonet/
+ * @author mariusloots
+ */
 public class NetServer {
+	// protected Connection serverConn;
+	protected ServerEngine gameServer;
 	protected Server server;
-	protected csci331.team.red.shared.Message msg;
-//	protected int _port1 = 54555;
-//	protected int _port2 = 54777;
-//	HashSet<Character> loggedIn = new HashSet();
 
-	public NetServer () throws IOException {
-		Server server = new Server();
-//		server = new Server() {
-//			protected Connection newConnection () {
-//				// By providing our own connection implementation, we can store per
-//				// connection state without a connection ID to state look up.
-//				return new Connection();
-//			}
-//		};
+	/**
+	 * Constructor for NetServer
+	 * 
+	 * @param gameServer
+	 *            Reference to a {@link ServerEngine}
+	 * @throws IOException
+	 */
+	public NetServer(final ServerEngine gameServer) throws IOException {
+		this.gameServer = gameServer;
+		server = new Server();
+		/* start a thread to handle incoming connections */
+		server.start();
+		server.bind(Network.tcpPort);
 
-		// For consistency, the classes to be sent over the network are
-		// registered by the same method for both the client and server.
+		System.out.println("Server up");
+
+		/* Kryo automatically serializes the objects to and from bytes */
+		Kryo kryo = server.getKryo(); 
+
+		/**
+		 * For consistency, the classes to be sent over the network are
+		 * registered by the same method for both the client and server.
+		 */ 
 		Network.register(server);
 
-		// add listener
+		/**
+		 * Add a listener to handle receiving objects
+		 * 
+		 * Typically a listener has a series of instanceof checks to decide what
+		 * to do with the object received. In this example, it prints out a
+		 * string and sends a response over TCP.
+		 * 
+		 * Note the Listener class has other notification methods that can be
+		 * overridden.
+		 */
 		server.addListener(new Listener() {
-			public void received (Connection connection, Object object) {
-				if (object instanceof SomeRequest) {
-					SomeRequest request = (SomeRequest)object;
-			        System.out.println(request.text);
-			
-			        SomeResponse response = new SomeResponse();
-			        response.text = "Thanks!";
-			        connection.sendTCP(response);
-				}
-				// 
-				if (object instanceof csci331.team.red.shared.Message) {
-					msg = (csci331.team.red.shared.Message) object;
+			public void received(Connection connection, Object object) {
+				if (object instanceof NetMessage) {
+					NetMessage netMsg = (NetMessage) object;
+
 					// process message
-					switch (msg) {
-						case CONNECTED:
-							
-							break;
-						case START_WAIT_LEVEL:
-							
-							break;
-						case START_LEVEL_ONE:
-							
-							break;
-						case START_LEVEL_TWO:
-							
-							break;
-						case START_LEVEL_THREE:
-							
-							break;
-						case READY:
-							
-							break;
-						case PAUSE:
-							
-							break;
-						case QUIT:
-							
-							break;
-						default:
-							break;
+					switch (netMsg.msg) {
+					case CONNECTED:
+						gameServer.onClientConnect();
+						break;
+					case READY:
+						break;
+					case PAUSE:
+						gameServer.onClientPause();
+						break;
+					case QUIT:
+						gameServer.onClientQuit();
+						break;
+					default:
+						break;
 					}
 				}
 			}
 		});
-
-		server.start();
-//		server.bind(_port1, _port2);
-		server.bind(Network.port);
-		System.out.println("Server up");
-		// register messages
-		Kryo kryo = server.getKryo();
-		kryo.register(SomeRequest.class);
-		kryo.register(SomeResponse.class);
 	}
-	
-//	// This holds per connection state.
-//	static class CharacterConnection extends Connection {
-//		public Character character;
-//	}
 
-	public static void main(String[] args) throws IOException {
-		Log.set(Log.LEVEL_DEBUG);
-		new NetServer();
-		System.out.println("and running");
+	/**
+	 * @param msg
+	 * Send an Enumerated {@link Message}
+	 */
+	public void send(Message msg) {
+		send(msg, null);
+	}
+
+	/**
+	 * Send an Enumerated {@link Message} and a registered ({@link Kryo#register(Class)}) Object
+	 * @param msg
+	 * @param obj
+	 */
+	public void send(Message msg, Object obj) {
+		NetMessage netMsg = new NetMessage(msg, obj);
+		server.sendToAllTCP(netMsg);
 	}
 }

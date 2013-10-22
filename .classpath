@@ -11,7 +11,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-lwjgl.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-natives.jar"/>
-	<classpathentry kind="lib" path="libs/kryonet-2.18-all.jar" sourcepath="/home/marius/Documents/Copy/VIU/CSCI331/kryonet/src"/>
+	<classpathentry kind="lib" path="libs/kryonet-2.18-all.jar" sourcepath="/home/marius/Documents/Copy/VIU/CSCI331/kryonet"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
