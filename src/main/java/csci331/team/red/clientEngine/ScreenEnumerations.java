@@ -1,5 +1,10 @@
 package csci331.team.red.clientEngine;
 
+/**
+ * @author Lduperron
+ */
+
+
 public enum ScreenEnumerations {
 	
 	ClientEngine,

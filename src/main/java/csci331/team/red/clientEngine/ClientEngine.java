@@ -1,6 +1,7 @@
 package csci331.team.red.clientEngine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import aurelienribon.tweenengine.Tween;
@@ -35,7 +36,7 @@ import csci331.team.red.clientEngine.MainMenuScreen;
 
 /**
  * 
- * @author duperrlc
+ * @author Lduperron
  */
 public class ClientEngine extends Game
 {
@@ -56,32 +57,15 @@ public class ClientEngine extends Game
 	// Used for assets that will be interacted with by the user (We need the raw pixmap so we can handle transparency when clicking on them)
 	AssetManager gamePixmapManager;
 	
+	
+	HashMap<String, AssetDescriptor<Texture>> preloadTextures;
+	HashMap<String, AssetDescriptor<Texture>> Textures;
+	HashMap<String, AssetDescriptor<Pixmap>> Pixmaps;
+	
 	// Used to display the 'loading' screen
 	FreeTypeFontGenerator generator;
 	BitmapFont loadingFont;
 	String loadingstr;
-
-	// Backgrounds...
-	AssetDescriptor<Texture> level1fieldbg;
-	AssetDescriptor<Texture> level1databasebg;
-	AssetDescriptor<Texture> level2fieldbg;
-	
-	// Static Props...
-	AssetDescriptor<Texture> clipboard;
-	
-	// UI elements...
-	AssetDescriptor<Texture> dialogueNinePatchTexture;
-	
-	
-	// Characters...
-	AssetDescriptor<Pixmap> level1thug;
-	
-	
-	// Dynamic Props...
-	AssetDescriptor<Pixmap> goldenTicket;
-
-
-	
 	
 	
 	// Other scenes in the game.
@@ -133,7 +117,9 @@ public class ClientEngine extends Game
 		loadingAssetManager = new AssetManager();
 		gameTextureManager = new AssetManager();
 		gamePixmapManager = new AssetManager();
-
+		preloadTextures = new HashMap<String, AssetDescriptor<Texture>>() ;
+		Textures = new HashMap<String, AssetDescriptor<Texture>>() ;
+		Pixmaps = new HashMap<String, AssetDescriptor<Pixmap>>() ;
 		
 		
 		
@@ -142,25 +128,29 @@ public class ClientEngine extends Game
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/amiga4ever.ttf"));
 		loadingFont = generator.generateFont(25);
 
+		
+		
 		// Backgrounds...
-		level1fieldbg = new AssetDescriptor<Texture>("backgrounds/level1fieldagent.jpg" , Texture.class);
-		level1databasebg = new AssetDescriptor<Texture>("backgrounds/level1databaseagent.png" , Texture.class);
-		level2fieldbg = new AssetDescriptor<Texture>("backgrounds/level2fieldagent.png" , Texture.class);
+		Textures.put("level1fieldbg" ,new AssetDescriptor<Texture>("backgrounds/level1fieldagent.jpg" , Texture.class) );
+		Textures.put("level1databasebg", new AssetDescriptor<Texture>("backgrounds/level1databaseagent.png" , Texture.class));
+		Textures.put("level2fieldbg", new AssetDescriptor<Texture>("backgrounds/level2fieldagent.png" , Texture.class));
 		
 		// Static Props...
-		clipboard = new AssetDescriptor<Texture>("props/clipboardtransparent.png" , Texture.class);
-		
-		
+		Textures.put("clipboard", new AssetDescriptor<Texture>("props/clipboardtransparent.png" , Texture.class));
+
 		// UI elements...
-		dialogueNinePatchTexture = new AssetDescriptor<Texture>("UI/dialogueBoxNinePatch.png" , Texture.class);
+		Textures.put("dialogueNinePatchTexture", new AssetDescriptor<Texture>("UI/dialogueBoxNinePatch.png" , Texture.class));
+
 		
 		
 		// Characters...
-		level1thug = new AssetDescriptor<Pixmap>("characters/level1thug.png" , Pixmap.class);
-		
+		Pixmaps.put("level1thug", new AssetDescriptor<Pixmap>("characters/level1thug.png" , Pixmap.class));
+		Pixmaps.put("level1male", new AssetDescriptor<Pixmap>("characters/maleExtra.png" , Pixmap.class));
+		Pixmaps.put("level1female", new AssetDescriptor<Pixmap>("characters/femaleExtra.png" , Pixmap.class));
+
 		// Dynamic Props...
-		goldenTicket = new  AssetDescriptor<Pixmap>("props/ticket.png" , Pixmap.class);
-		
+		Pixmaps.put("goldenTicket", new  AssetDescriptor<Pixmap>("props/ticket.png" , Pixmap.class));
+
 		
 		
 		
@@ -173,22 +163,23 @@ public class ClientEngine extends Game
 		
 		
 		// Put things the loadingAssetManager needs to load here...
-		
+		for (AssetDescriptor<Texture> theTexture : preloadTextures.values()) {
+			loadingAssetManager.load(theTexture);
+		}
 		
 		
 		// Put things the gameTextureManager needs to load here...
-		gameTextureManager.load(level1fieldbg);
-		gameTextureManager.load(level1databasebg);
-		gameTextureManager.load(clipboard);
-		gameTextureManager.load(level2fieldbg);
-		gameTextureManager.load(dialogueNinePatchTexture);
-	
+		
+		for (AssetDescriptor<Texture> theTexture : Textures.values()) {
+			gameTextureManager.load(theTexture);
+		}
+		
 		// Put things the gamePixmapManager needs to load here...
-		gamePixmapManager.load(level1thug);
-		gamePixmapManager.load(goldenTicket);
 		
+		for (AssetDescriptor<Pixmap> thePixmap : Pixmaps.values()) {
+			gamePixmapManager.load(thePixmap);
+		}
 
-		
 		
 		
 		// Make sure the loadingAssetManager is at least done
@@ -210,24 +201,21 @@ public class ClientEngine extends Game
 			Gdx.graphics.getGL20().glClearColor( 0, 0, 0, 1 );
 			Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 			
-			if(gameTextureManager.update())
+			if(!gameTextureManager.update())
 			{
-				if(gamePixmapManager.update())
-				{
-					// Switch over to calling super's rendering for rendering screens
-					stillLoading = false;
-					
-					// Do any last initializations that we needed to load files to do
-					finishInit();
-					
-					// Go to the main menu.
-					switchToNewScreen(ScreenEnumerations.MainMenu);
-					
-					
-				}
-				else
-				{
 				
+				loadingstr = "Loading Textures - " + gameTextureManager.getProgress()*100;
+		        primarySpriteBatch.begin();
+		        
+		        loadingFont.draw(primarySpriteBatch, loadingstr , Gdx.graphics.getWidth() / 2 - loadingFont.getBounds(loadingstr).width/2, Gdx.graphics.getHeight()/2);
+		        
+		        primarySpriteBatch.end();
+		        
+		        return;
+			}
+				
+			if(!gamePixmapManager.update())
+			{
 				loadingstr = "Loading Pixmaps - " + gamePixmapManager.getProgress()*100;
 				
 		        primarySpriteBatch.begin();
@@ -236,19 +224,20 @@ public class ClientEngine extends Game
 		        
 		        primarySpriteBatch.end();
 		        
-				}
-				
+				return;
 			}
-			else
-			{
+
 			
-			loadingstr = "Loading Textures - " + gameTextureManager.getProgress()*100;
-	        primarySpriteBatch.begin();
-	        
-	        loadingFont.draw(primarySpriteBatch, loadingstr , Gdx.graphics.getWidth() / 2 - loadingFont.getBounds(loadingstr).width/2, Gdx.graphics.getHeight()/2);
-	        
-	        primarySpriteBatch.end();
-			}
+			
+			// Switch over to calling super's rendering for rendering screens
+			stillLoading = false;
+			
+			// Do any last initializations that we needed to load files to do
+			finishInit();
+			
+			// Go to the main menu.
+			switchToNewScreen(ScreenEnumerations.MainMenu);
+
 		}
 		else
 		{
@@ -261,7 +250,7 @@ public class ClientEngine extends Game
 	private void finishInit()
 	{
 		
-    	menuNinePatch = new MenuNinePatch(gameTextureManager.get(dialogueNinePatchTexture));
+    	menuNinePatch = new MenuNinePatch(gameTextureManager.get(Textures.get("dialogueNinePatchTexture")));
     	ninePatchDrawable = new NinePatchDrawable(MenuNinePatch.getInstance());
     	
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/amiga4ever.ttf"));		
@@ -402,28 +391,7 @@ public class ClientEngine extends Game
 	}
 
 	
-	
-//	private List<AssetDescriptor<Texture>> generateTextureDescriptors()
-//	{
-//		List<AssetDescriptor<Texture>> Textures = new ArrayList<AssetDescriptor<Texture>>();
-//
-//		Textures.add(level1fieldbg);
-//		
-//		return Textures;
-//	}
-	
-//	private List<AssetDescriptor<Pixmap>> generatePixmapDescriptors()
-//	{
-//		List<AssetDescriptor<Pixmap>> Pixmaps = new ArrayList<AssetDescriptor<Pixmap>>();
-//		
-//		// Characters...
-//		AssetDescriptor<Pixmap> level1thug = new AssetDescriptor<Pixmap>("characters/level1thug.png" , Pixmap.class);
-//		Pixmaps.add(level1thug);
-//		
-//		
-//		return Pixmaps;
-//	
-//	}
+
 	
 
 	public static void main(String[] args) {
@@ -431,12 +399,12 @@ public class ClientEngine extends Game
 		// System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
 		cfg.title = "Final Project Prototype";
 		cfg.useGL20 = true;
-		cfg.width = 1440; // 1200
-		cfg.height = 810; // 675
+		cfg.width = 1024; // 1200
+		cfg.height = 768; // 675
 		
 		
 		cfg.vSyncEnabled = false;
-
+		cfg.resizable = false;
 		new LwjglApplication(new ClientEngine(), cfg);
 	}
 }

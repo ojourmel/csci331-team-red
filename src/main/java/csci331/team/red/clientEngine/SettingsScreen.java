@@ -14,6 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
+/**
+ * @author Lduperron
+ */
+
+
 public class SettingsScreen implements Screen 
 {
 	ClientEngine parentEngine;
@@ -37,7 +42,7 @@ public class SettingsScreen implements Screen
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.level2fieldbg);
+		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Textures.get("level2fieldbg"));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();

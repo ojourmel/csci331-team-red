@@ -1,9 +1,16 @@
+
 package csci331.team.red.clientEngine;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 
 import aurelienribon.tweenengine.TweenAccessor;
+
+
+/**
+ * @author Lduperron
+ */
+
 
 public class ActorTweener implements TweenAccessor<Actor> {
 
