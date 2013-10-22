@@ -1,6 +1,7 @@
 package csci331.team.red.server;
 
 import csci331.team.red.shared.Role;
+import csci331.team.red.shared.State;
 
 /**
  * A Server-side representation of the two players. Who they are, what their
@@ -11,8 +12,15 @@ import csci331.team.red.shared.Role;
  */
 public class Player {
 	private Role role;
+	private State state;
 
-	public Player(Role role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+	
+
 }

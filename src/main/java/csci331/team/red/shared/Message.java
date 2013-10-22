@@ -11,24 +11,19 @@ public enum Message {
 	CONNECTED,
 
 	/**
-	 * Requests that clients start a level
+	 * Disconnected to client/server, and game is reseting
 	 */
-	START_WAIT_LEVEL,
+	DISCONNECTED,
 
 	/**
-	 * Requests that clients start level 1
+	 * Request the start of a level
 	 */
-	START_LEVEL_ONE,
+	START_LEVEL,
 
 	/**
-	 * Requests that clients start level 2
+	 * Starts a stage
 	 */
-	START_LEVEL_TWO,
-
-	/**
-	 * Requests that clients start level 3
-	 */
-	START_LEVEL_THREE,
+	START_STAGE,
 
 	/**
 	 * Ready to start game
@@ -39,6 +34,11 @@ public enum Message {
 	 * The user has paused the game
 	 */
 	PAUSE,
+
+	/**
+	 * The user has resumed the game
+	 */
+	RESUME,
 
 	/**
 	 * The user has quit the game
