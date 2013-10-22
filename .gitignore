@@ -10,3 +10,5 @@
 
 # Ignore bin
 bin/
+
+Thumbs.db

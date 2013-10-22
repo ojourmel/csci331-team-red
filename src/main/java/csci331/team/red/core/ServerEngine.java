@@ -6,8 +6,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
-
 import csci331.team.red.net.NetServer;
 import csci331.team.red.server.People;
 import csci331.team.red.server.Player;
@@ -16,7 +14,6 @@ import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Person;
 import csci331.team.red.shared.Result;
-import csci331.team.red.shared.Role;
 import csci331.team.red.shared.Stage;
 
 /**
