@@ -17,7 +17,7 @@ public class People {
 	private Map<Integer, Person> people;
 
 	/**
-	 * Default constructor. 
+	 * Default constructor.
 	 */
 	public People() {
 		// generate some random people.
@@ -34,7 +34,8 @@ public class People {
 	}
 
 	/**
-	 * @param i the level
+	 * @param i
+	 *            the level
 	 * @return the boss {@link Person} for the ith level
 	 */
 	public Person getLevelBoss(int i) {

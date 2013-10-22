@@ -1,6 +1,5 @@
-
 package csci331.team.red.net;
- 
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
@@ -10,16 +9,16 @@ public class Network {
 	static public final int port = 54555;
 
 	// This registers objects that are going to be sent over the network.
-	static public void register (EndPoint endPoint) {
+	static public void register(EndPoint endPoint) {
 		Kryo kryo = endPoint.getKryo();
-//		kryo.register(Login.class);
-//		kryo.register(RegistrationRequired.class);
-//		kryo.register(Register.class);
-//		kryo.register(AddCharacter.class);
-//		kryo.register(UpdateCharacter.class);
-//		kryo.register(RemoveCharacter.class);
-//		kryo.register(Character.class);
-//		kryo.register(MoveCharacter.class);
+		// kryo.register(Login.class);
+		// kryo.register(RegistrationRequired.class);
+		// kryo.register(Register.class);
+		// kryo.register(AddCharacter.class);
+		// kryo.register(UpdateCharacter.class);
+		// kryo.register(RemoveCharacter.class);
+		// kryo.register(Character.class);
+		// kryo.register(MoveCharacter.class);
 		kryo.register(Message.class);
 	}
 

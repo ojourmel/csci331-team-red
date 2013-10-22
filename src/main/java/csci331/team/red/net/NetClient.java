@@ -1,4 +1,3 @@
-
 package csci331.team.red.net;
 
 import java.io.IOException;
@@ -11,7 +10,7 @@ import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 import com.esotericsoftware.minlog.Log;
 
 public class NetClient {
-//	UI ui;
+	// UI ui;
 	Client client;
 	csci331.team.red.shared.Message msg;
 	protected String _host = "127.0.0.1";
@@ -30,63 +29,64 @@ public class NetClient {
 
 		// ThreadedListener runs the listener methods on a different thread.
 		client.addListener(new ThreadedListener(new Listener() {
-			public void connected (Connection connection) {
+			public void connected(Connection connection) {
 			}
 
-			public void received (Connection connection, Object object) {
-//				if (object instanceof RegistrationRequired) {
-//					Register register = new Register();
-//					register.name = name;
-//					register.otherStuff = ui.inputOtherStuff();
-//					client.sendTCP(register);
-//				}
+			public void received(Connection connection, Object object) {
+				// if (object instanceof RegistrationRequired) {
+				// Register register = new Register();
+				// register.name = name;
+				// register.otherStuff = ui.inputOtherStuff();
+				// client.sendTCP(register);
+				// }
 				if (object instanceof SomeRequest) {
-					SomeRequest request = (SomeRequest)object;
-			        System.out.println(request.text);
-			
-			        SomeResponse response = new SomeResponse();
-			        response.text = "Thanks!";
-			        connection.sendTCP(response);
+					SomeRequest request = (SomeRequest) object;
+					System.out.println(request.text);
+
+					SomeResponse response = new SomeResponse();
+					response.text = "Thanks!";
+					connection.sendTCP(response);
 				}
-				// 
+				//
 				if (object instanceof csci331.team.red.shared.Message) {
 					msg = (csci331.team.red.shared.Message) object;
 					// process message
 					switch (msg) {
-						case CONNECTED:
-							
-							break;
-						case START_LEVEL:
-							
-							break;
-						case READY:
-							
-							break;
-						case PAUSE:
-							
-							break;
-						case QUIT:
-							
-							break;
-						default:
-							break;
+					case CONNECTED:
+
+						break;
+					case START_LEVEL:
+
+						break;
+					case READY:
+
+						break;
+					case PAUSE:
+
+						break;
+					case QUIT:
+
+						break;
+					default:
+						break;
 					}
 				}
 			}
 
-			public void disconnected (Connection connection) {
+			public void disconnected(Connection connection) {
 				System.exit(0);
 			}
 		}));
 
-//		ui = new UI();
+		// ui = new UI();
 
-//		String host = ui.inputHost();
-		
-/***********/
+		// String host = ui.inputHost();
+
+		/***********/
 		try {
 			client.connect(5000, _host, Network.port);
-			// Server communication after connection can go here, or in Listener#connected().
+			// Server communication after connection can go here, or in
+			// Listener#connected().
 			System.out.println("Client good");
 		} catch (IOException e) {
 			System.out.println("Client sucked");
@@ -97,11 +97,11 @@ public class NetClient {
 		Kryo kryo = client.getKryo();
 		kryo.register(SomeRequest.class);
 		kryo.register(SomeResponse.class);
-		
+
 		// send request
 		SomeRequest request = new SomeRequest();
 		request.text = "Here is the request!";
-		client.sendTCP(request);		
+		client.sendTCP(request);
 	}
 
 	public static void main(String[] args) throws IOException {

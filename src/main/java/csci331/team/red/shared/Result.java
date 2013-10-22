@@ -8,7 +8,7 @@ package csci331.team.red.shared;
  * @author ojourmel
  */
 public class Result {
-	
+
 	/**
 	 * An INVALID result
 	 */
@@ -16,7 +16,9 @@ public class Result {
 
 	/**
 	 * Create a new result.
-	 * @param id of the new {@link Result}
+	 * 
+	 * @param id
+	 *            of the new {@link Result}
 	 */
 	public Result(int id) {
 		// TODO Auto-generated constructor stub

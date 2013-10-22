@@ -39,8 +39,8 @@ public class Dialog {
 
 	/**
 	 * @param strings
-	 *            an array of strings, with each string's associated speaker, built into an array of
-	 *            {@link Dialog}s
+	 *            an array of strings, with each string's associated speaker,
+	 *            built into an array of {@link Dialog}s
 	 * @return an array of {@link Dialog}s
 	 */
 	public static Dialog[] returnDialogArray(String[][] strings) {
@@ -56,9 +56,11 @@ public class Dialog {
 
 	/**
 	 * @param strings
-	 *            an array of strings, with each string's associated speaker, built into an array of {@link Dialog}s
-	 * @param callbackArray callbacks for each dialog pair.
-	 * @return an array of {@link Dialog}s, with their associated callbacks 
+	 *            an array of strings, with each string's associated speaker,
+	 *            built into an array of {@link Dialog}s
+	 * @param callbackArray
+	 *            callbacks for each dialog pair.
+	 * @return an array of {@link Dialog}s, with their associated callbacks
 	 */
 	public static Dialog[] returnDialogArray(String[][] strings,
 			Enum<?>[] callbackArray) {
