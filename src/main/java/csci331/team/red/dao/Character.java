@@ -17,6 +17,14 @@ import java.util.Random;
 public class Character {
 	private static Connection connection = null;
 	private static final String ID = "ID";
+	private static final String FIRSTNAME = "firstName";
+	private static final String LASTNAME = "lastName";
+	private static final String PASSPORTID = "passportID";
+	private static final String ADDRESS = "address";
+	private static final String CITY = "city";
+	private static final String POSTAL = "postal";
+	private static final String COUNTRY = "country";
+	private static final String OCCUPATION = "occupation";
 	/*
 	 * Open Database Connection
 	 */
@@ -113,7 +121,7 @@ public class Character {
 	public static int randomID(String tableName){
 		PreparedStatement statement = null;
 		try {
-			statement = connection.prepareStatement("SELECT ID FROM firstName ORDER BY Random() LIMIT 1");
+			statement = connection.prepareStatement("SELECT ID FROM " + tableName + " ORDER BY Random() LIMIT 1");
 		} catch (SQLException e) {
 			System.err.println(e);
 		}
@@ -123,14 +131,136 @@ public class Character {
 		} catch (SQLException e) {
 			System.err.println(e);
 		}
-		int maxID = 0;
+		int tableID = 0;
 		try {
-			maxID = rs.getInt(ID);
+			tableID = rs.getInt(ID);
 		} catch (SQLException e) {
 			System.err.println(e);
 		}
-		return maxID;
-		//return((int)(Math.random() * maxID + 1));
+		return tableID;
+	}
+	
+	public static String getFName(int id){
+		String fName="";
+		
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement("SELECT firstName FROM firstName WHERE ID = " + id );
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		ResultSet rs = null;
+		try {
+			rs = statement.executeQuery();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		try {
+			fName = rs.getString(FIRSTNAME);
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		
+		return fName;
+	}
+	
+	public static String getLName(int id){
+		String lName="";
+		
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement("SELECT lastName FROM lastName WHERE ID = " + id );
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		ResultSet rs = null;
+		try {
+			rs = statement.executeQuery();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		try {
+			lName = rs.getString(LASTNAME);
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		
+		return lName;
+	}
+	
+	public static String getPassportID(int id){
+		String passport="";
+		
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement("SELECT passportID FROM passportID WHERE ID = " + id );
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		ResultSet rs = null;
+		try {
+			rs = statement.executeQuery();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		try {
+			passport = rs.getString(PASSPORTID);
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		
+		return passport;
+	}
+	
+	public static String getAddress(int id){
+		String address="";
+		
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement("SELECT address, city, postal, country FROM address WHERE ID = " + id );
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		ResultSet rs = null;
+		try {
+			rs = statement.executeQuery();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		try {
+			address = rs.getString(ADDRESS);
+			address = address + " " + rs.getString(CITY);
+			address = address + " " + rs.getString(POSTAL);
+			address = address + " " + rs.getString(COUNTRY);
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		
+		return address;
+	}
+	
+	public static String getOccupation(int id){
+		String occupation="";
+		
+		PreparedStatement statement = null;
+		try {
+			statement = connection.prepareStatement("SELECT occupation FROM occupation WHERE ID = " + id );
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		ResultSet rs = null;
+		try {
+			rs = statement.executeQuery();
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		try {
+			occupation = rs.getString(OCCUPATION);
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		
+		return occupation;
 	}
 	
   public static void main(String[] args)
@@ -139,8 +269,44 @@ public class Character {
 	  if(success){
 		  System.out.println("Database connection successful");	
 		  
-		  int s = randomID("firstName");
-		  System.out.println(s);
+		  //quick demon on character attributes
+		  for(int i=0; i<10; i++){
+			  String dob = getDOB();
+			  int DriversID = getDriversID();
+			  
+			  //Start getting Random stuff from database
+			  //First Name
+			  int r = randomID("firstName");
+			  String fName = getFName(r);
+			  
+			  //Last Name
+			  r = randomID("lastName");
+			  String lName = getLName(r);
+			  
+			  //Passport Number
+			  r = randomID("passportID");
+			  String passport = getPassportID(r);
+			  
+			  //Address
+			  r = randomID("address");
+			  String address = getAddress(r);
+			  
+			  //Occupation
+			  r = randomID("occupation");
+			  String occupation = getOccupation(r);
+			  
+			  System.out.println("");
+			  System.out.println("*********************************");
+			  System.out.println("Name: " + fName + " " + lName);
+			  System.out.println("Age: " + dob);
+			  System.out.println("Address: " + address);
+			  System.out.println("Drivers License: " + DriversID);
+			  System.out.println("Passport Number: " + passport);
+			  System.out.println("Occupation: " + occupation);
+			  
+			  System.out.println("*********************************");
+			  System.out.println("");
+		  }
 		  
 	  } else {
 		  System.out.println("Database connection failed");
