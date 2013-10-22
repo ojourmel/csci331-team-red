@@ -1,17 +1,7 @@
 package csci331.team.red.clientEngine;
-/**
- * @author Lduperron
-
-
- */
-import java.util.ArrayList;
-import java.util.List;
-
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -354,26 +343,26 @@ public class DatabaseAgentScreen implements Screen
 			return;
 		}
 		
-		DatabaseDialgoueWindow iteratorOld = null;
+		DialogueWindow iteratorOld = null;
 		if(dialogueArray.length > 1)
 		{
-			iteratorOld = new DatabaseDialgoueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode());
+			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode());
 			
 			
 			for(int i = dialogueArray.length-2; i > 0 ; i--)
 			{
-				DatabaseDialgoueWindow iteratorNew = new DatabaseDialgoueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld , dialogueArray[i].getCallbackCode());
+				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld , dialogueArray[i].getCallbackCode());
 				iteratorOld = iteratorNew;
 			}
 		}
-		new DatabaseDialgoueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode());
+		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode());
 		
 	}
 	
 	// TODO:  Move this into a level if we even have dialog.
 	// This is static because... I wanted to enum and couldn't figure out how to enum without it being static.
 	// =<
-	public static class DatabaseDialogCallbacks extends DialogCallbacks
+	public static class DatabaseDialogCallbacks
 	{
 		static DatabaseAgentScreen entity;
 		

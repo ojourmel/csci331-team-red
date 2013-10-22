@@ -2,8 +2,6 @@ package csci331.team.red.shared;
 
 import java.util.ArrayList;
 
-import csci331.team.red.clientEngine.DatabaseAgentScreen.DatabaseDialogCallbacks;
-
 /**
  * Wrapper class for words said by the players and actors. <br>
  * FIXME: <b>Stub</b>
@@ -15,7 +13,7 @@ public class Dialog {
 
 	private String speaker;
 	private String dialogue;
-	private DatabaseDialogCallbacks.callbacks callbackCode;
+	private Enum<?> callbackCode;
 	
 	
 	
@@ -24,7 +22,7 @@ public class Dialog {
 		this(words, speaker, null);
 	}
 	
-	public Dialog(String words , String speaker , DatabaseDialogCallbacks.callbacks c) 
+	public Dialog(String words , String speaker , Enum<?> c) 
 	{
 		this.dialogue = words;
 		this.speaker = speaker;
@@ -47,13 +45,22 @@ public class Dialog {
 		
 	}
 	
-	public static Dialog[] returnDialogArray(String[][] strings , DatabaseDialogCallbacks.callbacks[] callbackArray)
+	public static Dialog[] returnDialogArray(String[][] strings , Enum<?>[] callbackArray)
 	{
 		ArrayList<Dialog> temp = new ArrayList<Dialog>();
 		
 		for(int i = 0; i < strings.length; i++)
 		{
-			Dialog tempDialog = new Dialog(strings[i][0] , strings [i][1],  callbackArray [i]);
+			Dialog tempDialog = null;
+			if(callbackArray[i] != null)
+			{
+				tempDialog = new Dialog(strings[i][0] , strings [i][1],  callbackArray [i]);
+			}
+			else
+			{
+				tempDialog = new Dialog(strings[i][0] , strings [i][1]);
+				
+			}
 			
 			temp.add(tempDialog);
 			
@@ -73,7 +80,7 @@ public class Dialog {
 	public String getSpeaker() {
 		return speaker;
 	}
-	public DatabaseDialogCallbacks.callbacks getCallbackCode()
+	public Enum<?> getCallbackCode()
 	{
 		
 		return callbackCode;

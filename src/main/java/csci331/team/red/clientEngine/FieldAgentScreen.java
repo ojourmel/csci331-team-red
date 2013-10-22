@@ -2,13 +2,10 @@ package csci331.team.red.clientEngine;
 
 import java.util.HashMap;
 
-import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Quad;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -24,10 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import csci331.team.red.clientEngine.DatabaseAgentScreen.DatabaseDialogCallbacks;
-import csci331.team.red.clientEngine.DatabaseAgentScreen.DatabaseDialogCallbacks.callbacks;
 import csci331.team.red.shared.Dialog;
-import csci331.team.red.shared.fieldDialog;
 /**
  * @author Lduperron
  */
@@ -140,20 +134,7 @@ public class FieldAgentScreen implements Screen
 	    
 	    
 	    
-	    
-	    
-		final TweenCallback nextPerson = new TweenCallback()
-		{
-			private int n = 1;
-			
-			@Override
-			public void onEvent(int type, BaseTween<?> source)
-			{
-				n++;
-				displayNewPerson(n);
-			}
-
-		};
+	  
 	    
 	    
 	    
@@ -174,7 +155,7 @@ public class FieldAgentScreen implements Screen
     		    		
     		    };
     		    fieldDialogCallbacks.callbacks[] callarr = {null, null, null , null};
-    		    fieldDialog[] d = fieldDialog.returnDialogArray(strarr , callarr);
+    		    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
     		    displayDialogue(d);
     	    	
     	    };
@@ -207,7 +188,7 @@ public class FieldAgentScreen implements Screen
     		    		
     		    };
     		    fieldDialogCallbacks.callbacks[] callarr = {null, null, fieldDialogCallbacks.callbacks.approachSecondPerson , null , null , null , null , null , null ,null ,null ,null ,null};
-    		    fieldDialog[] d = fieldDialog.returnDialogArray(strarr , callarr);
+    		    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
     		    displayDialogue(d);
     	    	
     		    
@@ -245,7 +226,7 @@ public class FieldAgentScreen implements Screen
 	    		
 	    };
 	    fieldDialogCallbacks.callbacks[] callarr = {null, null,fieldDialogCallbacks.callbacks.approachFirstPerson, null,null, null,null, fieldDialogCallbacks.callbacks.giveID, null,null, null , null , null, null};
-	    fieldDialog[] d = fieldDialog.returnDialogArray(strarr , callarr);
+	    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
 	    displayDialogue(d);
 
 	    
@@ -483,12 +464,12 @@ public class FieldAgentScreen implements Screen
 	// TODO:  Move dialogue functions into somewhere shared between the two agent stages.  Maybe.
 	public void displayDialogue(String speaker, String Dialogue)
 	{
-		fieldDialog[] temp = new fieldDialog[1];
-		temp[0] = new fieldDialog(Dialogue, speaker);
+		Dialog[] temp = new Dialog[1];
+		temp[0] = new Dialog(Dialogue, speaker);
 		displayDialogue(temp);
 	}
 	
-	public void displayDialogue(fieldDialog[] dialogueArray)
+	public void displayDialogue(Dialog[] dialogueArray)
 	{
 		dialogueStage.clear();
 		
@@ -497,19 +478,19 @@ public class FieldAgentScreen implements Screen
 			return;
 		}
 		
-		FieldDialogueWindow iteratorOld = null;
+		DialogueWindow iteratorOld = null;
 		if(dialogueArray.length > 1)
 		{
-			iteratorOld = new FieldDialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode());
+			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode());
 			
 			
 			for(int i = dialogueArray.length-2; i > 0 ; i--)
 			{
-				FieldDialogueWindow iteratorNew = new FieldDialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld , dialogueArray[i].getCallbackCode());
+				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld ,dialogueArray[i].getCallbackCode());
 				iteratorOld = iteratorNew;
 			}
 		}
-		new FieldDialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode());
+		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode());
 		
 	}
 		

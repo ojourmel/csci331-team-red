@@ -3,7 +3,6 @@ package csci331.team.red.clientEngine;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
