@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
+ * Handles connecting to other games.
  * @author Lduperron
  */
 

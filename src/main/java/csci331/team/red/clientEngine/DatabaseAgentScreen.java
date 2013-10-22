@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import csci331.team.red.shared.Dialog;
 
 /**
+ * Scene responsible for the database roll.
  * @author Lduperron
  */
 
@@ -108,27 +109,28 @@ public class DatabaseAgentScreen implements Screen
                 if(key == '\n' || key == '\r')
                 {
                 	
-                	Label newCommandLabel = new Label(textField.getText() , parentEngine.rawTextStyle);
+                	Label newCommandLabel = new Label(textField.getText() + "\r\n\r\n", parentEngine.rawTextStyle);
+                	newCommandLabel.setWrap(true);
                 	String computerResponse = computerSearch(textField.getText().trim());
-                	Label newResponseLabel = new Label(computerResponse , parentEngine.rawTextStyle);
-                	
+                	Label newResponseLabel = new Label(computerResponse + "\r\n\r\n" , parentEngine.rawTextStyle);
+                	newResponseLabel.setWrap(true);
                 	
                 	textField.setText("");
                 	
                 	
                 	
-            	    computerTextLabelContainingTable.add(newCommandLabel).left();
+            	    computerTextLabelContainingTable.add(newCommandLabel).left().minWidth(computerTextScrollingTable.getWidth()-20).fill();
             	   
 
             	    computerTextLabelContainingTable.row();
             	    
-            	    computerTextLabelContainingTable.add(newResponseLabel).left();
+            	    computerTextLabelContainingTable.add(newResponseLabel).left().minWidth(computerTextScrollingTable.getWidth()-20).fill();
              	   
 
             	    computerTextLabelContainingTable.row();
             	    
-            	    
-        //    	    computerTextLabelContainingTable.layout();
+            	    computerTextScroller.layout();
+            	    computerTextLabelContainingTable.layout();
             	    computerTextScrollingTable.layout();
 
             	    computerTextScroller.setScrollPercentY(100);
@@ -212,7 +214,7 @@ public class DatabaseAgentScreen implements Screen
 	    		{"Others are suspicious.  Like that 'Mary Test' one.", "Ominious Voice"},
 	    		{"We should do a bit of research on her.\nType 'search prism mary test'\non your phone.", "Ominious Voice"},
 	    		{"I assume you did it, given I'm just a voice.  That's an inconsistancy!  We should warn our partner about that too.", "Ominious Voice"},
-	    		{"Your parnter will also be reporting suspicious data to you to look up.  For example..." , "Ominious Voice"},
+	    		{"Your partner will also be reporting suspicious data to you to look up.  For example..." , "Ominious Voice"},
 	    		{"Hey, can you look up DL '123456789' for me, buddy?" , "Jerk"},
 	    		{"These can occasionally bring up a large amount of infomation, and again, you must decide what is important to relay." , "Ominious Voice"},
 	    		{"I have no more guidance to give you." , "Ominious Voice"},

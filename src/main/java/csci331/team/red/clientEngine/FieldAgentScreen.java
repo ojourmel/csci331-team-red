@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import csci331.team.red.shared.Dialog;
 /**
+ * Screen for the field agent
  * @author Lduperron
  */
 

@@ -7,11 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import aurelienribon.tweenengine.TweenAccessor;
 
 
+
+
 /**
+ * Implements tweening functions for all actors.  It enables smooth movement and such.
  * @author Lduperron
+ *
  */
-
-
 public class ActorTweener implements TweenAccessor<Actor> {
 
     // The following lines define the different possible tween types.

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
 /**
+ * Holds settings.  Might contain resolutions at one point.
  * @author Lduperron
  */
 
@@ -56,7 +57,7 @@ public class SettingsScreen implements Screen
 	    
 	    
 	    // Creates our buttons
-	    TextButton SettingsLabel = new TextButton("No settings lol" , parentEngine.buttonStyle);
+	    TextButton SettingsLabel = new TextButton("No settings yet" , parentEngine.buttonStyle);
 	    settingsStage.addActor(SettingsLabel);
   
 

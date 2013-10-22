@@ -1,6 +1,7 @@
 package csci331.team.red.clientEngine;
 
 /**
+ * Enumerates all possible screens
  * @author Lduperron
  */
 

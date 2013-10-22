@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 /**
+ * Screen for hosting a game.  Will start a server and then connect to it, and then wait for another to connect.
+ * Server will be killed if you go 'back'
  * @author Lduperron
  */
 

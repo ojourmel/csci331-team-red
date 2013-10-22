@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 /**
+ * Displays dialog.  Has an internal reference to another dialog window and to an Enum<?> called Callbackcode.
+ * If one is not null, it's executed when the textbox is clicked.
  * @author Lduperron
  */
 

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
 /**
+ * Extention to contain an actor.  Handles transparent backgrounds.
  * @author Lduperron
  */
 
