@@ -32,7 +32,6 @@ public class ServerEngine extends Thread {
 
 	// Core game assets
 	private NetServer network;
-	private People people;
 	private List<Stage> stages;
 	private List<Level> levels;
 	private Stage currentStage;
@@ -61,7 +60,6 @@ public class ServerEngine extends Thread {
 	public ServerEngine() {
 		levels = new LinkedList<Level>();
 		stages = new LinkedList<Stage>();
-		people = new People();
 
 		playerOne = new Player();
 		playerTwo = new Player();
@@ -74,9 +72,9 @@ public class ServerEngine extends Thread {
 	public void run() {
 
 		// The network could not bind a port. Fatal error
-		try{
+		try {
 			network = new NetServer(this);
-		}catch(IOException e){
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
@@ -107,9 +105,9 @@ public class ServerEngine extends Thread {
 
 		for (int i = 0; i < 3; i++) {
 			// set up a stage. Use the stats from the previous stages to affect
-			// the
-			// next stage.
-			Person actor = people.getRandom();
+			// the next stage.
+			// TODO: Get Persons from the Database Access Objects
+			Person actor = new Person();
 			double fraudFactor = actor.FRAUD_CHANCE;
 			double errorFactor = 0;
 
@@ -135,7 +133,8 @@ public class ServerEngine extends Thread {
 
 		// boss stage time!
 
-		Person boss = people.getLevelBoss(1);
+		// TODO: Get Persons from the Database Access Objects
+		Person boss = new Person();
 		// A boss should have no detail problems, but alerts have to be
 		// generated... TODO: Deal with generating alerts.
 		Stage stage = new Stage(boss, 0, 0);
