@@ -3,6 +3,7 @@ package csci331.team.red.server;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -13,6 +14,7 @@ import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Person;
 import csci331.team.red.shared.Result;
+import csci331.team.red.shared.Role;
 import csci331.team.red.shared.Stage;
 
 /**
@@ -196,14 +198,24 @@ public class ServerEngine extends Thread {
 	/**
 	 * Callback for when a player connects. If two players connect, then the
 	 * main game logic is started.
+	 * 
+	 * @return {@link Role} of {@link Player}
 	 */
-	public void onPlayerConnect() {
+	public Role onPlayerConnect() {
 		numPlayerConnected++;
 		if (numPlayerConnected == MAX_PLAYERS) {
 			lock.lock();
 			clientsConnected.signal();
 			lock.unlock();
 		}
+// TODO: need to fix this		
+		return Role.DATABASE;
+
+//		if (new Random().nextBoolean())
+//			return Role.DATABASE;
+//		else
+//			return Role.FIELD;
+		
 	}
 
 	/**

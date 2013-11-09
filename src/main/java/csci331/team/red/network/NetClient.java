@@ -7,8 +7,10 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
+import com.esotericsoftware.minlog.Log;
 
 import csci331.team.red.client.ClientEngine;
+import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Stage;
@@ -23,6 +25,7 @@ public class NetClient {
 	protected final ClientEngine gameClient;
 	protected final Client client;
 	protected String host = "127.0.0.1";
+	protected int timeout = 5000;
 
 	/**
 	 * Constructor for NetClient
@@ -44,12 +47,14 @@ public class NetClient {
 		Network.register(client);
 
 		try {
-			client.connect(5000, host, Network.tcpPort);
+			client.connect(timeout, host, Network.tcpPort);
 			this.send(Message.CONNECTED);
+			setTimeout(60000); // change timeout to 60 secs
 		} catch (IOException e) {
 			// TODO: should I be catching this, or just pass it on to client?
 			System.out.println("Client bombed");
 			e.printStackTrace();
+			client.stop();
 		}
 
 		// ThreadedListener runs the listener methods on a different thread.
@@ -63,19 +68,19 @@ public class NetClient {
 						// client should not receive this message
 						break;
 					case DISCONNECTED:
-//						gameClient.onServerDisconnect();
+						// gameClient.onServerDisconnect();
 						break;
 					case START_LEVEL:
 						if (netMsg.obj instanceof Level) {
 							Level level = (Level) netMsg.obj;
-//							gameClient.startLevel(level);
+							// gameClient.startLevel(level);
 							System.out.println("Starting level...");
 						}
 						break;
 					case START_STAGE:
 						if (netMsg.obj instanceof Stage) {
 							Stage stage = (Stage) netMsg.obj;
-//							gameClient.startStage(stage);
+							// gameClient.startStage(stage);
 							System.out.println("Starting stage...");
 						}
 						break;
@@ -83,21 +88,35 @@ public class NetClient {
 						// what will this be used for?
 						break;
 					case PAUSE:
-//						gameClient.onPlayerPause();
+						// gameClient.onPlayerPause();
 						break;
 					case QUIT:
-//						gameClient.onPlayerQuit();
+						// gameClient.onPlayerQuit();
 						break;
 					case RESUME:
-//						gameClient.onPlayerResume();
+						// gameClient.onPlayerResume();
 						break;
 					default:
+						// TODO: should I throw an exception or just ignore the
+						// message?
 						break;
 					}
 				}
 			}
-		}));
-	}
+
+			@Override
+			public void connected(Connection arg0) {
+				super.connected(arg0);
+				// gameClient.onConnected;
+			}
+
+			@Override
+			public void disconnected(Connection arg0) {
+				super.disconnected(arg0);
+				// gameClient.onDisconnected;
+			}
+		}));	// end of addListener
+	}	// end of constructor
 
 	/**
 	 * @param msg
@@ -117,5 +136,24 @@ public class NetClient {
 	public void send(Message msg, Object obj) {
 		NetMessage netMsg = new NetMessage(msg, obj);
 		client.sendTCP(netMsg);
+	}
+
+	/**
+	 * Sets {@line Connection} timeout to a value between 0 and 60 seconds
+	 * 
+	 * @param timeout
+	 */
+	public void setTimeout(int timeout) {
+		if ((timeout > 0) && (timeout < 60001))
+			client.setTimeout(timeout);
+	}
+
+	/**
+	 *  TODO: Delete this main method.  It is just for testing.
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		Log.set(Log.LEVEL_DEBUG);
+		new NetClient(new ClientEngine(), "10.5.16.233");
 	}
 }
