@@ -65,7 +65,7 @@ public class ClientEngine extends Game
 	DatabaseAgentScreen databaseAgentScreen;
 	FieldAgentScreen fieldAgentScreen;
 	SettingsScreen settingsScreen;
-	
+	PauseScreen pauseScreen;
 	
 	// Font used in the game
 	BitmapFont gameFont;
@@ -124,6 +124,8 @@ public class ClientEngine extends Game
 		Textures.put("level1fieldbg" ,new AssetDescriptor<Texture>("backgrounds/level1fieldagent.jpg" , Texture.class) );
 		Textures.put("level1databasebg", new AssetDescriptor<Texture>("backgrounds/level1databaseagent.png" , Texture.class));
 		Textures.put("level2fieldbg", new AssetDescriptor<Texture>("backgrounds/level2fieldagent.png" , Texture.class));
+		Textures.put("pauseScreenBG", new AssetDescriptor<Texture>("backgrounds/technical-difficulties.jpg" , Texture.class));
+		
 		
 		// Static Props...
 		Textures.put("clipboard", new AssetDescriptor<Texture>("props/clipboardtransparent.png" , Texture.class));
@@ -304,72 +306,83 @@ public class ClientEngine extends Game
 	{
 		switch (newLevel)
 		{
-		case ClientEngine:
-			this.setScreen(null);
-			
-			
-			
-		case MainMenu:
-			if(mainMenuScreen == null)
-			{
-				mainMenuScreen = new MainMenuScreen(this);
-			}
-			this.setScreen(mainMenuScreen);
-			break;
-			
-			
-			
-			
-		case Hosting:
-			if(hostingScreen == null)
-			{
-				hostingScreen = new HostingScreen(this);
-			}
-			this.setScreen(hostingScreen);
-			break;
-			
-			
-			
-		case Connecting:
-			if(connectingScreen == null)
-			{
-				connectingScreen = new ConnectingScreen(this);
-			}
-			this.setScreen(connectingScreen);
-			break;
-			
-			
-		case Settings:
-			if(settingsScreen == null)
-			{
-				settingsScreen = new SettingsScreen(this);
-			}
-			this.setScreen(settingsScreen);
-			break;
-			
-			
-		case FieldAgent:
-			if(fieldAgentScreen == null)
-			{
-				fieldAgentScreen = new FieldAgentScreen(this);
-			}
-			this.setScreen(fieldAgentScreen);
-			break;
-			
-			
-			
-			
-		case DatabaseAgent:
-			if(databaseAgentScreen == null)
-			{
-				databaseAgentScreen = new DatabaseAgentScreen(this);
-			}
-			this.setScreen(databaseAgentScreen);
-			break;
-			
-			
+			case ClientEngine:
+				this.setScreen(null);
+				
+				
+				
+			case MainMenu:
+				if(mainMenuScreen == null)
+				{
+					mainMenuScreen = new MainMenuScreen(this);
+				}
+				this.setScreen(mainMenuScreen);
+				break;
+				
+				
+				
+				
+			case Hosting:
+				if(hostingScreen == null)
+				{
+					hostingScreen = new HostingScreen(this);
+				}
+				this.setScreen(hostingScreen);
+				break;
+				
+				
+				
+			case Connecting:
+				if(connectingScreen == null)
+				{
+					connectingScreen = new ConnectingScreen(this);
+				}
+				this.setScreen(connectingScreen);
+				break;
+				
+				
+			case Settings:
+				if(settingsScreen == null)
+				{
+					settingsScreen = new SettingsScreen(this);
+				}
+				this.setScreen(settingsScreen);
+				break;
+				
+				
+			case FieldAgent:
+				if(fieldAgentScreen == null)
+				{
+					fieldAgentScreen = new FieldAgentScreen(this);
+				}
+				this.setScreen(fieldAgentScreen);
+				break;
+				
+				
+				
+				
+			case DatabaseAgent:
+				if(databaseAgentScreen == null)
+				{
+					databaseAgentScreen = new DatabaseAgentScreen(this);
+				}
+				this.setScreen(databaseAgentScreen);
+				break;
+				
+			case PauseScreen:
+				if(pauseScreen == null)
+				{
+					pauseScreen = new PauseScreen(this);
+				}
+				this.setScreen(pauseScreen);
+				break;
+				
+				
+				
 			default:
 				return;
+			
+			
 		}
 		
 		return;

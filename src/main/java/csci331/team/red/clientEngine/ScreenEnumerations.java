@@ -14,6 +14,8 @@ public enum ScreenEnumerations {
 	Connecting,
 	Settings,
 	FieldAgent,
-	DatabaseAgent;
+	DatabaseAgent,
+	PauseScreen,
+	;
 }
 
