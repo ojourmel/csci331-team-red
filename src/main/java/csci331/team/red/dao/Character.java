@@ -1,315 +1,216 @@
 package csci331.team.red.dao;
 
-/*
- * create/return a character for the game
+/**
+ * CSCI331-TAG MW ENCAPSULATION<br>
+ * <br>
+ * 
+ * Contains specific game character information, generated from the
+ * CharacterDAO.<br>
+ * <br>
+ * 
+ * Game Character Information:
+ * <ul>
+ * <li>Date of Birth</li>
+ * <li>Driver's Licience Number</li>
+ * <li>Last Name</li>
+ * <li>First Name</li>
+ * <li>Passport ID</li>
+ * <li>Address</li>
+ * <li>City</li>
+ * <li>Country</li>
+ * <li>Postal Code</li>
+ * <li>Occupation</li>
+ * </ul>
+ * 
+ * @author melany
  */
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Random;
-
-
 public class Character {
-	private static Connection connection = null;
-	private static final String ID = "ID";
-	private static final String FIRSTNAME = "firstName";
-	private static final String LASTNAME = "lastName";
-	private static final String PASSPORTID = "passportID";
-	private static final String ADDRESS = "address";
-	private static final String CITY = "city";
-	private static final String POSTAL = "postal";
-	private static final String COUNTRY = "country";
-	private static final String OCCUPATION = "occupation";
-	/*
-	 * Open Database Connection
-	 */
-	public static boolean openConnection(String url){
-		try {
-			Class.forName("org.sqlite.JDBC");
-			connection = java.sql.DriverManager.getConnection(url);
-		}
-		catch(ClassNotFoundException cnfe) {
-			System.err.println(cnfe.getMessage());
-			return false;
-		}
-		catch(SQLException e) {
-			System.err.println(e.getMessage());
-			try {
-				if(connection != null) {
-					connection.close();
-				} else {
-					return false;
-				}
-			}
-			catch(SQLException ee) {
-				//connection close failed
-				System.err.println(ee);
-				return false;
-			}
-		}
-		return true;
+
+	// Character Attribute Variables
+	private String firstName;
+	private String lastName;
+	private String dob;
+	private String driversID;
+	private String passportID;
+	private String occupation;
+	private String address;
+	private String city;
+	private String region;
+	private String postal;
+	private String country;
+
+	// Getters/Setters for Attribute Variables
+	public String getFirstName() {
+		return firstName;
 	}
-	
-	public void closeConnection() {
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-		}
-		catch (SQLException e) {
-			//connection close failed
-			System.err.println(e);
-		}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
-	
-  /*
-   * return character Date of Birth (DOB)
-   * @author melanyw
-   */
-	public static String getDOB(){
-		String DOB;
-		
-		int year = (int)((Math.random()*100) % 80) + 1917;
-		int month = (int)((Math.random()*12) % 12) + 1;
-		
-		int day;
-		//list of months with 31 days
-		int[] longMonth = new int[]{1,3,5,7,8,10,12};
-		//list of months with 30 days
-		int[] shortMonth = new int[]{4,6,9,11};
-		
-		if(Arrays.asList(longMonth).contains(month)){
-			day = (int)(Math.random()*((31-1)+1));
-			
-		} else if (Arrays.asList(shortMonth).contains(month)){
-			day = (int)(Math.random()*((30-1)+1));
-			
-		//February
-		} else {
-			day = (int)(Math.random()*((28-1)+1));
-		}
-		
-		String monthWD = "";
-		if(month==1) monthWD = "Jan";
-		if(month==2) monthWD = "Feb";
-		if(month==3) monthWD = "Mar";
-		if(month==4) monthWD = "Apr";
-		if(month==5) monthWD = "May";
-		if(month==6) monthWD = "Jun";
-		if(month==7) monthWD = "Jul";
-		if(month==8) monthWD = "Aug";
-		if(month==9) monthWD = "Sep";
-		if(month==10) monthWD = "Oct";
-		if(month==11) monthWD = "Nov";
-		if(month==12) monthWD = "Dec";
-		
-		DOB = year + "-" + monthWD + "-" + day;
-		
-		return DOB;
+
+	public String getLastName() {
+		return lastName;
 	}
-	
-	public static int getDriversID(){
-		return((int)(Math.random()*((9999999-1000000)+1)));
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
-	
-	//get random row number from table
-	public static int randomID(String tableName){
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement("SELECT ID FROM " + tableName + " ORDER BY Random() LIMIT 1");
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
-			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		int tableID = 0;
-		try {
-			tableID = rs.getInt(ID);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		return tableID;
+
+	public String getDob() {
+		return dob;
 	}
-	
-	public static String getFName(int id){
-		String fName="";
-		
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement("SELECT firstName FROM firstName WHERE ID = " + id );
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
-			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
-			fName = rs.getString(FIRSTNAME);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		
-		return fName;
+
+	public void setDob(String dob) {
+		this.dob = dob;
 	}
-	
-	public static String getLName(int id){
-		String lName="";
-		
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement("SELECT lastName FROM lastName WHERE ID = " + id );
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
-			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
-			lName = rs.getString(LASTNAME);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		
-		return lName;
+
+	public String getDriversID() {
+		return driversID;
 	}
-	
-	public static String getPassportID(int id){
-		String passport="";
-		
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement("SELECT passportID FROM passportID WHERE ID = " + id );
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
-			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
-			passport = rs.getString(PASSPORTID);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		
-		return passport;
+
+	public void setDriversID(String driversID) {
+		this.driversID = driversID;
 	}
-	
-	public static String getAddress(int id){
-		String address="";
-		
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement("SELECT address, city, postal, country FROM address WHERE ID = " + id );
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
-			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
-			address = rs.getString(ADDRESS);
-			address = address + " " + rs.getString(CITY);
-			address = address + " " + rs.getString(POSTAL);
-			address = address + " " + rs.getString(COUNTRY);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		
-		return address;
+
+	public String getPassportID() {
+		return passportID;
 	}
-	
-	public static String getOccupation(int id){
-		String occupation="";
-		
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement("SELECT occupation FROM occupation WHERE ID = " + id );
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
-			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
-			occupation = rs.getString(OCCUPATION);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		
+
+	public void setPassportID(String passportID) {
+		this.passportID = passportID;
+	}
+
+	public String getOccupation() {
 		return occupation;
 	}
-	
-  public static void main(String[] args)
-  {
-	  boolean success = openConnection("jdbc:sqlite:src/main/db/game.db");
-	  if(success){
-		  System.out.println("Database connection successful");	
-		  
-		  //quick demon on character attributes
-		  for(int i=0; i<10; i++){
-			  String dob = getDOB();
-			  int DriversID = getDriversID();
-			  
-			  //Start getting Random stuff from database
-			  //First Name
-			  int r = randomID("firstName");
-			  String fName = getFName(r);
-			  
-			  //Last Name
-			  r = randomID("lastName");
-			  String lName = getLName(r);
-			  
-			  //Passport Number
-			  r = randomID("passportID");
-			  String passport = getPassportID(r);
-			  
-			  //Address
-			  r = randomID("address");
-			  String address = getAddress(r);
-			  
-			  //Occupation
-			  r = randomID("occupation");
-			  String occupation = getOccupation(r);
-			  
-			  System.out.println("");
-			  System.out.println("*********************************");
-			  System.out.println("Name: " + fName + " " + lName);
-			  System.out.println("Age: " + dob);
-			  System.out.println("Address: " + address);
-			  System.out.println("Drivers License: " + DriversID);
-			  System.out.println("Passport Number: " + passport);
-			  System.out.println("Occupation: " + occupation);
-			  
-			  System.out.println("*********************************");
-			  System.out.println("");
-		  }
-		  
-	  } else {
-		  System.out.println("Database connection failed");
-	  }
-  }
+
+	public void setOccupation(String occupation) {
+		this.occupation = occupation;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public String getPostal() {
+		return postal;
+	}
+
+	public void setPostal(String postal) {
+		this.postal = postal;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	// Constructor
+	// initializes character attributes to given values
+	Character(String dob, String driversID, String firstName, String lastName,
+			String passportID, String address, String city, String region,
+			String postal, String country, String occupation) {
+
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dob = dob;
+		this.driversID = driversID;
+		this.passportID = passportID;
+		this.occupation = occupation;
+		this.address = address;
+		this.city = city;
+		this.region = region;
+		this.postal = postal;
+		this.country = country;
+
+	}
+
+	@Override
+	/**
+	 * CSCI331-TAG MW OVERRIDE
+	 * 
+	 * Another override, this one overrides one of the built-in java methods
+	 * rather than two methods I've wrote for different classes
+	 * 
+	 */
+	public boolean equals(Object obj) {
+		// if the two objects are equal in reference, they are equal
+		if (this == obj) {
+			return true;
+		} else if (obj instanceof Character) {
+			Character c = (Character) obj;
+			if ((((c.getFirstName() == null) && (this.getFirstName() == null)) || (c
+					.getFirstName().equals(this.getFirstName())))
+					&& (((c.getLastName() == null) && (this.getLastName() == null)) || (c
+							.getLastName().equals(this.getLastName())))
+					&& (((c.getDob() == null) && (this.getDob() == null)) || (c
+							.getDob().equals(this.getDob())))
+					&& (((c.getDriversID() == null) && (this.getDriversID() == null)) || (c
+							.getDriversID().equals(this.getDriversID())))
+					&& (((c.getPassportID() == null) && (this.getPassportID() == null)) || (c
+							.getPassportID().equals(this.getPassportID())))
+					&& (((c.getOccupation() == null) && (this.getOccupation() == null)) || (c
+							.getOccupation().equals(this.getOccupation())))
+					&& (((c.getAddress() == null) && (this.getAddress() == null)) || (c
+							.getAddress().equals(this.getAddress())))
+					&& (((c.getCity() == null) && (this.getCity() == null)) || (c
+							.getCity().equals(this.getCity())))
+					&& (((c.getRegion() == null) && (this.getRegion() == null)) || (c
+							.getRegion().equals(this.getRegion())))
+					&& (((c.getPostal() == null) && (this.getPostal() == null)) || (c
+							.getPostal().equals(this.getPostal())))
+					&& (((c.getCountry() == null) && (this.getCountry() == null)) || (c
+							.getCountry().equals(this.getCountry())))
+
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 0;
+
+		hashCode = hashCode * 37 + this.firstName.hashCode();
+		hashCode = hashCode * 37 + this.lastName.hashCode();
+		hashCode = hashCode * 37 + this.dob.hashCode();
+		hashCode = hashCode * 37 + this.driversID.hashCode();
+		hashCode = hashCode * 37 + this.passportID.hashCode();
+		hashCode = hashCode * 37 + this.occupation.hashCode();
+		hashCode = hashCode * 37 + this.address.hashCode();
+		hashCode = hashCode * 37 + this.city.hashCode();
+		hashCode = hashCode * 37 + this.region.hashCode();
+		hashCode = hashCode * 37 + this.postal.hashCode();
+		hashCode = hashCode * 37 + this.country.hashCode();
+
+		return hashCode;
+	}
 }
