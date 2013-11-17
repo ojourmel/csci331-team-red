@@ -26,6 +26,11 @@ public class CharacterRepository extends CharacterDAO {
 
 	ArrayList<Character> characters;
 
+	/**
+	 * The construction creates an initial game-play character database
+	 * of 50 random characters
+	 * @author melany
+	 */
 	CharacterRepository() {
 		characters = new ArrayList<Character>();
 		CharacterDAO characterDAO = new CharacterDAO();
@@ -41,6 +46,8 @@ public class CharacterRepository extends CharacterDAO {
 	 * <br>
 	 * 
 	 * Returns a random character in the game play character database
+	 * This is different from the CharacterDAO.getCharacter, which creates
+	 * a random character
 	 * 
 	 * @return Character
 	 * @author melany
@@ -50,11 +57,25 @@ public class CharacterRepository extends CharacterDAO {
 		return characters.get(range);
 	}
 
+	/**
+	 * Iterates through the game-play characters looking for 
+	 * characters that match the <key,value> pair supplied in the 
+	 * parameter.  All matches are added to the return list of characters.<br>
+	 * <br>
+	 * If there are no characters in the game-play database that have
+	 * the required parameters, new characters will be created that have
+	 * the parameter, added to the character list AND to the game play database
+	 * and returned.
+	 * @param map
+	 * @return List of Characters, returns null on error
+	 */
 	public List<Character> getCharacters(Map<String, String> map) {
 		int newChars = 10; // number of new characters added to characters if no
 							// matches
 		List<Character> chars = new LinkedList<Character>();
 
+		//Go through and see if the key is a database attribute
+		//If found, we add that character to the chars list
 		for (String s : map.keySet()) {
 			String val = map.get(s);
 
@@ -191,6 +212,18 @@ public class CharacterRepository extends CharacterDAO {
 	/**
 	 * CSCI331-TAG MW OVERLOADING (NOT A REQUIRED TAG BUT I USED IT ANYWAYS)
 	 * 
+	 * Overloaded the getCharacters method, so that searches on more than one
+	 * attribute can be used.  <br>
+	 * It takes in a list of mappings, and iterates through each map
+	 * looking for attributes in the game-play database that match.  <br>
+	 * Lists of characters that are returned are then compared to the another
+	 * list of characters.  Any duplicates are stored in the final 
+	 * list of characters that are returned.<br>
+	 * If there are no matches, than a set of new characters are created, and 
+	 * there data is made to match the supplied attributes.  These new characters
+	 * are added both the the list of characters that are returned, and to the
+	 * game-play database of characters.
+	 * 
 	 * @param maps
 	 * @return List(Character)
 	 * 
@@ -201,6 +234,8 @@ public class CharacterRepository extends CharacterDAO {
 		int newChars = 10;
 		List<Character> chars = new LinkedList<Character>();
 
+		//Compare lists of characters with other lists of characters
+		//looking for duplicates for matches
 		for (int i = 0; i < (maps.size()); i++) {
 			List<Character> temp1 = getCharacters((maps.get(i++)));
 			List<Character> temp2 = getCharacters((maps.get(i)));

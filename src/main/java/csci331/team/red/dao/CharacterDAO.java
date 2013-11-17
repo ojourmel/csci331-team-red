@@ -6,7 +6,13 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
- * CSCI331-TAG MW SUPERCLASS
+ * CSCI331-TAG MW SUPERCLASS<br><br>
+ * 
+ * CharacterDAO is the superclass of CharacterRepository.
+ * CharacterDAO was created as a superclass as it randomly
+ * creates characters from database data.  It also contains
+ * several global variables, that are needed by other classes.
+ * 
  * @author melany
  *
  */
@@ -33,7 +39,9 @@ public class CharacterDAO {
 	 * <br>
 	 * 
 	 * Returns a NEW random character NOT in the current game play character
-	 * database
+	 * database, rather than the CharacterRepository.getCharacter(), which
+	 * returns a random character of already created characters in the 
+	 * game-play database
 	 * 
 	 * @return Character
 	 * @author melany
@@ -48,9 +56,9 @@ public class CharacterDAO {
 				getOccupation(randomID(OCCUPATION)));
 	}
 
-	/*
-	 * return character Date of Birth (DOB)
-	 * 
+	/**
+	 * Randomly generate a character's date of birth
+	 * @return Date of Birth
 	 * @author melanyw
 	 */
 	public static String getDOB() {
@@ -124,12 +132,22 @@ public class CharacterDAO {
 		return DOB;
 	}
 
+	/**
+	 * Randomly generate a Drivers Licence number
+	 * @return DriversID
+	 * @author melany
+	 */
 	public static String getDriversID() {
 		return String
 				.valueOf(((int) (Math.random() * ((9999999 - 1000000) + 1))));
 	}
 
-	// get random row number from table
+	/**
+	 * Fetches a random id based on the database entity
+	 * @param tableName
+	 * @return random id
+	 * @author melany
+	 */
 	public static int randomID(String tableName) {
 		PreparedStatement statement = null;
 		try {
@@ -153,6 +171,13 @@ public class CharacterDAO {
 		return tableID;
 	}
 
+	/**
+	 * Fetches a first name from the database based on the id
+	 * 
+	 * @param id
+	 * @return FirstName from database
+	 * @author melany
+	 */
 	public static String getFName(int id) {
 		String fName = "";
 
@@ -179,6 +204,13 @@ public class CharacterDAO {
 		return fName;
 	}
 
+	/**
+	 * Fetches a last name from the database based on the id
+	 * 
+	 * @param id
+	 * @return LastName from database
+	 * @author melany
+	 */
 	public static String getLName(int id) {
 		String lName = "";
 
@@ -205,6 +237,13 @@ public class CharacterDAO {
 		return lName;
 	}
 
+	/**
+	 * Fetches a passport id from the database based on the id
+	 * 
+	 * @param id
+	 * @return PassportID from database
+	 * @author melany
+	 */
 	public static String getPassportID(int id) {
 		String passport = "";
 
@@ -231,6 +270,12 @@ public class CharacterDAO {
 		return passport;
 	}
 
+	/**
+	 * Fethces an address from the database based on the id
+	 * @param id
+	 * @return address from database
+	 * @author melany
+	 */
 	public static String getAddress(int id) {
 		String address = "";
 
@@ -257,6 +302,12 @@ public class CharacterDAO {
 		return address;
 	}
 
+	/**
+	 * Fetches a city from the database based on the id
+	 * @param id
+	 * @return city from the database
+	 * @author melany
+	 */
 	public static String getCity(int id) {
 		String city = "";
 
@@ -281,6 +332,12 @@ public class CharacterDAO {
 		return city;
 	}
 
+	/**
+	 * Fetches a region(e.g. province or state) from the database based on the id
+	 * @param id
+	 * @return region from the database
+	 * @author melany
+	 */
 	public static String getRegion(int id) {
 		String region = "";
 
@@ -306,6 +363,12 @@ public class CharacterDAO {
 		return region;
 	}
 
+	/**
+	 * Fetches a postal/zip code from the database based on the id
+	 * @param id
+	 * @return postal code from the database
+	 * @author melany
+	 */
 	public static String getPostal(int id) {
 		String postal = "";
 
@@ -332,6 +395,12 @@ public class CharacterDAO {
 		return postal;
 	}
 
+	/**
+	 * Fetches a country from the database based on the id
+	 * @param id
+	 * @return country from the database
+	 * @author melany
+	 */
 	public static String getCountry(int id) {
 		String country = "";
 
@@ -358,6 +427,12 @@ public class CharacterDAO {
 		return country;
 	}
 
+	/**
+	 * Fetches an occupation from the database based on the id
+	 * @param id
+	 * @return occupation from the database
+	 * @author melany
+	 */
 	public static String getOccupation(int id) {
 		String occupation = "";
 

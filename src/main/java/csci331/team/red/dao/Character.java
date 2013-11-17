@@ -1,12 +1,15 @@
 package csci331.team.red.dao;
 
 /**
- * CSCI331-TAG MW ENCAPSULATION<br>
- * <br>
- * 
  * Contains specific game character information, generated from the
  * CharacterDAO.<br>
  * <br>
+ * 
+ * CSCI331-TAG MW ENCAPSULATION<br>
+ * <br>
+ * By creating getters and setters for all attributes of the Character class,
+ * implementation is hidden from the outside world. This also prevents unwanted
+ * access from the outside world
  * 
  * Game Character Information:
  * <ul>
@@ -128,8 +131,25 @@ public class Character {
 		this.country = country;
 	}
 
-	// Constructor
-	// initializes character attributes to given values
+	/**
+	 * 
+	 * Character Constructor<br>
+	 * Initializes character attributes to given values
+	 * 
+	 * @param dob
+	 * @param driversID
+	 * @param firstName
+	 * @param lastName
+	 * @param passportID
+	 * @param address
+	 * @param city
+	 * @param region
+	 * @param postal
+	 * @param country
+	 * @param occupation
+	 * 
+	 * @author melany
+	 */
 	Character(String dob, String driversID, String firstName, String lastName,
 			String passportID, String address, String city, String region,
 			String postal, String country, String occupation) {
@@ -150,10 +170,17 @@ public class Character {
 
 	@Override
 	/**
-	 * CSCI331-TAG MW OVERRIDE
+	 * CSCI331-TAG MW OVERRIDE<br><br>
 	 * 
 	 * Another override, this one overrides one of the built-in java methods
-	 * rather than two methods I've wrote for different classes
+	 * rather than two methods I've wrote for different classes.<br>
+	 * 
+	 * I overrode this one because the built-in equals doesn't compare a 
+	 * Character object.  In addition to overriding the equals method, I also 
+	 * overrode the hashCode in case there is every a hashMap of Characters 
+	 * Instantiated, which is shown below.
+	 * 
+	 * @author melany
 	 * 
 	 */
 	public boolean equals(Object obj) {
@@ -196,6 +223,12 @@ public class Character {
 	}
 
 	@Override
+	/**
+	 * hashCode override, in case there is every a hashMap of Characters 
+	 * created.
+	 * 
+	 * @author melany
+	 */
 	public int hashCode() {
 		int hashCode = 0;
 
