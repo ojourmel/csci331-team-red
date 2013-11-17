@@ -25,6 +25,8 @@ import java.util.Map;
 public class CharacterRepository extends CharacterDAO {
 
 	ArrayList<Character> characters;
+	private static final int INITIAL_CHARACTERS=50;
+	private static final int NEW_CHARACTERS=10;
 
 	/**
 	 * The construction creates an initial game-play character database
@@ -36,7 +38,7 @@ public class CharacterRepository extends CharacterDAO {
 		CharacterDAO characterDAO = new CharacterDAO();
 
 		// Create the first 50 characters for game play
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < INITIAL_CHARACTERS; i++) {
 			characters.add(characterDAO.getCharacter());
 		}
 	}
@@ -70,8 +72,6 @@ public class CharacterRepository extends CharacterDAO {
 	 * @return List of Characters, returns null on error
 	 */
 	public List<Character> getCharacters(Map<String, String> map) {
-		int newChars = 10; // number of new characters added to characters if no
-							// matches
 		List<Character> chars = new LinkedList<Character>();
 
 		//Go through and see if the key is a database attribute
@@ -80,83 +80,72 @@ public class CharacterRepository extends CharacterDAO {
 			String val = map.get(s);
 
 			if (s == FIRSTNAME) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getFirstName();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getFirstName() == val){
+						chars.add(character);
+					}
 				}
 
 			} else if (s == LASTNAME) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getLastName();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getLastName() == val){
+						chars.add(character);
+					}
 				}
 			} else if (s == DOB) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getDob();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getDob() == val){
+						chars.add(character);
+					}
 				}
 			} else if (s == DRIVERSID) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getDriversID();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getDriversID() == val){
+						chars.add(character);
+					}
 				}
 			} else if (s == PASSPORTID) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getPassportID();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getPassportID() == val){
+						chars.add(character);
+					}
 				}
 
 			} else if (s == OCCUPATION) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getOccupation();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getOccupation() == val){
+						chars.add(character);
+					}
 				}
 			} else if (s == ADDRESS) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getAddress();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getAddress() == val){
+						chars.add(character);
+					}
 				}
 			} else if (s == CITY) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getCity();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getCity() == val){
+						chars.add(character);
+					}
 				}
 			} else if (s == REGION) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getRegion();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getRegion() == val){
+						chars.add(character);
+					}
 				}
 			} else if (s == POSTAL) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getPostal();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getPostal() == val){
+						chars.add(character);
+					}
 				}
 			} else if (s == COUNTRY) {
-				for (int i = 0; i < characters.size(); i++) {
-					Character temp = characters.get(i);
-					String ss = temp.getCountry();
-					if (ss == val)
-						chars.add(temp);
+				for(Character character : characters){
+					if(character.getCountry() == val){
+						chars.add(character);
+					}
 				}
 			} else {
 				// ERROR return null
@@ -168,7 +157,7 @@ public class CharacterRepository extends CharacterDAO {
 		// game play database
 		if (chars.isEmpty()) {
 			CharacterDAO characterDAO = new CharacterDAO();
-			for (int i = 0; i < newChars; i++) {
+			for (int i = 0; i < NEW_CHARACTERS; i++) {
 				Character temp = characterDAO.getCharacter();
 				// change the random data to the specific data
 				for (String s : map.keySet()) {
@@ -229,14 +218,12 @@ public class CharacterRepository extends CharacterDAO {
 	 * 
 	 * @author melany
 	 */
-	// List<Map<String,Integer>> maps = new ArrayList<Map<String,Integer>>();
 	public List<Character> getCharacters(List<Map<String, String>> maps) {
-		int newChars = 10;
 		List<Character> chars = new LinkedList<Character>();
 
 		//Compare lists of characters with other lists of characters
 		//looking for duplicates for matches
-		for (int i = 0; i < (maps.size()); i++) {
+		for (int i = 0; i < (maps.size()-1); i++) {
 			List<Character> temp1 = getCharacters((maps.get(i++)));
 			List<Character> temp2 = getCharacters((maps.get(i)));
 
@@ -255,7 +242,7 @@ public class CharacterRepository extends CharacterDAO {
 		// characters and try again
 		if (chars.isEmpty()) {
 			CharacterDAO characterDAO = new CharacterDAO();
-			for (int i = 0; i < newChars; i++) {
+			for (int i = 0; i < NEW_CHARACTERS; i++) {
 				Character temp = characterDAO.getCharacter();
 				// change the random data to the specific data
 

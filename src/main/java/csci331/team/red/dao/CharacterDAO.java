@@ -150,25 +150,19 @@ public class CharacterDAO {
 	 */
 	public static int randomID(String tableName) {
 		PreparedStatement statement = null;
+		ResultSet rs = null;
+		int tableID = -1;
+		
 		try {
 			statement = conn.connection.prepareStatement("SELECT ID FROM "
 					+ tableName + " ORDER BY Random() LIMIT 1");
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
+			tableID = rs.getInt(ID);			
 		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		int tableID = 0;
-		try {
-			tableID = rs.getInt(ID);
-		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
 		return tableID;
+		
 	}
 
 	/**
@@ -180,27 +174,17 @@ public class CharacterDAO {
 	 */
 	public static String getFName(int id) {
 		String fName = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
+		
 		try {
 			statement = conn.connection
-					.prepareStatement("SELECT firstName FROM firstName WHERE ID = "
-							+ id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
+					.prepareStatement("SELECT firstName FROM firstName WHERE ID = " + id);
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			fName = rs.getString(FIRSTNAME);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
-
 		return fName;
 	}
 
@@ -213,27 +197,17 @@ public class CharacterDAO {
 	 */
 	public static String getLName(int id) {
 		String lName = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
 		try {
 			statement = conn.connection
 					.prepareStatement("SELECT lastName FROM lastName WHERE ID = "
 							+ id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			lName = rs.getString(LASTNAME);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
-
 		return lName;
 	}
 
@@ -246,25 +220,17 @@ public class CharacterDAO {
 	 */
 	public static String getPassportID(int id) {
 		String passport = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
+		
 		try {
 			statement = conn.connection
 					.prepareStatement("SELECT passportID FROM passportID WHERE ID = "
 							+ id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			passport = rs.getString(PASSPORTID);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
 
 		return passport;
@@ -278,25 +244,17 @@ public class CharacterDAO {
 	 */
 	public static String getAddress(int id) {
 		String address = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
+		
 		try {
 			statement = conn.connection
 					.prepareStatement("SELECT address FROM address WHERE ID = "
 							+ id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			address = rs.getString(ADDRESS);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
 
 		return address;
@@ -310,25 +268,18 @@ public class CharacterDAO {
 	 */
 	public static String getCity(int id) {
 		String city = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
+		
 		try {
 			statement = conn.connection
 					.prepareStatement("SELECT city FROM city WHERE ID = " + id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			city = rs.getString(CITY);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
+
 		return city;
 	}
 
@@ -340,26 +291,19 @@ public class CharacterDAO {
 	 */
 	public static String getRegion(int id) {
 		String region = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
+		
 		try {
 			statement = conn.connection
 					.prepareStatement("SELECT region FROM region WHERE ID = "
 							+ id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			region = rs.getString(REGION);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
+
 		return region;
 	}
 
@@ -371,25 +315,16 @@ public class CharacterDAO {
 	 */
 	public static String getPostal(int id) {
 		String postal = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
 		try {
 			statement = conn.connection
 					.prepareStatement("SELECT postal FROM postal WHERE ID = "
 							+ id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			postal = rs.getString(POSTAL);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
 
 		return postal;
@@ -403,27 +338,17 @@ public class CharacterDAO {
 	 */
 	public static String getCountry(int id) {
 		String country = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
 		try {
 			statement = conn.connection
 					.prepareStatement("SELECT country FROM country WHERE ID = "
 							+ id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			country = rs.getString(COUNTRY);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
-
 		return country;
 	}
 
@@ -435,27 +360,17 @@ public class CharacterDAO {
 	 */
 	public static String getOccupation(int id) {
 		String occupation = "";
-
 		PreparedStatement statement = null;
+		ResultSet rs = null;
 		try {
 			statement = conn.connection
 					.prepareStatement("SELECT occupation FROM occupation WHERE ID = "
 							+ id);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		ResultSet rs = null;
-		try {
 			rs = statement.executeQuery();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		try {
 			occupation = rs.getString(OCCUPATION);
 		} catch (SQLException e) {
-			System.err.println(e);
+			e.printStackTrace();
 		}
-
 		return occupation;
 	}
 
