@@ -5,4 +5,5 @@ public enum SoundTrack {
 	CONTRY_SONG,
 	ROCK_SONG,
 	SPACE_SONG,
+	SONG,
 }

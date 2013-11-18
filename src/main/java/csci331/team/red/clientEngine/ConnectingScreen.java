@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import csci331.team.red.shared.Background;
+
 /**
  * Handles connecting to other games.
  * @author Lduperron
@@ -42,7 +44,7 @@ public class ConnectingScreen implements Screen
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Textures.get("level2fieldbg"));
+		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.MENUSCREEN));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();

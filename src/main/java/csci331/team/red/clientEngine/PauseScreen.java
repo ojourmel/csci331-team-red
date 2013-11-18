@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import csci331.team.red.shared.Background;
+
 
 /**
  * Holds settings.  Might contain resolutions at one point.
@@ -42,7 +44,7 @@ public class PauseScreen implements Screen
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Textures.get("pauseScreenBG"));
+		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.WAITING));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -53,15 +55,16 @@ public class PauseScreen implements Screen
 	    
 	    // Sets up an input multiplexer to handle our input to the buttons
 	    multiplexer = new InputMultiplexer();
+	    multiplexer.addProcessor(parentEngine.uiControlHandler);
 	    multiplexer.addProcessor(settingsStage);
 	    
 	    
 	    // Creates our buttons
-	    TextButton SettingsLabel = new TextButton("PAUSED" , parentEngine.buttonStyle);
+	    TextButton SettingsLabel = new TextButton("PAUSED\r\nPress escape to resume" , parentEngine.buttonStyle);
 	    settingsStage.addActor(SettingsLabel);
   
 
-	    TextButton BackButton =  new TextButton("Back" , parentEngine.buttonStyle);
+	    TextButton BackButton =  new TextButton("Back to main menu" , parentEngine.buttonStyle);
 	    settingsStage.addActor(BackButton);
 	    BackButton.addListener(new ClickListener() {
     		

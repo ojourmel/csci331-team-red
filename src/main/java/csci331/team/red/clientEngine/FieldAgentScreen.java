@@ -9,6 +9,7 @@ import aurelienribon.tweenengine.equations.Quad;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -21,7 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import csci331.team.red.shared.Dialog;
+import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.PersonPicture;
+import csci331.team.red.shared.SoundTrack;
 /**
  * Screen for the field agent
  * @author Lduperron
@@ -34,6 +37,8 @@ public class FieldAgentScreen implements Screen
 	
 	Texture backgroundImage;
 	Texture clipBoard;
+	
+	Music BackgroundMusic;
 	
 	HashMap<String , Pixmap> characters;
 	
@@ -78,17 +83,19 @@ public class FieldAgentScreen implements Screen
 		tweenManager = new TweenManager();
 		Tween.registerAccessor(Actor.class, new ActorTweener());
 		
+		
+		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Textures.get("level1fieldbg"));
+		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(parentEngine.currentLevel.getInteractive()));
+		
+		// and the background music
+		BackgroundMusic = parentEngine.gameMusicManager.get(parentEngine.BackgroundMusic.get(parentEngine.currentLevel.getSoundTrack()));
+		BackgroundMusic.setLooping(true);
+		BackgroundMusic.play();
+		
 		
 		// Loads other textures
 		clipBoard = parentEngine.gameTextureManager.get(parentEngine.Textures.get("clipboard"));
-		
-		characters = new HashMap<String, Pixmap>();
-		
-		characters.put("thug", parentEngine.gamePixmapManager.get(parentEngine.Pixmaps.get("level1thug")));
-		characters.put("female", parentEngine.gamePixmapManager.get(parentEngine.Pixmaps.get("level1female")));
-		characters.put("male", parentEngine.gamePixmapManager.get(parentEngine.Pixmaps.get("level1male")));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -103,6 +110,7 @@ public class FieldAgentScreen implements Screen
 	    
 	    // Sets up an input multiplexer to handle our input to the buttons
 	    multiplexer = new InputMultiplexer();
+	    multiplexer.addProcessor(parentEngine.uiControlHandler);
 	    multiplexer.addProcessor(dialogueStage);
 	    multiplexer.addProcessor(uiStage);
 	    multiplexer.addProcessor(papersStage);
@@ -156,7 +164,7 @@ public class FieldAgentScreen implements Screen
     		    		
     		    };
     		    fieldDialogCallbacks.callbacks[] callarr = {null, null, null , null};
-    		    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
+    		    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
     		    displayDialogue(d);
     	    	
     	    };
@@ -189,7 +197,7 @@ public class FieldAgentScreen implements Screen
     		    		
     		    };
     		    fieldDialogCallbacks.callbacks[] callarr = {null, null, fieldDialogCallbacks.callbacks.approachSecondPerson , null , null , null , null , null , null ,null ,null ,null ,null};
-    		    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
+    		    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
     		    displayDialogue(d);
     	    	
     		    
@@ -227,7 +235,7 @@ public class FieldAgentScreen implements Screen
 	    		
 	    };
 	    fieldDialogCallbacks.callbacks[] callarr = {null, null,fieldDialogCallbacks.callbacks.approachFirstPerson, null,null, null,null, fieldDialogCallbacks.callbacks.giveID, null,null, null , null , null, null};
-	    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
+	    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
 	    displayDialogue(d);
 
 	    
@@ -259,7 +267,7 @@ public class FieldAgentScreen implements Screen
 		
 		if(currentdude == 1)
 		{
-		    currentPerson = new TransparentActor(characters.get("female") , tweenManager);
+		    currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(PersonPicture.FEMALE1)) , tweenManager);
 		    
 		   
 		    charactersStage.addActor(currentPerson);
@@ -275,7 +283,7 @@ public class FieldAgentScreen implements Screen
 		else if(currentdude == 2)
 		{
 			
-			currentPerson = new TransparentActor(characters.get("thug") , tweenManager);
+			currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(PersonPicture.THUG1)) , tweenManager);
 		    
 			
 			
@@ -369,13 +377,14 @@ public class FieldAgentScreen implements Screen
 	public void show() {
 		
 		Gdx.input.setInputProcessor(multiplexer);
-		
+		BackgroundMusic.play();
 
 	}
 
 	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(null);
+		BackgroundMusic.pause();
 
 	}
 
@@ -465,12 +474,12 @@ public class FieldAgentScreen implements Screen
 	// TODO:  Move dialogue functions into somewhere shared between the two agent stages.  Maybe.
 	public void displayDialogue(String speaker, String Dialogue)
 	{
-		Dialog[] temp = new Dialog[1];
-		temp[0] = new Dialog(Dialogue, speaker);
+		Dialogue[] temp = new Dialogue[1];
+		temp[0] = new Dialogue(Dialogue, speaker);
 		displayDialogue(temp);
 	}
 	
-	public void displayDialogue(Dialog[] dialogueArray)
+	public void displayDialogue(Dialogue[] dialogueArray)
 	{
 		dialogueStage.clear();
 		

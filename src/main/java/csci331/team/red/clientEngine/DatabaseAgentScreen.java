@@ -1,7 +1,10 @@
 package csci331.team.red.clientEngine;
+import aurelienribon.tweenengine.equations.Back;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,7 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import csci331.team.red.shared.Dialog;
+import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.SoundTrack;
 
 /**
  * Scene responsible for the database roll.
@@ -39,6 +43,7 @@ public class DatabaseAgentScreen implements Screen
 	Stage computerStage;
 	TextField computerTextBox;
 
+	Music BackgroundMusic;
 	
 	ScrollPane computerTextScroller;
 	Table computerTextLabelContainingTable;
@@ -76,7 +81,12 @@ public class DatabaseAgentScreen implements Screen
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Textures.get("level1databasebg"));
+		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(parentEngine.currentLevel.getDatabase()));
+		
+		// and the background music
+		BackgroundMusic = parentEngine.gameMusicManager.get(parentEngine.BackgroundMusic.get(parentEngine.currentLevel.getSoundTrack()));
+		BackgroundMusic.setLooping(true);
+		BackgroundMusic.play();
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -90,6 +100,7 @@ public class DatabaseAgentScreen implements Screen
 	    // Sets up an input multiplexer to handle our input to the buttons
 	    
 	    multiplexer = new InputMultiplexer();
+	    multiplexer.addProcessor(parentEngine.uiControlHandler);
 	    multiplexer.addProcessor(dialogueStage);
 	    multiplexer.addProcessor(computerStage);
 	    multiplexer.addProcessor(alertsStage);
@@ -112,9 +123,7 @@ public class DatabaseAgentScreen implements Screen
                 	Label newCommandLabel = new Label(textField.getText() + "\r\n\r\n", parentEngine.rawTextStyle);
                 	newCommandLabel.setWrap(true);
                 	String computerResponse = computerSearch(textField.getText().trim());
-                	Label newResponseLabel = new Label(computerResponse + "\r\n\r\n" , parentEngine.rawTextStyle);
-                	newResponseLabel.setWrap(true);
-                	
+
                 	textField.setText("");
                 	
                 	
@@ -122,18 +131,18 @@ public class DatabaseAgentScreen implements Screen
             	    computerTextLabelContainingTable.add(newCommandLabel).left().minWidth(computerTextScrollingTable.getWidth()-20).fill();
             	   
 
-            	    computerTextLabelContainingTable.row();
-            	    
-            	    computerTextLabelContainingTable.add(newResponseLabel).left().minWidth(computerTextScrollingTable.getWidth()-20).fill();
-             	   
 
             	    computerTextLabelContainingTable.row();
             	    
+                	displayComputerResponse(computerResponse);
+
             	    computerTextScroller.layout();
             	    computerTextLabelContainingTable.layout();
             	    computerTextScrollingTable.layout();
 
             	    computerTextScroller.setScrollPercentY(100);
+            	    
+            	    
 
                 	
                 }
@@ -222,7 +231,7 @@ public class DatabaseAgentScreen implements Screen
 	    		
 	    };
 	    DatabaseDialogCallbacks.callbacks[] callarr = {null, DatabaseDialogCallbacks.callbacks.startAlerts, null , DatabaseDialogCallbacks.callbacks.MaryTestAlert , null, DatabaseDialogCallbacks.callbacks.startAlerts , null , null, null, null, null , null};
-	    Dialog[] d = Dialog.returnDialogArray(strarr , callarr);
+	    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
 	    displayDialogue(d);
 
 	    TextButton BackButton =  new TextButton("Back" , parentEngine.buttonStyle);
@@ -331,12 +340,12 @@ public class DatabaseAgentScreen implements Screen
 	
 	public void displayDialogue(String speaker, String Dialogue)
 	{
-		Dialog[] temp = new Dialog[1];
-		temp[0] = new Dialog(Dialogue, speaker);
+		Dialogue[] temp = new Dialogue[1];
+		temp[0] = new Dialogue(Dialogue, speaker);
 		displayDialogue(temp);
 	}
 	
-	public void displayDialogue(Dialog[] dialogueArray)
+	public void displayDialogue(Dialogue[] dialogueArray)
 	{
 		dialogueStage.clear();
 		
@@ -358,6 +367,24 @@ public class DatabaseAgentScreen implements Screen
 			}
 		}
 		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode());
+		
+	}
+	
+	public void displayComputerResponse(String responseText)
+	{
+    	Label newResponseLabel = new Label(responseText + "\r\n\r\n" , parentEngine.rawTextStyle);
+    	newResponseLabel.setWrap(true);
+    	
+	    computerTextLabelContainingTable.add(newResponseLabel).left().minWidth(computerTextScrollingTable.getWidth()-20).fill();
+  	   
+
+	    computerTextLabelContainingTable.row();
+	    
+	    computerTextScroller.layout();
+	    computerTextLabelContainingTable.layout();
+	    computerTextScrollingTable.layout();
+
+	    computerTextScroller.setScrollPercentY(100);
 		
 	}
 	
@@ -491,6 +518,7 @@ public class DatabaseAgentScreen implements Screen
 	public void show() {
 		
 		Gdx.input.setInputProcessor(multiplexer);
+		BackgroundMusic.play();
 		
 
 	}
@@ -498,6 +526,7 @@ public class DatabaseAgentScreen implements Screen
 	@Override
 	public void hide() {
 		Gdx.input.setInputProcessor(null);
+		BackgroundMusic.pause();
 
 	}
 

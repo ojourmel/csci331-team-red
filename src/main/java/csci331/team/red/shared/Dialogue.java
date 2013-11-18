@@ -8,8 +8,8 @@ import java.util.ArrayList;
  * 
  * @author ojourmel , lduperron
  */
-public class Dialog {
-	public static final Dialog GENERIC = new Dialog("Ha Ha, that was funny" , "Diety");
+public class Dialogue {
+	public static final Dialogue GENERIC = new Dialogue("Ha Ha, that was funny" , "Diety");
 
 	private String speaker;
 	private String dialogue;
@@ -17,48 +17,48 @@ public class Dialog {
 	
 	
 	
-	public Dialog(String words , String speaker) 
+	public Dialogue(String words , String speaker) 
 	{
 		this(words, speaker, null);
 	}
 	
-	public Dialog(String words , String speaker , Enum<?> c) 
+	public Dialogue(String words , String speaker , Enum<?> c) 
 	{
 		this.dialogue = words;
 		this.speaker = speaker;
 		this.callbackCode = c;
 	}
 	
-	public static Dialog[] returnDialogArray(String[][] strings)
+	public static Dialogue[] returnDialogArray(String[][] strings)
 	{
-		ArrayList<Dialog> temp = new ArrayList<Dialog>();
+		ArrayList<Dialogue> temp = new ArrayList<Dialogue>();
 		
 		for(int i = 0; i < strings.length; i++)
 		{
-			Dialog tempDialog = new Dialog(strings[i][0] , strings [i][1]);
+			Dialogue tempDialog = new Dialogue(strings[i][0] , strings [i][1]);
 			temp.add(tempDialog);
 			
 			
 		}
 
-		return temp.toArray(new Dialog[0]);
+		return temp.toArray(new Dialogue[0]);
 		
 	}
 	
-	public static Dialog[] returnDialogArray(String[][] strings , Enum<?>[] callbackArray)
+	public static Dialogue[] returnDialogArray(String[][] strings , Enum<?>[] callbackArray)
 	{
-		ArrayList<Dialog> temp = new ArrayList<Dialog>();
+		ArrayList<Dialogue> temp = new ArrayList<Dialogue>();
 		
 		for(int i = 0; i < strings.length; i++)
 		{
-			Dialog tempDialog = null;
+			Dialogue tempDialog = null;
 			if(callbackArray[i] != null)
 			{
-				tempDialog = new Dialog(strings[i][0] , strings [i][1],  callbackArray [i]);
+				tempDialog = new Dialogue(strings[i][0] , strings [i][1],  callbackArray [i]);
 			}
 			else
 			{
-				tempDialog = new Dialog(strings[i][0] , strings [i][1]);
+				tempDialog = new Dialogue(strings[i][0] , strings [i][1]);
 				
 			}
 			
@@ -67,7 +67,7 @@ public class Dialog {
 			
 		}
 
-		return temp.toArray(new Dialog[0]);
+		return temp.toArray(new Dialogue[0]);
 		
 	}
 	

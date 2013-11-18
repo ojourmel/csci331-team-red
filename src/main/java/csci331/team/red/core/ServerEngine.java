@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import csci331.team.red.server.People;
 import csci331.team.red.server.Player;
-import csci331.team.red.shared.Dialog;
+import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Person;
@@ -155,9 +155,9 @@ public class ServerEngine extends Thread {
 		return Result.INVALID;
 	}
 
-	public Dialog onDialogRequest(Dialog incoming) {
+	public Dialogue onDialogRequest(Dialogue incoming) {
 		// TODO: Handle proper dialog requests.
-		return Dialog.GENERIC;
+		return Dialogue.GENERIC;
 	}
 
 	public void onStateChange(State state) {

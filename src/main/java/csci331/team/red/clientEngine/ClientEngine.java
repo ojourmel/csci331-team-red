@@ -1,12 +1,15 @@
 package csci331.team.red.clientEngine;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
@@ -23,6 +26,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 import csci331.team.red.clientEngine.MainMenuScreen;
+import csci331.team.red.shared.Alert;
+import csci331.team.red.shared.Background;
+import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Level;
+import csci331.team.red.shared.PersonPicture;
+import csci331.team.red.shared.Result;
+import csci331.team.red.shared.Role;
+import csci331.team.red.shared.SoundTrack;
+import csci331.team.red.shared.Stage;
 
 /**
  * Main entry point for the game proper.  Handles all shared objects between scenes.
@@ -43,14 +55,29 @@ public class ClientEngine extends Game
 	
 	// Used for assets that will not be interacted with by the user
 	AssetManager gameTextureManager;
-	
+		
 	// Used for assets that will be interacted with by the user (We need the raw pixmap so we can handle transparency when clicking on them)
 	AssetManager gamePixmapManager;
 	
+	// Used for both background music
+	AssetManager gameMusicManager;
 	
 	HashMap<String, AssetDescriptor<Texture>> preloadTextures;
+	
+	
 	HashMap<String, AssetDescriptor<Texture>> Textures;
+	HashMap<Background, AssetDescriptor<Texture>> Backgrounds;
+
+	
 	HashMap<String, AssetDescriptor<Pixmap>> Pixmaps;
+	HashMap<PersonPicture, AssetDescriptor<Pixmap>> PersonPictures;
+	
+	
+	
+	HashMap<SoundTrack, AssetDescriptor<Music>> BackgroundMusic;
+	
+	
+	
 	
 	// Used to display the 'loading' screen
 	FreeTypeFontGenerator generator;
@@ -66,6 +93,14 @@ public class ClientEngine extends Game
 	FieldAgentScreen fieldAgentScreen;
 	SettingsScreen settingsScreen;
 	PauseScreen pauseScreen;
+	
+
+	
+	// Handles first-chance keyboard presses
+	UIControlHandler uiControlHandler = new UIControlHandler(this);
+	
+	
+	
 	
 	// Font used in the game
 	BitmapFont gameFont;
@@ -87,6 +122,24 @@ public class ClientEngine extends Game
 	// Button ninepatch
 	MenuNinePatch menuNinePatch;
 	NinePatchDrawable ninePatchDrawable;	
+	
+	
+	
+	
+	// Stuff used between the two screens
+		// Where we were, used to know where to go back to.
+		Screen currentScreen;
+		Screen previousScreen;
+	
+		// The current level
+		Level currentLevel;
+	
+		
+	
+	
+	
+	
+	
 		
 	@Override
 	public void create() 
@@ -107,13 +160,17 @@ public class ClientEngine extends Game
 		loadingAssetManager = new AssetManager();
 		gameTextureManager = new AssetManager();
 		gamePixmapManager = new AssetManager();
+		gameMusicManager = new AssetManager();
+		
 		preloadTextures = new HashMap<String, AssetDescriptor<Texture>>() ;
 		Textures = new HashMap<String, AssetDescriptor<Texture>>() ;
+		Backgrounds = new HashMap<Background, AssetDescriptor<Texture>>();
+
+		
 		Pixmaps = new HashMap<String, AssetDescriptor<Pixmap>>() ;
+		PersonPictures = new HashMap<PersonPicture, AssetDescriptor<Pixmap>>();
 		
-		
-		
-		
+		BackgroundMusic =  new HashMap<SoundTrack, AssetDescriptor<Music>>() ;
 		
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/amiga4ever.ttf"));
 		loadingFont = generator.generateFont(25);
@@ -121,10 +178,10 @@ public class ClientEngine extends Game
 		
 		
 		// Backgrounds...
-		Textures.put("level1fieldbg" ,new AssetDescriptor<Texture>("backgrounds/level1fieldagent.jpg" , Texture.class) );
-		Textures.put("level1databasebg", new AssetDescriptor<Texture>("backgrounds/level1databaseagent.png" , Texture.class));
-		Textures.put("level2fieldbg", new AssetDescriptor<Texture>("backgrounds/level2fieldagent.png" , Texture.class));
-		Textures.put("pauseScreenBG", new AssetDescriptor<Texture>("backgrounds/technical-difficulties.jpg" , Texture.class));
+		Backgrounds.put(Background.LEVEL1FIELDBG ,new AssetDescriptor<Texture>("backgrounds/level1fieldagent.jpg" , Texture.class) );
+		Backgrounds.put(Background.LEVEL1DATABASEBG, new AssetDescriptor<Texture>("backgrounds/level1databaseagent.png" , Texture.class));
+		Backgrounds.put(Background.MENUSCREEN, new AssetDescriptor<Texture>("backgrounds/level2fieldagent.png" , Texture.class));
+		Backgrounds.put(Background.WAITING, new AssetDescriptor<Texture>("backgrounds/technical-difficulties.jpg" , Texture.class));
 		
 		
 		// Static Props...
@@ -136,15 +193,16 @@ public class ClientEngine extends Game
 		
 		
 		// Characters...
-		Pixmaps.put("level1thug", new AssetDescriptor<Pixmap>("characters/level1thug.png" , Pixmap.class));
-		Pixmaps.put("level1male", new AssetDescriptor<Pixmap>("characters/maleExtra.png" , Pixmap.class));
-		Pixmaps.put("level1female", new AssetDescriptor<Pixmap>("characters/femaleExtra.png" , Pixmap.class));
+		PersonPictures.put(PersonPicture.THUG1, new AssetDescriptor<Pixmap>("characters/level1thug.png" , Pixmap.class));
+		PersonPictures.put(PersonPicture.MALE1, new AssetDescriptor<Pixmap>("characters/maleExtra.png" , Pixmap.class));
+		PersonPictures.put(PersonPicture.FEMALE1, new AssetDescriptor<Pixmap>("characters/femaleExtra.png" , Pixmap.class));
 
 		// Dynamic Props...
 		Pixmaps.put("goldenTicket", new  AssetDescriptor<Pixmap>("props/ticket.png" , Pixmap.class));
 
 		
-		
+		// Music...
+		BackgroundMusic.put(SoundTrack.SONG, new AssetDescriptor<Music>("music/UnreasonableBehaviour.mp3" , Music.class));
 		
 		
 		
@@ -166,10 +224,28 @@ public class ClientEngine extends Game
 			gameTextureManager.load(theTexture);
 		}
 		
+		for (AssetDescriptor<Texture> theTexture : Backgrounds.values()) {
+			gameTextureManager.load(theTexture);
+		}
+		
 		// Put things the gamePixmapManager needs to load here...
 		
 		for (AssetDescriptor<Pixmap> thePixmap : Pixmaps.values()) {
 			gamePixmapManager.load(thePixmap);
+		}
+
+		for (AssetDescriptor<Pixmap> thePixmap : PersonPictures.values()) {
+			gamePixmapManager.load(thePixmap);
+		}
+		
+		
+		
+		
+		
+		// Put things the gameMusicManager needs to load here...
+		
+		for (AssetDescriptor<Music> theMusic : BackgroundMusic.values()) {
+			gameMusicManager.load(theMusic);
 		}
 
 		
@@ -219,7 +295,18 @@ public class ClientEngine extends Game
 				return;
 			}
 
-			
+			if(!gameMusicManager.update())
+			{
+				loadingstr = "Loading Music - " + gameMusicManager.getProgress()*100;
+				
+		        primarySpriteBatch.begin();
+		        
+		        loadingFont.draw(primarySpriteBatch,loadingstr , (Gdx.graphics.getWidth()/2)-loadingFont.getBounds(loadingstr).width/2, Gdx.graphics.getHeight()/2);
+		        
+		        primarySpriteBatch.end();
+		        
+				return;
+			}
 			
 			// Switch over to calling super's rendering for rendering screens
 			stillLoading = false;
@@ -292,6 +379,8 @@ public class ClientEngine extends Game
     	scrollPaneStyle.vScroll =  ninePatchDrawable;
     	scrollPaneStyle.vScrollKnob =  ninePatchDrawable;
     	
+    	currentLevel = Level.getWait();
+    	
     	
 		return;
 	}
@@ -301,6 +390,99 @@ public class ClientEngine extends Game
 	 * it ensures it has been generated (lazy init) and then switches to it.
 	 * @param newLevel
 	 */
+	
+	public void PauseGame()
+	{
+		
+		previousScreen = getScreen();
+		switchToNewScreen(ScreenEnumerations.PauseScreen);
+		
+	}
+	public void UnpauseGame()
+	{
+		setScreen(previousScreen);
+	}
+	
+	public void JoinGame(InetAddress desiredConnectTarget)
+	{
+		
+		
+	}
+	public void LeaveGame()
+	{
+		
+		
+	}
+	public void HostGame()
+	{
+		
+		
+	}
+	public void StopHosting()
+	{
+		
+		
+	}
+	public void SetRole(Role role)
+	{
+		switch(role)
+		{
+			case DATABASE:
+				switchToNewScreen(ScreenEnumerations.DatabaseAgent);
+				break;
+				
+			case FIELDAGENT:
+				switchToNewScreen(ScreenEnumerations.FieldAgent);
+				break;
+				
+			default:
+				break;
+			
+			
+			
+		}
+		
+	}
+	public void SetLevel(Level level)
+	{
+
+		currentLevel = level;
+		
+	}
+	public void StartStage(Stage stage)
+	{
+		// Do stage related things
+		// Etc. spawn new person, etc, etc.
+		
+	}
+	public void addAlert(Alert alert)
+	{
+		if(databaseAgentScreen != null)
+		{
+			databaseAgentScreen.addAlert(alert.AlertText);
+		}
+		
+	}
+	public void DatabaseQueryResult(Result result)
+	{
+		if(databaseAgentScreen != null)
+		{
+			databaseAgentScreen.displayComputerResponse(result.resultText);
+		}
+		
+	}
+	public void DisplayDialouge(Dialogue[] dialogue)
+	{
+		if(databaseAgentScreen != null)
+		{
+			databaseAgentScreen.displayDialogue(dialogue);
+		}
+		if(fieldAgentScreen != null)
+		{
+			fieldAgentScreen.displayDialogue(dialogue);
+		}
+	}
+	
 	
 	public void switchToNewScreen(ScreenEnumerations newLevel)
 	{

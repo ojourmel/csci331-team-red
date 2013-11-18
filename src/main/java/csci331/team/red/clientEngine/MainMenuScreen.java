@@ -11,6 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import csci331.team.red.shared.Background;
+import csci331.team.red.shared.Level;
 /**
  * Main menu screen. 
  * @author Lduperron
@@ -40,7 +43,7 @@ public class MainMenuScreen implements Screen
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Textures.get("level2fieldbg"));
+		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.MENUSCREEN));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -93,6 +96,7 @@ public class MainMenuScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
+    	    	parentEngine.SetLevel(Level.getCampus());
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.FieldAgent);
     	    	
     	    };
@@ -109,6 +113,7 @@ public class MainMenuScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
+    	    	parentEngine.SetLevel(Level.getCampus());
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.DatabaseAgent);
     	    	
     	    };

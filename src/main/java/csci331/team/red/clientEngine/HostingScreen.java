@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import csci331.team.red.shared.Background;
 /**
  * Screen for hosting a game.  Will start a server and then connect to it, and then wait for another to connect.
  * Server will be killed if you go 'back'
@@ -44,7 +46,7 @@ public class HostingScreen implements Screen
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Textures.get("level2fieldbg"));
+		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.MENUSCREEN));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -76,12 +78,12 @@ public class HostingScreen implements Screen
 
 	    TextButton BackButton =  new TextButton("Stop Hosting" , parentEngine.buttonStyle);
 	    hostingStage.addActor(BackButton);
-	    BackButton.addListener(new ClickListener() {
-    		
-    		
+	    BackButton.addListener(new ClickListener() 
+	    {
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
+    	    	parentEngine.StopHosting();
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
     	    	
     	    };
@@ -96,6 +98,7 @@ public class HostingScreen implements Screen
 	    HostnameLabel.setPosition(Gdx.graphics.getWidth()/2-HostnameLabel.getWidth()/2 , (Gdx.graphics.getHeight() / (hostingStage.getActors().size+1)*2  )   );
 	    BackButton.setPosition(Gdx.graphics.getWidth()/2-BackButton.getWidth()/2 , (Gdx.graphics.getHeight() / (hostingStage.getActors().size+1)*1  )   );
 	    
+	    parentEngine.HostGame();
 	    
 	}
 	

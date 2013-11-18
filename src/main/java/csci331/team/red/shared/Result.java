@@ -14,4 +14,5 @@ public class Result {
 		// TODO Auto-generated constructor stub
 	}
 
+	public String resultText;
 }
