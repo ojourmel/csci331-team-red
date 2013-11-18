@@ -1,5 +1,6 @@
 package csci331.team.red.dao;
 
+
 /**
  * Contains specific game character information, generated from the
  * CharacterDAO.<br>
@@ -10,7 +11,7 @@ package csci331.team.red.dao;
  * By creating getters and setters for all attributes of the Character class,
  * implementation is hidden from the outside world. This also prevents unwanted
  * access from the outside world
- * 
+ * <br> <br>
  * Game Character Information:
  * <ul>
  * <li>Date of Birth</li>
@@ -168,7 +169,6 @@ public class Character {
 
 	}
 
-	@Override
 	/**
 	 * CSCI331-TAG MW OVERRIDE<br><br>
 	 * 
@@ -183,6 +183,7 @@ public class Character {
 	 * @author melany
 	 * 
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		// if the two objects are equal in reference, they are equal
 		if (this == obj) {
@@ -211,7 +212,6 @@ public class Character {
 							.getPostal().equals(this.getPostal())))
 					&& (((c.getCountry() == null) && (this.getCountry() == null)) || (c
 							.getCountry().equals(this.getCountry())))
-
 			) {
 				return true;
 			} else {
@@ -222,13 +222,13 @@ public class Character {
 		}
 	}
 
-	@Override
 	/**
 	 * hashCode override, in case there is every a hashMap of Characters 
 	 * created.
 	 * 
 	 * @author melany
 	 */
+	@Override
 	public int hashCode() {
 		int hashCode = 0;
 
@@ -245,5 +245,45 @@ public class Character {
 		hashCode = hashCode * 37 + this.country.hashCode();
 
 		return hashCode;
+	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder sb = new StringBuilder();
+	
+		sb.append("Name: ");
+		sb.append(firstName);
+		sb.append(" ");
+		sb.append(lastName);
+		sb.append("\n");
+		
+		sb.append("Born: ");
+		sb.append(dob);
+		sb.append("\n");
+		sb.append("Occupation: ");
+		sb.append(occupation);
+		sb.append("\n");
+		sb.append("\n");
+		
+		sb.append("Address:\n");
+		sb.append(address);
+		sb.append("\n");
+		sb.append(city);
+		sb.append(", ");
+		sb.append(region);
+		sb.append("\n");
+		sb.append(postal);
+		sb.append("\n");
+		sb.append(country);
+		sb.append("\n");
+		sb.append("\n");
+
+		sb.append("Drivers Licence: ");
+		sb.append(driversID);
+		sb.append("\n");
+		sb.append("Passport ID: ");
+		sb.append(passportID);
+		return sb.toString();
 	}
 }

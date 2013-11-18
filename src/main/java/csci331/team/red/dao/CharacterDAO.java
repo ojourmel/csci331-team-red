@@ -3,21 +3,22 @@ package csci331.team.red.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
- * CSCI331-TAG MW SUPERCLASS<br><br>
+ * CSCI331-TAG MW SUPERCLASS<br>
+ * <br>
  * 
- * CharacterDAO is the superclass of CharacterRepository.
- * CharacterDAO was created as a superclass as it randomly
- * creates characters from database data.  It also contains
- * several global variables, that are needed by other classes.
+ * CharacterDAO is the superclass of CharacterRepository. CharacterDAO was
+ * created as a superclass as it randomly creates characters from database data.
+ * It also contains several global variables, that are needed by other classes.
  * 
  * @author melany
- *
+ * 
  */
 public class CharacterDAO {
-	public static DBConnection conn = DBConnection.getDBCon();
 	public static final String ID = "ID";
 	public static final String FIRSTNAME = "firstName";
 	public static final String LASTNAME = "lastName";
@@ -31,17 +32,17 @@ public class CharacterDAO {
 	public static final String COUNTRY = "country";
 	public static final String OCCUPATION = "occupation";
 
-	public CharacterDAO() {
-	}
-
+	private static DBConnection conn = DBConnection.getDBCon();
+	
+	
 	/**
 	 * CSCI331-TAG MW OVERRIDING<br>
 	 * <br>
 	 * 
 	 * Returns a NEW random character NOT in the current game play character
 	 * database, rather than the CharacterRepository.getCharacter(), which
-	 * returns a random character of already created characters in the 
-	 * game-play database
+	 * returns a random character of already created characters in the game-play
+	 * database
 	 * 
 	 * @return Character
 	 * @author melany
@@ -58,111 +59,46 @@ public class CharacterDAO {
 
 	/**
 	 * Randomly generate a character's date of birth
+	 * 
 	 * @return Date of Birth
 	 * @author melanyw
 	 */
-	public static String getDOB() {
-		String DOB;
+	private String getDOB() {
+		String dob;
 
-		int year = (int) ((Math.random() * 100) % 80) + 1917;
-		int month = (int) ((Math.random() * 12) % 12) + 1;
+		GregorianCalendar gc = new GregorianCalendar();
 
-		int day;
-		// list of months with 31 days
-		int[] longMonth = new int[] { 1, 3, 5, 7, 8, 10, 12 };
-		// list of months with 30 days
-		int[] shortMonth = new int[] { 4, 6, 9, 11 };
+		int year = randBetween(1900, 2010);
 
-		if (Arrays.asList(longMonth).contains(month)) {
-			day = (int) (Math.random() * ((31 - 1) + 1));
+		gc.set(Calendar.YEAR, year);
 
-		} else if (Arrays.asList(shortMonth).contains(month)) {
-			day = (int) (Math.random() * ((30 - 1) + 1));
+		int dayOfYear = randBetween(1,
+				gc.getActualMaximum(Calendar.DAY_OF_YEAR));
 
-			// February
-		} else {
-			day = (int) (Math.random() * ((28 - 1) + 1));
-		}
+		gc.set(Calendar.DAY_OF_YEAR, dayOfYear);
 
-		String monthString;
-		switch (month) {
-		case 1:
-			monthString = "Jan";
-			break;
-		case 2:
-			monthString = "Feb";
-			break;
-		case 3:
-			monthString = "Mar";
-			break;
-		case 4:
-			monthString = "Apr";
-			break;
-		case 5:
-			monthString = "May";
-			break;
-		case 6:
-			monthString = "Jun";
-			break;
-		case 7:
-			monthString = "Jul";
-			break;
-		case 8:
-			monthString = "Aug";
-			break;
-		case 9:
-			monthString = "Sep";
-			break;
-		case 10:
-			monthString = "Oct";
-			break;
-		case 11:
-			monthString = "Nov";
-			break;
-		case 12:
-			monthString = "Dec";
-			break;
-		default:
-			monthString = "Invalid month";
-			break;
-		}
+		String month = gc.getDisplayName(Calendar.MONTH, Calendar.SHORT,
+				Locale.CANADA);
 
-		DOB = year + "-" + monthString + "-" + day;
+		dob = gc.get(Calendar.YEAR) + "-" + month + "-"
+				+ gc.get(Calendar.DAY_OF_MONTH);
+		return dob;
 
-		return DOB;
+	}
+
+	private int randBetween(int start, int end) {
+		return start + (int) Math.round(Math.random() * (end - start));
 	}
 
 	/**
 	 * Randomly generate a Drivers Licence number
+	 * 
 	 * @return DriversID
 	 * @author melany
 	 */
-	public static String getDriversID() {
+	private String getDriversID() {
 		return String
 				.valueOf(((int) (Math.random() * ((9999999 - 1000000) + 1))));
-	}
-
-	/**
-	 * Fetches a random id based on the database entity
-	 * @param tableName
-	 * @return random id
-	 * @author melany
-	 */
-	public static int randomID(String tableName) {
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		int tableID = -1;
-		
-		try {
-			statement = conn.connection.prepareStatement("SELECT ID FROM "
-					+ tableName + " ORDER BY Random() LIMIT 1");
-			rs = statement.executeQuery();
-			tableID = rs.getInt(ID);			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return tableID;
-		
 	}
 
 	/**
@@ -172,20 +108,8 @@ public class CharacterDAO {
 	 * @return FirstName from database
 	 * @author melany
 	 */
-	public static String getFName(int id) {
-		String fName = "";
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		
-		try {
-			statement = conn.connection
-					.prepareStatement("SELECT firstName FROM firstName WHERE ID = " + id);
-			rs = statement.executeQuery();
-			fName = rs.getString(FIRSTNAME);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return fName;
+	private String getFName(int id) {
+		return executeStatement(FIRSTNAME, id);
 	}
 
 	/**
@@ -195,20 +119,8 @@ public class CharacterDAO {
 	 * @return LastName from database
 	 * @author melany
 	 */
-	public static String getLName(int id) {
-		String lName = "";
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		try {
-			statement = conn.connection
-					.prepareStatement("SELECT lastName FROM lastName WHERE ID = "
-							+ id);
-			rs = statement.executeQuery();
-			lName = rs.getString(LASTNAME);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return lName;
+	private String getLName(int id) {
+		return executeStatement(LASTNAME, id);
 	}
 
 	/**
@@ -218,160 +130,131 @@ public class CharacterDAO {
 	 * @return PassportID from database
 	 * @author melany
 	 */
-	public static String getPassportID(int id) {
-		String passport = "";
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		
-		try {
-			statement = conn.connection
-					.prepareStatement("SELECT passportID FROM passportID WHERE ID = "
-							+ id);
-			rs = statement.executeQuery();
-			passport = rs.getString(PASSPORTID);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return passport;
+	private String getPassportID(int id) {
+		return executeStatement(PASSPORTID, id);
 	}
 
 	/**
 	 * Fethces an address from the database based on the id
+	 * 
 	 * @param id
 	 * @return address from database
 	 * @author melany
 	 */
-	public static String getAddress(int id) {
-		String address = "";
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		
-		try {
-			statement = conn.connection
-					.prepareStatement("SELECT address FROM address WHERE ID = "
-							+ id);
-			rs = statement.executeQuery();
-			address = rs.getString(ADDRESS);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return address;
+	private String getAddress(int id) {
+		return executeStatement(ADDRESS, id);
 	}
 
 	/**
 	 * Fetches a city from the database based on the id
+	 * 
 	 * @param id
 	 * @return city from the database
 	 * @author melany
 	 */
-	public static String getCity(int id) {
-		String city = "";
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		
-		try {
-			statement = conn.connection
-					.prepareStatement("SELECT city FROM city WHERE ID = " + id);
-			rs = statement.executeQuery();
-			city = rs.getString(CITY);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return city;
+	private String getCity(int id) {
+		return executeStatement(CITY, id);
 	}
 
 	/**
-	 * Fetches a region(e.g. province or state) from the database based on the id
+	 * Fetches a region(e.g. province or state) from the database based on the
+	 * id
+	 * 
 	 * @param id
 	 * @return region from the database
 	 * @author melany
 	 */
-	public static String getRegion(int id) {
-		String region = "";
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		
-		try {
-			statement = conn.connection
-					.prepareStatement("SELECT region FROM region WHERE ID = "
-							+ id);
-			rs = statement.executeQuery();
-			region = rs.getString(REGION);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return region;
+	private String getRegion(int id) {
+		return executeStatement(REGION, id);
 	}
 
 	/**
 	 * Fetches a postal/zip code from the database based on the id
+	 * 
 	 * @param id
 	 * @return postal code from the database
 	 * @author melany
 	 */
-	public static String getPostal(int id) {
-		String postal = "";
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		try {
-			statement = conn.connection
-					.prepareStatement("SELECT postal FROM postal WHERE ID = "
-							+ id);
-			rs = statement.executeQuery();
-			postal = rs.getString(POSTAL);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return postal;
+	private String getPostal(int id) {
+		return executeStatement(POSTAL, id);
 	}
 
 	/**
 	 * Fetches a country from the database based on the id
+	 * 
 	 * @param id
 	 * @return country from the database
 	 * @author melany
 	 */
-	public static String getCountry(int id) {
-		String country = "";
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-		try {
-			statement = conn.connection
-					.prepareStatement("SELECT country FROM country WHERE ID = "
-							+ id);
-			rs = statement.executeQuery();
-			country = rs.getString(COUNTRY);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return country;
+	private String getCountry(int id) {
+		return executeStatement(COUNTRY, id);
 	}
 
 	/**
 	 * Fetches an occupation from the database based on the id
+	 * 
 	 * @param id
 	 * @return occupation from the database
 	 * @author melany
 	 */
-	public static String getOccupation(int id) {
-		String occupation = "";
+	private String getOccupation(int id) {
+		return executeStatement(OCCUPATION, id);
+	}
+
+	/**
+	 * Fetches a random id based on the database entity
+	 * 
+	 * @param tableName
+	 * @return random id
+	 * @author melany
+	 */
+	private int randomID(String tableName) {
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		int tableID = -1;
+
+		try {
+			if (conn.connection.isClosed()) {
+				System.err.println("OMG");
+			}
+			statement = conn.connection.prepareStatement("SELECT ID FROM "
+					+ tableName + " ORDER BY Random() LIMIT 1");
+
+			rs = statement.executeQuery();
+			tableID = rs.getInt(ID);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return tableID;
+	}
+
+	/**
+	 * Executes, and returns the contents of a default select query: <br>
+	 * 
+	 * <i> Select ? FROM ? WHERE ID = ? </i>
+	 * 
+	 * @param column
+	 * @param id
+	 * @return the single result of the query, or null, if does not exist
+	 * @author melany
+	 */
+	private String executeStatement(String column, int id) {
+		String entry = "";
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 		try {
-			statement = conn.connection
-					.prepareStatement("SELECT occupation FROM occupation WHERE ID = "
-							+ id);
+			statement = conn.connection.prepareStatement("SELECT " + column
+					+ " FROM  " + column + " WHERE ID = ?");
+			statement.setInt(1, id);
 			rs = statement.executeQuery();
-			occupation = rs.getString(OCCUPATION);
+			entry = rs.getString(column);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			// If anything when wrong with the database, it's because the query
+			// is bad, or the database is corrupt. Either way, it is a
+			// un-recoverable error, and is the programmers fault. End the
+			// program.
+			throw new RuntimeException(e);
 		}
-		return occupation;
+		return entry;
 	}
-
 }
