@@ -1,5 +1,10 @@
 package csci331.team.red.shared;
 
+/**
+ * A listing of all background assets a {@link Level} can use
+ * 
+ * @author ojourmel
+ */
 public enum Background {
 	WAITING,
 	MENUSCREEN,

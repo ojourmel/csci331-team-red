@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/assets"/>
+	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype-natives.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-freetype.jar"/>
@@ -13,6 +13,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-backend-lwjgl.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gdx-natives.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/kryonet-2.18-all.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -137,9 +137,6 @@ public class ClientEngine extends Game
 		
 	
 	
-	
-	
-	
 		
 	@Override
 	public void create() 

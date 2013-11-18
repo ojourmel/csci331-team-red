@@ -8,8 +8,16 @@ package csci331.team.red.shared;
  * @author ojourmel
  */
 public class Result {
+	
+	/**
+	 * An INVALID result
+	 */
 	public static final Result INVALID = new Result(-1);
 
+	/**
+	 * Create a new result.
+	 * @param id of the new {@link Result}
+	 */
 	public Result(int id) {
 		// TODO Auto-generated constructor stub
 	}
