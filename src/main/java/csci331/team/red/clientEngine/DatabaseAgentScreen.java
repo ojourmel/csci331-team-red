@@ -1,4 +1,5 @@
 package csci331.team.red.clientEngine;
+import java.util.List;
 import aurelienribon.tweenengine.equations.Back;
 
 import com.badlogic.gdx.Gdx;
@@ -65,6 +66,7 @@ public class DatabaseAgentScreen implements Screen
 	InputMultiplexer multiplexer;
 	
 	Boolean displayingAlerts;
+	DatabaseDialogeCallback<Callback> callbackObject;
 	
 	
 	long lastAlertTime;
@@ -72,7 +74,10 @@ public class DatabaseAgentScreen implements Screen
 
 	public DatabaseAgentScreen(ClientEngine parent)
 	{
-		DatabaseDialogCallbacks.setEntity(this);
+		
+		callbackObject = new DatabaseDialogeCallback<Callback>(this);
+		
+//		DatabaseDialogCallbacks.setEntity(this);
 		
 		
 		// Sets up links to our parent
@@ -230,7 +235,10 @@ public class DatabaseAgentScreen implements Screen
 	    		{"Mom, get out of my office..." , "You"},
 	    		
 	    };
-	    DatabaseDialogCallbacks.callbacks[] callarr = {null, DatabaseDialogCallbacks.callbacks.startAlerts, null , DatabaseDialogCallbacks.callbacks.MaryTestAlert , null, DatabaseDialogCallbacks.callbacks.startAlerts , null , null, null, null, null , null};
+	    
+	    
+	    
+	    DBCallback[] callarr = {null, DBCallback.startAlerts, null , DBCallback.MaryTestAlert , null, DBCallback.startAlerts , null , null, null, null, null , null};
 	    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
 	    displayDialogue(d);
 
@@ -354,19 +362,21 @@ public class DatabaseAgentScreen implements Screen
 			return;
 		}
 		
+//		DialogCallback<Callback> dcall = callbackObject.toDialogCallback();
+		
 		DialogueWindow iteratorOld = null;
 		if(dialogueArray.length > 1)
 		{
-			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode());
+			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode(), callbackObject);
 			
 			
 			for(int i = dialogueArray.length-2; i > 0 ; i--)
 			{
-				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld , dialogueArray[i].getCallbackCode());
+				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld , dialogueArray[i].getCallbackCode(), callbackObject);
 				iteratorOld = iteratorNew;
 			}
 		}
-		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode());
+		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode(), callbackObject);
 		
 	}
 	
@@ -391,6 +401,50 @@ public class DatabaseAgentScreen implements Screen
 	// TODO:  Move this into a level if we even have dialog.
 	// This is static because... I wanted to enum and couldn't figure out how to enum without it being static.
 	// =<
+	
+	public static class DialogueCallBacks
+	{
+		
+		public static enum callbacks
+		{
+		}
+
+		List<callbacks> l;
+		
+		
+	}
+	
+	public static class TestDialogueCallBacks extends DialogueCallBacks
+	{
+		
+	
+		public static enum callbacks
+		{
+			test,
+		}
+		
+	}
+	
+//	
+//	DialogCallbacks c = new DialogCallbacks()
+//	{
+//		public enum callbacks {a,b,c};
+//		
+//		public void call(callbacks c)
+//		{
+//			// TODO Auto-generated method stub
+//			
+//		}
+//
+//		@Override
+//		public void call(
+//				csci331.team.red.clientEngine.DialogCallbacks.callbacks c)
+//		{
+//			// TODO Auto-generated method stub
+//			
+//		}
+//	};
+	
 	public static class DatabaseDialogCallbacks
 	{
 		static DatabaseAgentScreen entity;
@@ -400,7 +454,6 @@ public class DatabaseAgentScreen implements Screen
 			startAlerts,
 			stopAlerts,
 			MaryTestAlert,
-
 		}
 		
 		public static void setEntity(DatabaseAgentScreen screen)

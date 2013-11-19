@@ -23,18 +23,18 @@ public class DialogueWindow extends TextButton {
 	Enum<?> Callbackcode;
 	
 	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage) {
-		this(dialogue, thespeaker, style, parentStage,  false , 0 , true, null , null);
+		this(dialogue, thespeaker, style, parentStage,  false , 0 , true, null , null, null);
 	}
 	
 	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage , DialogueWindow nextWindow) {
-		this(dialogue, thespeaker, style, parentStage,  false , 0 , true,  null , null);
+		this(dialogue, thespeaker, style, parentStage,  false , 0 , true,  null , null, null);
 	}
 	
-	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c) {
-		this(dialogue, thespeaker, style , parentStage, useWordWrap , extraPadding , displayNow, nextWindow, c , Gdx.graphics.getHeight());
+	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c, final DialogCallback<Callback> dcall) {
+		this(dialogue, thespeaker, style , parentStage, useWordWrap , extraPadding , displayNow, nextWindow, c , Gdx.graphics.getHeight(), dcall);
 	}
 	
-	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c , float yPosition) {
+	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c , float yPosition, final DialogCallback<Callback> dcall) {
 		super(dialogue, style , useWordWrap , extraPadding);
 		
 		internalReference = this;
@@ -76,31 +76,37 @@ public class DialogueWindow extends TextButton {
     	    	}
     	    	if(thisActor.Callbackcode != null)
     	    	{
-    	    		java.lang.reflect.Method m = null;
-					try {
-						Class<?> c = thisActor.Callbackcode.getClass().getDeclaringClass();
-						Class<?>[] cArg = new Class[1];
-				        cArg[0] = thisActor.Callbackcode.getClass();
-						m = c.getDeclaredMethod("call" , cArg);
-					} catch (NoSuchMethodException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (SecurityException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-    	    		try {
-						m.invoke(null, thisActor.Callbackcode);
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+    	    		
+    	    		
+    	    		
+    	    		dcall.call((Callback) thisActor.Callbackcode);
+    	    		
+//    	    		java.lang.reflect.Method m = null;
+//					try {
+//						
+//						Class<?> c = thisActor.Callbackcode.getClass().getDeclaringClass();
+//						Class<?>[] cArg = new Class[1];
+//				        cArg[0] = thisActor.Callbackcode.getClass();
+//						m = c.getDeclaredMethod("call" , cArg);
+//					} catch (NoSuchMethodException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					} catch (SecurityException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//    	    		try {
+//						m.invoke(dcall, thisActor.Callbackcode);
+//					} catch (IllegalAccessException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					} catch (IllegalArgumentException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					} catch (InvocationTargetException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
     	    	}
     	    	
     	    	
