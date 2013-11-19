@@ -21,10 +21,10 @@ public class Level {
 	 */
 	public static Level getWait() {
 		Level wait = new Level();
-		wait.database = Background.WAITING;
-		wait.interactive = Background.WAITING;
+		wait.setDatabase(Background.WAITING);
+		wait.setInteractive(Background.WAITING);
 
-		wait.soundTrack = SoundTrack.WHISTLING;
+		wait.setSoundTrack(SoundTrack.SONG);
 
 		return wait;
 	}
@@ -35,10 +35,10 @@ public class Level {
 	public static Level getCampus() {
 		Level campus = new Level();
 
-		campus.database = Background.CAMPUS;
-		campus.interactive = Background.CAMPUS_WORKSPACE;
+		campus.setDatabase(Background.LEVEL1DATABASEBG);
+		campus.setInteractive(Background.LEVEL1FIELDBG);
 
-		campus.soundTrack = SoundTrack.CONTRY_SONG;
+		campus.setSoundTrack(SoundTrack.SONG);
 		return campus;
 	}
 
@@ -48,10 +48,10 @@ public class Level {
 	public static Level getRoadside() {
 		Level road = new Level();
 
-		road.database = Background.COP_CAR;
-		road.interactive = Background.ROAD_SIDE;
+		road.setDatabase(Background.LEVEL2DATABASEBG);
+		road.setInteractive(Background.LEVEL2FIELDBG);
 
-		road.soundTrack = SoundTrack.ROCK_SONG;
+		road.setSoundTrack(SoundTrack.SONG);
 		return road;
 	}
 
@@ -61,10 +61,40 @@ public class Level {
 	public static Level getSpace() {
 		Level space = new Level();
 
-		space.database = Background.OFFICE_WORKSPACE;
-		space.interactive = Background.SPACE_SIDE;
+		space.setDatabase(Background.LEVEL3DATABASEBG);
+		space.setInteractive(Background.LEVEL3FIELDBG);
 
-		space.soundTrack = SoundTrack.SPACE_SONG;
+		space.setSoundTrack(SoundTrack.SONG);
 		return space;
+	}
+
+	public Background getDatabase()
+	{
+		return database;
+	}
+
+	public void setDatabase(Background database)
+	{
+		this.database = database;
+	}
+
+	public SoundTrack getSoundTrack()
+	{
+		return soundTrack;
+	}
+
+	public void setSoundTrack(SoundTrack soundTrack)
+	{
+		this.soundTrack = soundTrack;
+	}
+
+	public Background getInteractive()
+	{
+		return interactive;
+	}
+
+	public void setInteractive(Background interactive)
+	{
+		this.interactive = interactive;
 	}
 }

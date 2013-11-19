@@ -8,5 +8,5 @@ package csci331.team.red.shared;
  */
 public enum Role {
 	DATABASE,
-	FIELD
+	FIELDAGENT
 }

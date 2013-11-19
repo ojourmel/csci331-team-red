@@ -8,10 +8,10 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 
-import csci331.team.red.client.ClientEngine;
+import csci331.team.red.clientEngine.ClientEngine;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
-import csci331.team.red.shared.Stage;
+import csci331.team.red.shared.Incident;
 
 /**
  * Client end for KryoNet network communications
@@ -47,8 +47,11 @@ public class NetClient {
 		try {
 			client.connect(timeout, host, Network.tcpPort);
 			this.send(Message.CONNECTED);
-			/* change timeout to 60 secs so that client will not accidently disconnect */
-			setTimeout(60000); 
+			/*
+			 * change timeout to 60 secs so that client will not accidently
+			 * disconnect
+			 */
+			setTimeout(60000);
 		} catch (IOException e) {
 			// TODO: should I be catching this, or just pass it on to client?
 			System.out.println("Client bombed");
@@ -87,10 +90,10 @@ public class NetClient {
 						}
 						break;
 					case START_STAGE:
-						if (netMsg.obj instanceof Stage) {
-							Stage stage = (Stage) netMsg.obj;
+						if (netMsg.obj instanceof Incident) {
+							Incident incident = (Incident) netMsg.obj;
 							// TODO: Implement call and remove print
-							// gameClient.startStage(stage);
+							// gameClient.startIncident(incident);
 							System.out.println("Starting stage...");
 						}
 						break;
@@ -117,11 +120,9 @@ public class NetClient {
 		})); // end of addListener
 	} // end of constructor
 
-
 	/**
-	 * CSCI331 ML STATICBINDING
-	 * Explain how the system will decide which method to
-	 * invoke/variable to access.
+	 * CSCI331 ML STATICBINDING Explain how the system will decide which method
+	 * to invoke/variable to access.
 	 */
 	/**
 	 * @param msg
