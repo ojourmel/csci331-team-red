@@ -201,23 +201,15 @@ public class ServerEngine extends Thread {
 	 * Callback for when a player connects. If two players connect, then the
 	 * main game logic is started.
 	 * 
-	 * @return {@link Role} of {@link Player}
 	 */
-	public Role onPlayerConnect(Connection conn) {
+	public void onPlayerConnect(Connection conn) {
 		numPlayerConnected++;
 		if (numPlayerConnected == MAX_PLAYERS) {
 			lock.lock();
 			clientsConnected.signal();
 			lock.unlock();
 		}
-// TODO: need to fix this		
-		return Role.DATABASE;
-
-//		if (new Random().nextBoolean())
-//			return Role.DATABASE;
-//		else
-//			return Role.FIELD;
-		
+		// TODO: Assign Roles to Connections
 	}
 
 	/**
