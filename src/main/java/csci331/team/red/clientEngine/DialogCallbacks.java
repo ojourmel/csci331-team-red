@@ -1,5 +1,8 @@
 package csci331.team.red.clientEngine;
 
+import csci331.team.red.shared.Document;
+import csci331.team.red.shared.Person;
+
 interface Callback
 {
 
@@ -72,14 +75,15 @@ class FieldDialogeCallback<T extends Callback> implements
 		switch (c)
 		{
 			case approachFirstPerson:
-				entity.displayNewPerson(1);
+				
+				entity.displayNewPerson(new Person());
 				break;
 			case approachSecondPerson:
-				entity.displayNewPerson(2);
+				entity.displayNewPerson(new Person());
 				break;
 
 			case giveID:
-				entity.produceDocument(1);
+				entity.produceDocument(new Document(Document.Type.GoldenTicket , new String[]{"Mary Test"}));
 
 			default:
 				break;

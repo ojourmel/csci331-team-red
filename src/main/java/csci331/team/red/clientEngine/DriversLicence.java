@@ -12,21 +12,15 @@ public class DriversLicence extends TransparentActor
 	
     BitmapFont font;
     String DriverName;
-
-	public DriversLicence(Pixmap incomingPixmap)
-	{
-		this(incomingPixmap, null , "ERR");
-
-	}
 	
-	public DriversLicence(Pixmap incomingPixmap , TweenManager manager , String text)
+	public DriversLicence(Pixmap incomingPixmap , TweenManager manager , String[] TextFields)
 	{
 		super(incomingPixmap, manager);
 		
 		
 	    font = new BitmapFont();
 	    font.setColor(0,0,0 , 1);  
-	    DriverName = text;
+	    DriverName = TextFields[0];
 	    
 	}
 	

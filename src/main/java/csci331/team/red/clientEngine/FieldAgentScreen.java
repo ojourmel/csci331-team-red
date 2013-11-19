@@ -23,6 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Document;
+import csci331.team.red.shared.Person;
 import csci331.team.red.shared.PersonPicture;
 import csci331.team.red.shared.SoundTrack;
 /**
@@ -165,8 +167,7 @@ public class FieldAgentScreen implements Screen
     		    		{"You can go this time, citizen." , "You"},
     		    		
     		    };
-    		    fieldDialogCallbacks.callbacks[] callarr = {null, null, null , null};
-    		    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
+    		    Dialogue[] d = Dialogue.returnDialogArray(strarr);
     		    displayDialogue(d);
     	    	
     	    };
@@ -264,55 +265,24 @@ public class FieldAgentScreen implements Screen
 	    
 	}
 	
-	void displayNewPerson(final int currentdude) // This is just bad and hardcoded.  The server will provide a 'person' in the future.
+	void displayNewPerson(Person person)
 	{
-		
 
-		
-		if(currentdude == 1)
-		{
-		    currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(PersonPicture.FEMALE1)) , tweenManager);
+		currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(person.avatar)) , tweenManager);
 		    
 		   
-		    charactersStage.addActor(currentPerson);
-		    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(300, 300).ease(Quad.IN).start(tweenManager);
+		charactersStage.addActor(currentPerson);
+		Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(300, 300).ease(Quad.IN).start(tweenManager);
 		
-		   // Tween.to(thug,ActorTweener.SCALE_XY, 3.0f).target(2 , 2).ease(Quad.IN).start(tweenManager);
-		    
-		    //Tween.to(thug,ActorTweener.ZOOM, 3.0f).target(thug.getX()-thug.getWidth()/2 ,thug.getY()-thug.getHeight()/2  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
-		    
-		    Tween.to(currentPerson,ActorTweener.ZOOM, 3.0f).target(300-currentPerson.getWidth()/2 ,(300-currentPerson.getHeight()/2)-200  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
-		}
-	    
-		else if(currentdude == 2)
-		{
+		// Tween.to(thug,ActorTweener.SCALE_XY, 3.0f).target(2 , 2).ease(Quad.IN).start(tweenManager);
+		
+		//Tween.to(thug,ActorTweener.ZOOM, 3.0f).target(thug.getX()-thug.getWidth()/2 ,thug.getY()-thug.getHeight()/2  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
+		
+		Tween.to(currentPerson,ActorTweener.ZOOM, 3.0f).target(300-currentPerson.getWidth()/2 ,(300-currentPerson.getHeight()/2)-200  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
+		
+	  
 			
-			currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(PersonPicture.THUG1)) , tweenManager);
-		    
-			
-			
-			
-		    ticket = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.Pixmaps.get("goldenTicket")) , tweenManager);
-		    ticket.setDragable();
-		    ticket.scale(-1);
-		    ticket.setPosition(300, 400);
-		    Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).delay(6).start(tweenManager);
-		    
-		    
-		    papersStage.addActor(ticket);
-		    
-		    charactersStage.addActor(currentPerson);
-		    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(300, 300).ease(Quad.IN).start(tweenManager);
-		    
-		   // Tween.to(thug,ActorTweener.SCALE_XY, 3.0f).target(2 , 2).ease(Quad.IN).start(tweenManager);
-		    
-		    //Tween.to(thug,ActorTweener.ZOOM, 3.0f).target(thug.getX()-thug.getWidth()/2 ,thug.getY()-thug.getHeight()/2  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
-		    
-		    Tween.to(currentPerson,ActorTweener.ZOOM, 3.0f).target(300-currentPerson.getWidth()/2 ,(300-currentPerson.getHeight()/2)-200  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
-	
-			
-			
-		}
+		
 		
 		
 	}
@@ -394,88 +364,49 @@ public class FieldAgentScreen implements Screen
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 
 	}
 	
+
 	
-	// TODO:  Move this into a level if we even have dialog.
-	// This is static because... I wanted to enum and couldn't figure out how to enum without it being static.
-	// =<
-	public static class fieldDialogCallbacks
+	public void produceDocument(Document document)
 	{
-		static FieldAgentScreen entity;
-		
-		public static enum callbacks
+		switch(document.DocumentType)
 		{
-			approachFirstPerson,
-			giveID,
-			approachSecondPerson
-		}
-		
-		public static void setEntity(FieldAgentScreen screen)
-		{
-			
-			entity = screen;
-		}
-		
-		public static void call(callbacks c)
-		{
-			switch(c)
-			{
-			case approachFirstPerson:
-				entity.displayNewPerson(1);
+			case DriversLicence:
+				ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
 				break;
-			case approachSecondPerson:
-				entity.displayNewPerson(2);
+			case GoldenTicket:
+				ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
 				break;
-				
-			case giveID:
-				entity.produceDocument(1);
-			
 			default:
 				break;
 			
 			
-			}
-			
-		
-			
-			
 		}
-
-			
-			
-	}
-	
-	public void produceDocument(int documentNumber)
-	{
 		
-		 ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Pixmaps.get("goldenTicket")) , tweenManager, "Mary Test");
-		 ticket.setDragable();
-		 ticket.scale(-1);
-		 ticket.setPosition(300, 400);
-		 Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
+		
+		ticket.setDragable();
+		ticket.scale(-1);
+		ticket.setPosition(300, 400);
+		Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
 		    
 		    
-		    papersStage.addActor(ticket);
+		papersStage.addActor(ticket);
 		    
 		
 	}
 	
-	// TODO:  Move dialogue functions into somewhere shared between the two agent stages.  Maybe.
 	public void displayDialogue(String speaker, String Dialogue)
 	{
 		Dialogue[] temp = new Dialogue[1];

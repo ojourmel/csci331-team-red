@@ -15,14 +15,22 @@ public class Person {
 	 */
 	public final double FRAUD_CHANCE = 0.25;
 
+	public final PersonPicture avatar;
+	
+	
 	/**
 	 * Default constructor, randomly assigns a person as a fraud, or not.:w
 	 */
-	public Person() {
-		if (Math.random() < FRAUD_CHANCE) {
+	public Person() 
+	{
+		if (Math.random() < FRAUD_CHANCE) 
+		{
 			fraud = true;
-		} else {
+		} else 
+		{
 			fraud = false;
 		}
+		
+		avatar = PersonPicture.randomPerson();
 	}
 }

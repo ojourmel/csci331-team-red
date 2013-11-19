@@ -31,8 +31,10 @@ import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Background;
 import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
+import csci331.team.red.shared.Person;
 import csci331.team.red.shared.PersonPicture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
@@ -80,6 +82,7 @@ public class ClientEngine extends Game
 	
 	HashMap<String, AssetDescriptor<Pixmap>> Pixmaps;
 	HashMap<PersonPicture, AssetDescriptor<Pixmap>> PersonPictures;
+	HashMap<Document.Type, AssetDescriptor<Pixmap>> Documents;
 	
 	
 	
@@ -175,6 +178,7 @@ public class ClientEngine extends Game
 		
 		Pixmaps = new HashMap<String, AssetDescriptor<Pixmap>>() ;
 		PersonPictures = new HashMap<PersonPicture, AssetDescriptor<Pixmap>>();
+		Documents = new HashMap<Document.Type, AssetDescriptor<Pixmap>>();
 		
 		BackgroundMusic =  new HashMap<SoundTrack, AssetDescriptor<Music>>() ;
 		
@@ -204,7 +208,7 @@ public class ClientEngine extends Game
 		PersonPictures.put(PersonPicture.FEMALE1, new AssetDescriptor<Pixmap>("characters/femaleExtra.png" , Pixmap.class));
 
 		// Dynamic Props...
-		Pixmaps.put("goldenTicket", new  AssetDescriptor<Pixmap>("props/ticket.png" , Pixmap.class));
+		Documents.put(Document.Type.GoldenTicket, new  AssetDescriptor<Pixmap>("props/ticket.png" , Pixmap.class));
 
 		
 		// Music...
@@ -244,7 +248,9 @@ public class ClientEngine extends Game
 			gamePixmapManager.load(thePixmap);
 		}
 		
-		
+		for (AssetDescriptor<Pixmap> thePixmap : Documents.values()) {
+			gamePixmapManager.load(thePixmap);
+		}
 		
 		
 		
@@ -461,10 +467,24 @@ public class ClientEngine extends Game
 	}
 	public void StartStage(Stage stage)
 	{
-		// Do stage related things
-		// Etc. spawn new person, etc, etc.
+		
+		if(fieldAgentScreen != null)
+		{
+			fieldAgentScreen.displayNewPerson(stage.actor);
+		}
+	
+	}
+	
+	public void produceDocument(Document document)
+	{
+		
+		if(fieldAgentScreen != null)
+		{
+			fieldAgentScreen.produceDocument(document);
+		}
 		
 	}
+	
 	public void addAlert(Alert alert)
 	{
 		if(databaseAgentScreen != null)

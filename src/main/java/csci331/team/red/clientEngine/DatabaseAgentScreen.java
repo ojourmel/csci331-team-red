@@ -398,99 +398,6 @@ public class DatabaseAgentScreen implements Screen
 		
 	}
 	
-	// TODO:  Move this into a level if we even have dialog.
-	// This is static because... I wanted to enum and couldn't figure out how to enum without it being static.
-	// =<
-	
-	public static class DialogueCallBacks
-	{
-		
-		public static enum callbacks
-		{
-		}
-
-		List<callbacks> l;
-		
-		
-	}
-	
-	public static class TestDialogueCallBacks extends DialogueCallBacks
-	{
-		
-	
-		public static enum callbacks
-		{
-			test,
-		}
-		
-	}
-	
-//	
-//	DialogCallbacks c = new DialogCallbacks()
-//	{
-//		public enum callbacks {a,b,c};
-//		
-//		public void call(callbacks c)
-//		{
-//			// TODO Auto-generated method stub
-//			
-//		}
-//
-//		@Override
-//		public void call(
-//				csci331.team.red.clientEngine.DialogCallbacks.callbacks c)
-//		{
-//			// TODO Auto-generated method stub
-//			
-//		}
-//	};
-	
-	public static class DatabaseDialogCallbacks
-	{
-		static DatabaseAgentScreen entity;
-		
-		public static enum callbacks
-		{
-			startAlerts,
-			stopAlerts,
-			MaryTestAlert,
-		}
-		
-		public static void setEntity(DatabaseAgentScreen screen)
-		{
-			
-			entity = screen;
-		}
-		
-		public static void call(callbacks c)
-		{
-			switch(c)
-			{
-			case MaryTestAlert:
-				
-				entity.addAlert("Mary Test Spotted - Looks Very Suspicous, Old Woman Reports");
-				entity.changeAlertStage(false);
-				break;
-			case startAlerts:
-				entity.changeAlertStage(true);
-				break;
-			case stopAlerts:
-				entity.changeAlertStage(false);
-				break;
-			default:
-				break;
-			
-		
-			
-			
-		}
-
-			
-			
-		}
-		
-	}
-	
 	public void changeAlertStage(Boolean state)
 	{
 		displayingAlerts = state;
@@ -563,7 +470,6 @@ public class DatabaseAgentScreen implements Screen
 	
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -585,19 +491,16 @@ public class DatabaseAgentScreen implements Screen
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 
 	}
 
