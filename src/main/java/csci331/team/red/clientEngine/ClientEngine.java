@@ -26,10 +26,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 import csci331.team.red.clientEngine.MainMenuScreen;
+import csci331.team.red.network.NetClient;
+import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Background;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Level;
+import csci331.team.red.shared.Message;
 import csci331.team.red.shared.PersonPicture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
@@ -42,6 +45,12 @@ import csci331.team.red.shared.Stage;
  */
 public class ClientEngine extends Game
 {
+	// Server used for hosting games
+	ServerEngine server;
+	
+	// Used to connect to the server
+	NetClient network;
+	
 	// Used for branch logic in our render loop.
 	Boolean stillLoading;
 	
@@ -400,24 +409,28 @@ public class ClientEngine extends Game
 		setScreen(previousScreen);
 	}
 	
-	public void JoinGame(InetAddress desiredConnectTarget)
+	private void JoinGame(String desiredConnectTarget)
 	{
-		
+		network = new NetClient(this, desiredConnectTarget);
+		network.send(Message.CONNECTED);
 		
 	}
 	public void LeaveGame()
 	{
-		
+		switchToNewScreen(ScreenEnumerations.MainMenu);
 		
 	}
 	public void HostGame()
 	{
+		server = new ServerEngine();
 		
+		server.start();
 		
+		JoinGame("localhost");
 	}
 	public void StopHosting()
 	{
-		
+		server.kill();
 		
 	}
 	public void SetRole(Role role)

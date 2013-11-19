@@ -205,8 +205,10 @@ public class FieldAgentScreen implements Screen
     		    tweenManager.killTarget(currentPerson);
     		    tweenManager.killTarget(ticket);
     		    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-500, -500).ease(Quad.IN).start(tweenManager);
-    		    Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-500, ticket.getY()).ease(Quad.IN).start(tweenManager);
-    		    
+    		    if(ticket!=null)
+    		    {
+    		    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-500, ticket.getY()).ease(Quad.IN).start(tweenManager);
+    		    }
     		    
     		    
     		    
@@ -460,10 +462,10 @@ public class FieldAgentScreen implements Screen
 	{
 		
 		 ticket = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.Pixmaps.get("goldenTicket")) , tweenManager);
-		    ticket.setDragable();
-		    ticket.scale(-1);
-		    ticket.setPosition(300, 400);
-		    Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
+		 ticket.setDragable();
+		 ticket.scale(-1);
+		 ticket.setPosition(300, 400);
+		 Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
 		    
 		    
 		    papersStage.addActor(ticket);

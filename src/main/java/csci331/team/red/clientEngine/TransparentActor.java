@@ -1,11 +1,20 @@
 package csci331.team.red.clientEngine;
 
 import aurelienribon.tweenengine.TweenManager;
+import com.badlogic.gdx.utils.ScreenUtils;
 
+
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -39,10 +48,39 @@ public class TransparentActor extends Actor {
 	    	   pixmap = incomingPixmap;
 	    	   tweenmanager = incomingTweener;
 	    	   
-	    	   texture = new Texture(pixmap);
+	    	   //incomingPixmap.
+	    		FreeTypeFontGenerator generator;
+	    		BitmapFont loadingFont;
+		   		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/amiga4ever.ttf"));
+				loadingFont = generator.generateFont(25);
+			
+			
+			//pixmap.drawCircle(100, 100, 100);
 
-	    	   localCords = new Vector2();
+			
+			//loadingFont.
+			
+			texture = new Texture(pixmap);
 
+    	   localCords = new Vector2();
+    	   
+    	   
+			SpriteBatch SpriteBatch = new SpriteBatch();
+			
+			FrameBuffer f = new FrameBuffer(Format.RGB888 , pixmap.getWidth() , pixmap.getHeight() , false);
+			f.begin();
+			
+
+			SpriteBatch.begin();
+			SpriteBatch.draw(texture, 0, 0);
+	        loadingFont.draw(SpriteBatch , "test" , 0 , 0);
+	        SpriteBatch.end();
+			
+	        pixmap =  ScreenUtils.getFrameBufferPixmap(0, 0, pixmap.getWidth(), pixmap.getHeight());
+	        
+			f.end();
+    	   
+			texture = new Texture(pixmap);
 	       	
 	       	setWidth(texture.getWidth());
 	       	setHeight(texture.getHeight());

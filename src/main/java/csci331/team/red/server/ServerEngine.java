@@ -297,4 +297,10 @@ public class ServerEngine extends Thread
 		stageOver.signal();
 		lock.unlock();
 	}
+
+	public void kill()
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }
