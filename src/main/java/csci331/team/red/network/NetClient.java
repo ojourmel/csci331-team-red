@@ -7,10 +7,8 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
-import com.esotericsoftware.minlog.Log;
 
 import csci331.team.red.client.ClientEngine;
-import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Stage;
@@ -49,7 +47,8 @@ public class NetClient {
 		try {
 			client.connect(timeout, host, Network.tcpPort);
 			this.send(Message.CONNECTED);
-			setTimeout(60000); // change timeout to 60 secs
+			/* change timeout to 60 secs so that client will not accidently disconnect */
+			setTimeout(60000); 
 		} catch (IOException e) {
 			// TODO: should I be catching this, or just pass it on to client?
 			System.out.println("Client bombed");
@@ -59,6 +58,13 @@ public class NetClient {
 
 		// ThreadedListener runs the listener methods on a different thread.
 		client.addListener(new ThreadedListener(new Listener() {
+			/**
+			 * CSCI331 ML OVERRIDING
+			 */
+			/**
+			 * Override received method of Listener to specify game specific
+			 * management of received objects
+			 */
 			public void received(Connection connection, Object object) {
 				if (object instanceof NetMessage) {
 					NetMessage netMsg = (NetMessage) object;
@@ -68,11 +74,14 @@ public class NetClient {
 						// client should not receive this message
 						break;
 					case DISCONNECTED:
+						// TODO: Implement call and remove print
 						// gameClient.onServerDisconnect();
+						System.out.println("Disconnected...");
 						break;
 					case START_LEVEL:
 						if (netMsg.obj instanceof Level) {
 							Level level = (Level) netMsg.obj;
+							// TODO: Implement call and remove print
 							// gameClient.startLevel(level);
 							System.out.println("Starting level...");
 						}
@@ -80,44 +89,40 @@ public class NetClient {
 					case START_STAGE:
 						if (netMsg.obj instanceof Stage) {
 							Stage stage = (Stage) netMsg.obj;
+							// TODO: Implement call and remove print
 							// gameClient.startStage(stage);
 							System.out.println("Starting stage...");
 						}
 						break;
 					case READY:
-						// what will this be used for?
+						// TODO: what will this be used for?
 						break;
 					case PAUSE:
+						// TODO: Implement call and remove print
 						// gameClient.onPlayerPause();
 						break;
 					case QUIT:
+						// TODO: Implement call and remove print
 						// gameClient.onPlayerQuit();
 						break;
 					case RESUME:
+						// TODO: Implement call and remove print
 						// gameClient.onPlayerResume();
 						break;
 					default:
-						// TODO: should I throw an exception or just ignore the
-						// message?
 						break;
 					}
 				}
 			}
-
-			@Override
-			public void connected(Connection arg0) {
-				super.connected(arg0);
-				// gameClient.onConnected;
-			}
-
-			@Override
-			public void disconnected(Connection arg0) {
-				super.disconnected(arg0);
-				// gameClient.onDisconnected;
-			}
 		})); // end of addListener
 	} // end of constructor
 
+
+	/**
+	 * CSCI331 ML STATICBINDING
+	 * Explain how the system will decide which method to
+	 * invoke/variable to access.
+	 */
 	/**
 	 * @param msg
 	 *            Send an Enumerated {@link Message}

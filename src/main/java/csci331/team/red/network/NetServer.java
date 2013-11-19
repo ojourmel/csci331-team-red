@@ -1,14 +1,12 @@
 package csci331.team.red.network;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.HashMap;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.minlog.Log;
 
 import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Message;
@@ -21,7 +19,6 @@ import csci331.team.red.shared.Role;
  * @author marius
  */
 public class NetServer {
-	// private Connection serverConn;
 	private ServerEngine gameServer;
 	private Server server;
 	private HashMap<Integer, Role> roles;
@@ -52,15 +49,18 @@ public class NetServer {
 		Network.register(server);
 
 		/**
-		 * Add a listener to handle receiving objects
+		 * Add a Listener to handle receiving objects
 		 * 
-		 * Typically a listener has a series of instanceof checks to decide what
+		 * Typically a Listener has a series of instanceof checks to decide what
 		 * to do with the object received.
 		 * 
 		 * Note the Listener class has other notification methods that can be
 		 * overridden.
 		 */
 		server.addListener(new Listener() {
+			/**
+			 * CSCI331 ML OVERRIDING
+			 */
 			/**
 			 * Override received method of Listener to specify game specific
 			 * management of received objects
@@ -72,16 +72,17 @@ public class NetServer {
 
 					// process message
 					switch (netMsg.msg) {
-					// onPlayerConnect will return me a role.
 					case CONNECTED:
 						if (roles.containsKey(connection.getID())) {
-							// throw new
-							// IOException("You are already connected");
+							// You are already connected
+							send(Message.CONNECTED,
+									roles.get(connection.getID()));
 						}
 						gameServer.onPlayerConnect(connection);
 						break;
 					case DISCONNECTED:
-						gameServer.onPlayerDisconnect(roles.get(connection.getID()));
+						gameServer.onPlayerDisconnect(roles.get(connection
+								.getID()));
 						break;
 					case START_LEVEL:
 						// server should not receive this
@@ -90,7 +91,7 @@ public class NetServer {
 						// server should not receive this
 						break;
 					case READY:
-						// what is this used for?
+						// TODO: who will send and receive this
 						break;
 					case PAUSE:
 						gameServer.onPlayerPause(roles.get(connection.getID()));
@@ -106,23 +107,18 @@ public class NetServer {
 					}
 				}
 			}
-
-			@Override
-			public void connected(Connection arg0) {
-				super.connected(arg0);
-				// gameServer.onConnected;
-			}
-
-			@Override
-			public void disconnected(Connection arg0) {
-				super.disconnected(arg0);
-				// gameServer.onDisconnected;
-			}
 		}); // end of addListener
-
-		System.out.println("Server up");
 	} // end of constructor
 
+	/**
+	 * CSCI331 ML ENCAPSULATION 
+	 * Public access means that anyone outside of this
+	 * class can modify the value, outside of the class's control By having it
+	 * private we can not only control access, but also the values we allow.
+	 * 
+	 * In this case I need to fetch the connectionID from the connection before
+	 * I add that and the role into a HashMap.
+	 */
 	/**
 	 * Set an Enumerated {@link Role} for {@link Connection}
 	 * 
@@ -134,6 +130,11 @@ public class NetServer {
 	}
 
 	/**
+	 * CSCI331 ML STATICBINDING
+	 * Explain how the system will decide which method to
+	 * invoke/variable to access.
+	 */
+	/**
 	 * @param msg
 	 *            Send an Enumerated {@link Message}
 	 */
@@ -141,9 +142,6 @@ public class NetServer {
 		send(msg, null);
 	}
 
-	/**
-	 * @param msg
-	 */
 	/**
 	 * Send an Enumerated {@link Message} to the client with a specific
 	 * {@link Role}
