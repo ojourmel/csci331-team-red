@@ -36,7 +36,8 @@ public class Network {
 		 */
 		Kryo kryo = endPoint.getKryo();
 		/*
-		 * Register the message we'll be passing between the client(s) and server
+		 * Register the message we'll be passing between the client(s) and
+		 * server
 		 */
 		kryo.register(NetMessage.class);
 		/*

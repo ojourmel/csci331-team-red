@@ -19,7 +19,7 @@ import csci331.team.red.shared.Stage;
  * Client end for KryoNet network communications
  * 
  * @see https://code.google.com/p/kryonet/
- * @author mariusloots
+ * @author marius
  */
 public class NetClient {
 	protected final ClientEngine gameClient;
@@ -115,8 +115,8 @@ public class NetClient {
 				super.disconnected(arg0);
 				// gameClient.onDisconnected;
 			}
-		}));	// end of addListener
-	}	// end of constructor
+		})); // end of addListener
+	} // end of constructor
 
 	/**
 	 * @param msg
@@ -146,14 +146,5 @@ public class NetClient {
 	public void setTimeout(int timeout) {
 		if ((timeout > 0) && (timeout < 60001))
 			client.setTimeout(timeout);
-	}
-
-	/**
-	 *  TODO: Delete this main method.  It is just for testing.
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Log.set(Log.LEVEL_DEBUG);
-		new NetClient(new ClientEngine(), "10.5.16.233");
 	}
 }

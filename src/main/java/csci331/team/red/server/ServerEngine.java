@@ -8,6 +8,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.esotericsoftware.kryonet.Connection;
+
 import csci331.team.red.network.NetServer;
 import csci331.team.red.shared.Dialog;
 import csci331.team.red.shared.Level;
@@ -201,7 +203,7 @@ public class ServerEngine extends Thread {
 	 * 
 	 * @return {@link Role} of {@link Player}
 	 */
-	public Role onPlayerConnect() {
+	public Role onPlayerConnect(Connection conn) {
 		numPlayerConnected++;
 		if (numPlayerConnected == MAX_PLAYERS) {
 			lock.lock();
@@ -224,7 +226,7 @@ public class ServerEngine extends Thread {
 	 * TODO: Consider implementing a reconnect period, where a player could
 	 * resume their game
 	 */
-	public void onPlayerDisconnect() {
+	public void onPlayerDisconnect(Role role) {
 		network.send(Message.DISCONNECTED);
 
 		// Doing things this way means that all "Condition.await()" blocks will
@@ -236,7 +238,7 @@ public class ServerEngine extends Thread {
 	 * Callback for when a player has quit. Shut down the other clients, and
 	 * stop this {@link ServerEngine}
 	 */
-	public void onPlayerQuit() {
+	public void onPlayerQuit(Role role) {
 		network.send(Message.QUIT);
 		// TODO: This code *might* have some problems interrupting it'self. See
 		// onPlayerDisconnect()
@@ -248,7 +250,7 @@ public class ServerEngine extends Thread {
 	 * TODO: Determine how to keep track of <b> which</b> player paused, if
 	 * necessary.
 	 */
-	public void onPlayerPause() {
+	public void onPlayerPause(Role role) {
 		// pause any time-counting variables
 		network.send(Message.PAUSE);
 	}
@@ -257,7 +259,7 @@ public class ServerEngine extends Thread {
 	 * Callback when a player resumes their game. TODO: Determine how to keep
 	 * track of <b> which</b> player resumed, if necessary
 	 */
-	public void onPlayerResume() {
+	public void onPlayerResume(Role role) {
 		// resume any time-counting variables
 		network.send(Message.RESUME);
 	}

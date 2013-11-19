@@ -1,8 +1,8 @@
 package csci331.team.red.network;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.InetSocketAddress;
+import java.util.HashMap;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
@@ -18,13 +18,13 @@ import csci331.team.red.shared.Role;
  * Server end for KryoNet network communications
  * 
  * @see https://code.google.com/p/kryonet/
- * @author mariusloots
+ * @author marius
  */
 public class NetServer {
 	// protected Connection serverConn;
 	protected ServerEngine gameServer;
 	protected Server server;
-	protected List<Connection> connections;
+	protected HashMap<InetSocketAddress, Role> roles;
 
 	/**
 	 * Constructor for NetServer
@@ -42,13 +42,14 @@ public class NetServer {
 
 		/* Kryo automatically serializes the objects to and from bytes */
 		Kryo kryo = server.getKryo();
+		roles = new HashMap<InetSocketAddress, Role>();
 
 		/**
 		 * For consistency, the classes to be sent over the network are
 		 * registered by the same method for both the client and server.
 		 */
 		Network.register(server);
-		connections = new ArrayList<Connection>();
+
 		/**
 		 * Add a listener to handle receiving objects
 		 * 
@@ -65,22 +66,23 @@ public class NetServer {
 			 */
 			public void received(Connection connection, Object object) {
 				System.out.println(connection.toString());
-				
+
 				if (object instanceof NetMessage) {
 					NetMessage netMsg = (NetMessage) object;
 
 					// process message
 					switch (netMsg.msg) {
-					// onPlayerConnect will return me a role.				
+					// onPlayerConnect will return me a role.
 					case CONNECTED:
-						Role role = gameServer.onPlayerConnect();
-						// TODO: this will allow more than 2 connections
-						// and also allow 1 guy to connect twice
-						connection.setName(role.name());
-						connections.add(connection); 
+						// TODO: shouldn't allow 1 guy to connect twice
+						if (roles.containsKey(connection.getRemoteAddressTCP())) {
+							// throw new IOException("User already connected");
+						}
+						gameServer.onPlayerConnect(connection);
 						break;
 					case DISCONNECTED:
-						gameServer.onPlayerDisconnect();
+						gameServer.onPlayerDisconnect(roles.get(connection
+								.getRemoteAddressTCP()));
 						break;
 					case START_LEVEL:
 						// server should not receive this
@@ -92,13 +94,16 @@ public class NetServer {
 						// what is this used for?
 						break;
 					case PAUSE:
-						gameServer.onPlayerPause();
+						gameServer.onPlayerPause(roles.get(connection
+								.getRemoteAddressTCP()));
 						break;
 					case RESUME:
-						gameServer.onPlayerResume();
+						gameServer.onPlayerResume(roles.get(connection
+								.getRemoteAddressTCP()));
 						break;
 					case QUIT:
-						gameServer.onPlayerQuit();
+						gameServer.onPlayerQuit(roles.get(connection
+								.getRemoteAddressTCP()));
 						break;
 					default:
 						break;
@@ -109,18 +114,28 @@ public class NetServer {
 			@Override
 			public void connected(Connection arg0) {
 				super.connected(arg0);
-//				gameServer.onConnected;
+				// gameServer.onConnected;
 			}
-			
+
 			@Override
 			public void disconnected(Connection arg0) {
 				super.disconnected(arg0);
-//				gameServer.onDisconnected;
+				// gameServer.onDisconnected;
 			}
-		});	// end of addListener
-		
+		}); // end of addListener
+
 		System.out.println("Server up");
-	}	// end of constructor
+	} // end of constructor
+
+	/**
+	 * Set an Enumerated {@link Role} for {@link Connection}
+	 * 
+	 * @param conn
+	 * @param role
+	 */
+	public void setRole(Connection conn, Role role) {
+		roles.put(conn.getRemoteAddressTCP(), role);
+	}
 
 	/**
 	 * @param msg
@@ -140,18 +155,5 @@ public class NetServer {
 	public void send(Message msg, Object obj) {
 		NetMessage netMsg = new NetMessage(msg, obj);
 		server.sendToAllTCP(netMsg);
-	}
-
-	/**
-	 *  TODO: Delete this main method.  It is just for testing.
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		try {
-			Log.set(Log.LEVEL_DEBUG);
-			new NetServer(new ServerEngine());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }
