@@ -22,10 +22,10 @@ import csci331.team.red.shared.Stage;
  * @author marius
  */
 public class NetClient {
-	protected final ClientEngine gameClient;
-	protected final Client client;
-	protected String host = "127.0.0.1";
-	protected int timeout = 5000;
+	private final ClientEngine gameClient;
+	private final Client client;
+	private String host = "127.0.0.1";
+	private static final int timeout = 5000;
 
 	/**
 	 * Constructor for NetClient

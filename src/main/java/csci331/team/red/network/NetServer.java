@@ -21,10 +21,10 @@ import csci331.team.red.shared.Role;
  * @author marius
  */
 public class NetServer {
-	// protected Connection serverConn;
-	protected ServerEngine gameServer;
-	protected Server server;
-	protected HashMap<InetSocketAddress, Role> roles;
+	// private Connection serverConn;
+	private ServerEngine gameServer;
+	private Server server;
+	private HashMap<Integer, Role> roles;
 
 	/**
 	 * Constructor for NetServer
@@ -42,7 +42,8 @@ public class NetServer {
 
 		/* Kryo automatically serializes the objects to and from bytes */
 		Kryo kryo = server.getKryo();
-		roles = new HashMap<InetSocketAddress, Role>();
+		/* Create HashMap to map connections to roles */
+		roles = new HashMap<Integer, Role>();
 
 		/**
 		 * For consistency, the classes to be sent over the network are
@@ -65,7 +66,6 @@ public class NetServer {
 			 * management of received objects
 			 */
 			public void received(Connection connection, Object object) {
-				System.out.println(connection.toString());
 
 				if (object instanceof NetMessage) {
 					NetMessage netMsg = (NetMessage) object;
@@ -74,15 +74,14 @@ public class NetServer {
 					switch (netMsg.msg) {
 					// onPlayerConnect will return me a role.
 					case CONNECTED:
-						// TODO: shouldn't allow 1 guy to connect twice
-						if (roles.containsKey(connection.getRemoteAddressTCP())) {
-							// throw new IOException("User already connected");
+						if (roles.containsKey(connection.getID())) {
+							// throw new
+							// IOException("You are already connected");
 						}
 						gameServer.onPlayerConnect(connection);
 						break;
 					case DISCONNECTED:
-						gameServer.onPlayerDisconnect(roles.get(connection
-								.getRemoteAddressTCP()));
+						gameServer.onPlayerDisconnect(roles.get(connection.getID()));
 						break;
 					case START_LEVEL:
 						// server should not receive this
@@ -94,16 +93,13 @@ public class NetServer {
 						// what is this used for?
 						break;
 					case PAUSE:
-						gameServer.onPlayerPause(roles.get(connection
-								.getRemoteAddressTCP()));
+						gameServer.onPlayerPause(roles.get(connection.getID()));
 						break;
 					case RESUME:
-						gameServer.onPlayerResume(roles.get(connection
-								.getRemoteAddressTCP()));
+						gameServer.onPlayerResume(roles.get(connection.getID()));
 						break;
 					case QUIT:
-						gameServer.onPlayerQuit(roles.get(connection
-								.getRemoteAddressTCP()));
+						gameServer.onPlayerQuit(roles.get(connection.getID()));
 						break;
 					default:
 						break;
@@ -130,11 +126,11 @@ public class NetServer {
 	/**
 	 * Set an Enumerated {@link Role} for {@link Connection}
 	 * 
-	 * @param conn
+	 * @param connection
 	 * @param role
 	 */
-	public void setRole(Connection conn, Role role) {
-		roles.put(conn.getRemoteAddressTCP(), role);
+	public void setRole(Connection connection, Role role) {
+		roles.put(connection.getID(), role);
 	}
 
 	/**
@@ -143,6 +139,20 @@ public class NetServer {
 	 */
 	public void send(Message msg) {
 		send(msg, null);
+	}
+
+	/**
+	 * @param msg
+	 */
+	/**
+	 * Send an Enumerated {@link Message} to the client with a specific
+	 * {@link Role}
+	 * 
+	 * @param msg
+	 * @param role
+	 */
+	public void send(Message msg, Role role) {
+		send(msg, null, role);
 	}
 
 	/**
@@ -155,5 +165,26 @@ public class NetServer {
 	public void send(Message msg, Object obj) {
 		NetMessage netMsg = new NetMessage(msg, obj);
 		server.sendToAllTCP(netMsg);
+	}
+
+	/**
+	 * Send an Enumerated {@link Message} and a registered (
+	 * {@link Kryo#register(Class)}) Object to the client with a specific
+	 * {@link Role}
+	 * 
+	 * @param msg
+	 * @param obj
+	 * @param role
+	 */
+	public void send(Message msg, Object obj, Role role) {
+		NetMessage netMsg = new NetMessage(msg, obj);
+		if (roles.containsValue(role)) {
+			for (Integer key : roles.keySet()) {
+				if (roles.get(key) == role) {
+					server.sendToTCP(key, netMsg);
+					break;
+				}
+			}
+		}
 	}
 }
