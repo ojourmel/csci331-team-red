@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import csci331.team.red.shared.Character;
+
 /**
  * CSCI331-TAG MW INTERFACE<br>
  * 

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Gender;
 import csci331.team.red.shared.PersonPicture;
 
@@ -46,7 +47,7 @@ public class CharacterDAO {
 			Calendar.YEAR) - 16;
 
 	private static DBConnection conn = DBConnection.getDBCon();
-
+	
 	/**
 	 * Returns a NEW random character NOT in the current game play character
 	 * database, rather than the CharacterRepository.getCharacter(), which may
