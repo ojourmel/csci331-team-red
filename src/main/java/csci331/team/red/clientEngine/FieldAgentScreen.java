@@ -183,7 +183,7 @@ public class FieldAgentScreen implements Screen
 	    allowButton.setPosition(Gdx.graphics.getWidth()-allowButton.getWidth(), detainButton.getHeight());
 	    allowButton.addListener(new ClickListener() {
     		
-    		
+    		// TODO: Part of Tutorial Code. To be removed
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
@@ -217,7 +217,6 @@ public class FieldAgentScreen implements Screen
     		    
     		    
     		    
-    		   // Tween.call(nextPerson).delay(3.0f).start(tweenManager);
     		    
     	    };
     		
@@ -274,11 +273,6 @@ public class FieldAgentScreen implements Screen
 		   
 		charactersStage.addActor(currentPerson);
 		Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(300, 300).ease(Quad.IN).start(tweenManager);
-		
-		// Tween.to(thug,ActorTweener.SCALE_XY, 3.0f).target(2 , 2).ease(Quad.IN).start(tweenManager);
-		
-		//Tween.to(thug,ActorTweener.ZOOM, 3.0f).target(thug.getX()-thug.getWidth()/2 ,thug.getY()-thug.getHeight()/2  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
-		
 		Tween.to(currentPerson,ActorTweener.ZOOM, 3.0f).target(300-currentPerson.getWidth()/2 ,(300-currentPerson.getHeight()/2)-200  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
 		
 	  
@@ -321,7 +315,6 @@ public class FieldAgentScreen implements Screen
 		
 		batch.begin();
 		
-		// TODO:  Turn these into actors
 		batch.draw(clipBoard, 0, 0, Gdx.graphics.getWidth()-100, 500);
 		
 		batch.end();
@@ -344,8 +337,6 @@ public class FieldAgentScreen implements Screen
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -358,6 +349,7 @@ public class FieldAgentScreen implements Screen
 
 	@Override
 	public void hide() {
+		
 		Gdx.input.setInputProcessor(null);
 		BackgroundMusic.pause();
 
@@ -365,17 +357,14 @@ public class FieldAgentScreen implements Screen
 
 	@Override
 	public void pause() {
-
 	}
 
 	@Override
 	public void resume() {
-
 	}
 
 	@Override
 	public void dispose() {
-
 	}
 	
 
@@ -438,7 +427,4 @@ public class FieldAgentScreen implements Screen
 		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode(), callbackObject);
 		
 	}
-		
-	
-
 }

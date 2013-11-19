@@ -2,7 +2,6 @@ package csci331.team.red.clientEngine;
 
 import aurelienribon.tweenengine.TweenManager;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

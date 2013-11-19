@@ -1,7 +1,4 @@
 package csci331.team.red.clientEngine;
-import java.util.List;
-import aurelienribon.tweenengine.equations.Back;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -23,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Dialogue;
-import csci331.team.red.shared.SoundTrack;
 
 /**
  * Scene responsible for the database roll.
@@ -120,8 +117,6 @@ public class DatabaseAgentScreen implements Screen
 	    {
             public void keyTyped (TextField textField, char key) {
             	
-            //	System.out.println(key);
-            	
                 if(key == '\n' || key == '\r')
                 {
                 	
@@ -167,9 +162,7 @@ public class DatabaseAgentScreen implements Screen
 	    computerTextLabelContainingTable.align(Align.bottom | Align.left);
 
 	    computerTextScroller = new ScrollPane(computerTextLabelContainingTable);
-	//    computerTextScroller.setScrollingDisabled(true,false);
 	    computerTextScroller.setStyle(parentEngine.scrollPaneStyle);
-//	    computerTextScroller.setOverscroll(false,  false);
 	    computerTextScroller.setScrollBarPositions(false, true);
 	    
 
@@ -187,8 +180,7 @@ public class DatabaseAgentScreen implements Screen
 	    alertTextLabelContainingTable.align(Align.bottom | Align.left);
 
 	    alertTextScroller = new ScrollPane(alertTextLabelContainingTable);
-	//    computerTextScroller.setScrollingDisabled(true,false);
-	//    alertTextScroller.setStyle(parentEngine.scrollPaneStyle);
+	    alertTextScroller.setScrollingDisabled(true,true);
 
 
 	    alertTextScrollingTable = new Table();
@@ -219,7 +211,8 @@ public class DatabaseAgentScreen implements Screen
 	    });
 	    
 
-	    
+
+	    // used in tutorial dialogue
 	    String[][] strarr = {
 	    		{"Well then... (Click to continue)" , "Ominious Voice"},
 	    		{"Welcome to your first day on the job.", "Ominious Voice"},
@@ -362,8 +355,6 @@ public class DatabaseAgentScreen implements Screen
 			return;
 		}
 		
-//		DialogCallback<Callback> dcall = callbackObject.toDialogCallback();
-		
 		DialogueWindow iteratorOld = null;
 		if(dialogueArray.length > 1)
 		{
@@ -404,6 +395,10 @@ public class DatabaseAgentScreen implements Screen
 		
 	}
 	
+	/**
+	 * TODO: This will be implemented in {@link ServerEngine}
+	 * Currently used for tutorial
+	 */
 	public String computerSearch(String SearchString)
 	{
 		String[] tokenizedString = SearchString.split("\\s" , 3);
@@ -459,9 +454,6 @@ public class DatabaseAgentScreen implements Screen
 			}
 			
 		}
-		
-		
-	//	return "ABNORMAL SYSTEM ERROR";
 		
 		
 		

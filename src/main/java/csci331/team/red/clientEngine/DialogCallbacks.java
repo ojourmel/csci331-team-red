@@ -1,6 +1,5 @@
 package csci331.team.red.clientEngine;
 
-import csci331.team.red.shared.Document;
 
 interface Callback
 {

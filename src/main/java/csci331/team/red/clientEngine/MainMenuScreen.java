@@ -192,7 +192,6 @@ public class MainMenuScreen implements Screen
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -200,31 +199,28 @@ public class MainMenuScreen implements Screen
 	public void show() {
 		
 		Gdx.input.setInputProcessor(multiplexer);
-		
 
 	}
 
 	@Override
 	public void hide() {
+		
 		Gdx.input.setInputProcessor(null);
 
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 
 	}
 

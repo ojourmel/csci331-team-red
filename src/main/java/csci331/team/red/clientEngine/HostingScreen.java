@@ -68,8 +68,9 @@ public class HostingScreen implements Screen
 	    try {
 	    	localhost  =  java.net.InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// No Network card present.
+			// Not a recoverable error
+			throw new RuntimeException(e);
 		}
 	    
 	    TextButton HostnameLabel =  new TextButton("Hostname: " + localhost.getHostName() , parentEngine.buttonStyle);
@@ -135,7 +136,6 @@ public class HostingScreen implements Screen
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -144,31 +144,27 @@ public class HostingScreen implements Screen
 		
 		Gdx.input.setInputProcessor(multiplexer);
 		
-
 	}
 
 	@Override
 	public void hide() {
+		
 		Gdx.input.setInputProcessor(null);
 
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 
 	}
-
 }

@@ -1,7 +1,5 @@
 package csci331.team.red.clientEngine;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -81,32 +79,6 @@ public class DialogueWindow extends TextButton {
     	    		
     	    		dcall.call((Callback) thisActor.Callbackcode);
     	    		
-//    	    		java.lang.reflect.Method m = null;
-//					try {
-//						
-//						Class<?> c = thisActor.Callbackcode.getClass().getDeclaringClass();
-//						Class<?>[] cArg = new Class[1];
-//				        cArg[0] = thisActor.Callbackcode.getClass();
-//						m = c.getDeclaredMethod("call" , cArg);
-//					} catch (NoSuchMethodException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					} catch (SecurityException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//    	    		try {
-//						m.invoke(dcall, thisActor.Callbackcode);
-//					} catch (IllegalAccessException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					} catch (IllegalArgumentException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					} catch (InvocationTargetException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
     	    	}
     	    	
     	    	
