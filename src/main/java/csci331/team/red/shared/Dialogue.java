@@ -82,7 +82,6 @@ public class Dialogue {
 	}
 	public Enum<?> getCallbackCode()
 	{
-		
 		return callbackCode;
 	}
 }

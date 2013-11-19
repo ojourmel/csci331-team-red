@@ -96,7 +96,7 @@ public class MainMenuScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    	    	parentEngine.SetLevel(Level.getCampus());
+    	    	parentEngine.setLevel(Level.getCampus());
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.FieldAgent);
     	    	
     	    };
@@ -113,7 +113,7 @@ public class MainMenuScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    	    	parentEngine.SetLevel(Level.getCampus());
+    	    	parentEngine.setLevel(Level.getCampus());
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.DatabaseAgent);
     	    	
     	    };

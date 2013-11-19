@@ -1,6 +1,7 @@
 package csci331.team.red.clientEngine;
 
 import java.util.HashMap;
+import java.util.List;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -22,11 +23,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
-import csci331.team.red.shared.Person;
-import csci331.team.red.shared.PersonPicture;
-import csci331.team.red.shared.SoundTrack;
+import csci331.team.red.shared.Incident;
 /**
  * Screen for the field agent
  * @author Lduperron
@@ -72,6 +72,7 @@ public class FieldAgentScreen implements Screen
 	TweenManager tweenManager;
 	
 	FieldDialogeCallback<Callback> callbackObject;
+	Incident currentIncident;
 	
 
 	public FieldAgentScreen(ClientEngine parent)
@@ -199,7 +200,7 @@ public class FieldAgentScreen implements Screen
     		    		 
     		    		
     		    };
-    		    FieldCallback[] callarr = {null, null, FieldCallback.approachSecondPerson , null , null , null , null , null , null ,null ,null ,null ,null};
+    		    FieldCallback[] callarr = {null, null, FieldCallback.approachPerson};
     		    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
     		    displayDialogue(d);
     	    	
@@ -239,7 +240,7 @@ public class FieldAgentScreen implements Screen
 	    		{"But I can tell you it is this time.  You should let her go." , "Ominious Voice"},
 	    		
 	    };
-	    FieldCallback[] callarr = {null, null,FieldCallback.approachFirstPerson, null,null, null,null, FieldCallback.giveID, null,null, null , null , null, null};
+	    FieldCallback[] callarr = {null, null,FieldCallback.approachPerson, null,null, null,null, FieldCallback.giveDocuments, null,null, null , null , null, null};
 	    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
 	    displayDialogue(d);
 
@@ -265,10 +266,10 @@ public class FieldAgentScreen implements Screen
 	    
 	}
 	
-	void displayNewPerson(Person person)
+	void displayNewPerson(Character person)
 	{
 
-		currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(person.avatar)) , tweenManager);
+		currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(person.getAvatar())) , tweenManager);
 		    
 		   
 		charactersStage.addActor(currentPerson);
@@ -379,20 +380,20 @@ public class FieldAgentScreen implements Screen
 	
 
 	
-	public void produceDocument(Document document)
+	public void produceDocuments(List<Document> documents)
 	{
-		switch(document.DocumentType)
-		{
-			case DriversLicence:
-				ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
-				break;
-			case GoldenTicket:
-				ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
-				break;
-			default:
-				break;
-			
-			
+		for(Document document : documents){
+			switch(document.DocumentType)
+			{
+				case DriversLicence:
+					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
+					break;
+				case GoldenTicket:
+					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
+					break;
+				default:
+					break;
+			}
 		}
 		
 		
@@ -401,10 +402,9 @@ public class FieldAgentScreen implements Screen
 		ticket.setPosition(300, 400);
 		Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
 		    
-		    
 		papersStage.addActor(ticket);
-		    
-		
+
+	
 	}
 	
 	public void displayDialogue(String speaker, String Dialogue)

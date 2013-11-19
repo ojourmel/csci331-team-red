@@ -78,7 +78,7 @@ public class ConnectingScreen implements Screen
 	    connectAddress.setWidth(parentEngine.gameFont.getBounds("Enter hostname or IP!").width +20);
 	    connectingStage.addActor(connectAddress);
 
-	    
+
 	  	
 	    connectAddress.setTextFieldListener(new TextFieldListener() {
             public void keyTyped (TextField textField, char key) {
@@ -88,6 +88,7 @@ public class ConnectingScreen implements Screen
             	// Linux or windows!
                 if(key == '\n' || key == '\r')
                 {
+            	    parentEngine.JoinGame(textField.getText());
                 	textField.setText("");
                 	textField.getStage().unfocus(textField);
                 	

@@ -1,7 +1,6 @@
 package csci331.team.red.clientEngine;
 
 import csci331.team.red.shared.Document;
-import csci331.team.red.shared.Person;
 
 interface Callback
 {
@@ -10,7 +9,7 @@ interface Callback
 
 enum FieldCallback implements Callback
 {
-	approachFirstPerson, giveID, approachSecondPerson,
+	giveDocuments, approachPerson,
 
 }
 
@@ -71,19 +70,17 @@ class FieldDialogeCallback<T extends Callback> implements
 	@Override
 	public void call(Callback cg)
 	{
+		
 		FieldCallback c = (FieldCallback) cg;
 		switch (c)
 		{
-			case approachFirstPerson:
+			case approachPerson:
 				
-				entity.displayNewPerson(new Person());
-				break;
-			case approachSecondPerson:
-				entity.displayNewPerson(new Person());
+				entity.displayNewPerson(entity.currentIncident.actor);
 				break;
 
-			case giveID:
-				entity.produceDocument(new Document(Document.Type.GoldenTicket , new String[]{"Mary Test"}));
+			case giveDocuments:
+				entity.produceDocuments(entity.currentIncident.incidentDocuments);
 
 			default:
 				break;
@@ -91,19 +88,3 @@ class FieldDialogeCallback<T extends Callback> implements
 		}
 	}
 }
-
-// class Car extends Vehicle<FieldCallback>
-// {
-// public Car(FieldCallback color)
-// {
-// super(color);
-// }
-// }
-//
-// class RacingCar extends Vehicle<DBCallback>
-// {
-// public RacingCar(DBCallback color)
-// {
-// super(color);
-// }
-// }

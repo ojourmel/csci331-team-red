@@ -1,6 +1,5 @@
 package csci331.team.red.clientEngine;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 import aurelienribon.tweenengine.Tween;
 
@@ -34,12 +33,11 @@ import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
-import csci331.team.red.shared.Person;
 import csci331.team.red.shared.PersonPicture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.SoundTrack;
-import csci331.team.red.shared.Stage;
+import csci331.team.red.shared.Incident;
 
 /**
  * Main entry point for the game proper.  Handles all shared objects between scenes.
@@ -415,7 +413,7 @@ public class ClientEngine extends Game
 		setScreen(previousScreen);
 	}
 	
-	private void JoinGame(String desiredConnectTarget)
+	public void JoinGame(String desiredConnectTarget)
 	{
 		network = new NetClient(this, desiredConnectTarget);
 		network.send(Message.CONNECTED);
@@ -459,32 +457,20 @@ public class ClientEngine extends Game
 		}
 		
 	}
-	public void SetLevel(Level level)
+	public void setLevel(Level level)
 	{
 
 		currentLevel = level;
 		
 	}
-	public void StartStage(Stage stage)
+	public void startIncident(Incident incident)
 	{
-		
 		if(fieldAgentScreen != null)
 		{
-			fieldAgentScreen.displayNewPerson(stage.actor);
+			fieldAgentScreen.currentIncident = incident;
 		}
 	
 	}
-	
-	public void produceDocument(Document document)
-	{
-		
-		if(fieldAgentScreen != null)
-		{
-			fieldAgentScreen.produceDocument(document);
-		}
-		
-	}
-	
 	public void addAlert(Alert alert)
 	{
 		if(databaseAgentScreen != null)

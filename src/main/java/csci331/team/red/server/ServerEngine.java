@@ -9,11 +9,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import csci331.team.red.network.NetServer;
 import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
-import csci331.team.red.shared.Person;
 import csci331.team.red.shared.Result;
-import csci331.team.red.shared.Stage;
 
 /**
  * Main game logic class. Manages flow of information between the two clients,
@@ -33,9 +32,9 @@ public class ServerEngine extends Thread
 
 	// Core game assets
 	private NetServer network;
-	private List<Stage> stages;
+	private List<Incident> stages;
 	private List<Level> levels;
-	private Stage currentStage;
+	private Incident currentStage;
 
 	// The two players in the game
 	private Player playerOne;
@@ -43,7 +42,7 @@ public class ServerEngine extends Thread
 
 	private int numPlayerConnected = 0;
 
-	// Value to modify the base fraud probability of a Person
+	// Value to modify the base fraud probability of a Character
 	private double fraudDifficulty = 1;
 
 	// Locks and conditions for blocking on conditions while threading.
@@ -61,7 +60,7 @@ public class ServerEngine extends Thread
 	public ServerEngine()
 	{
 		levels = new LinkedList<Level>();
-		stages = new LinkedList<Stage>();
+		stages = new LinkedList<Incident>();
 
 		playerOne = new Player();
 		playerTwo = new Player();
@@ -105,6 +104,7 @@ public class ServerEngine extends Thread
 				lock.unlock();
 			}
 		}
+		
 		// we now have two clients connected.
 		levels.add(Level.getWait());
 		network.send(Message.START_LEVEL, Level.getWait());
@@ -114,20 +114,14 @@ public class ServerEngine extends Thread
 		levels.add(one);
 		// start level one.
 		network.send(Message.START_LEVEL, one);
-
 		for (int i = 0; i < 3; i++)
 		{
 			// set up a stage. Use the stats from the previous stages to affect
 			// the next stage.
-			// TODO: Get Persons from the Database Access Objects
-			Person actor = new Person();
-			double fraudFactor = actor.FRAUD_CHANCE;
-			double errorFactor = 0;
-
-			Stage stage = new Stage(actor, fraudFactor, errorFactor);
+			// TODO: Get Characters from the Database Access Objects
 
 			// send the stage to the clients
-			network.send(Message.START_STAGE, stage);
+			//network.send(Message.START_STAGE, stage);
 
 			// since everything that can happen in a stage is purly reactive,
 			// (ie.
@@ -151,12 +145,7 @@ public class ServerEngine extends Thread
 
 		// boss stage time!
 
-		// TODO: Get Persons from the Database Access Objects
-		Person boss = new Person();
-		// A boss should have no detail problems, but alerts have to be
-		// generated... TODO: Deal with generating alerts.
-		Stage stage = new Stage(boss, 0, 0);
-		network.send(Message.START_STAGE, stage);
+		//network.send(Message.START_STAGE, stage);
 		try
 		{
 			lock.lock();
