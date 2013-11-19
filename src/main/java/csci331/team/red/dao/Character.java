@@ -1,5 +1,7 @@
 package csci331.team.red.dao;
 
+import csci331.team.red.shared.Gender;
+import csci331.team.red.shared.PersonPicture;
 
 /**
  * Contains specific game character information, generated from the
@@ -10,12 +12,12 @@ package csci331.team.red.dao;
  * <br>
  * By creating getters and setters for all attributes of the Character class,
  * implementation is hidden from the outside world. This also prevents unwanted
- * access from the outside world
- * <br> <br>
+ * access from the outside world <br>
+ * <br>
  * Game Character Information:
  * <ul>
  * <li>Date of Birth</li>
- * <li>Driver's Licience Number</li>
+ * <li>Driver's License Number</li>
  * <li>Last Name</li>
  * <li>First Name</li>
  * <li>Passport ID</li>
@@ -24,6 +26,8 @@ package csci331.team.red.dao;
  * <li>Country</li>
  * <li>Postal Code</li>
  * <li>Occupation</li>
+ * <li>Gender</li>
+ * <li>PersonPicture</li>
  * </ul>
  * 
  * @author melany
@@ -42,6 +46,8 @@ public class Character {
 	private String region;
 	private String postal;
 	private String country;
+	private Gender gender;
+	private PersonPicture personPicture;
 
 	// Getters/Setters for Attribute Variables
 	public String getFirstName() {
@@ -132,6 +138,22 @@ public class Character {
 		this.country = country;
 	}
 
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public PersonPicture getPersonPicture() {
+		return personPicture;
+	}
+
+	public void setPersonPicture(PersonPicture personPicture) {
+		this.personPicture = personPicture;
+	}
+
 	/**
 	 * 
 	 * Character Constructor<br>
@@ -148,12 +170,15 @@ public class Character {
 	 * @param postal
 	 * @param country
 	 * @param occupation
+	 * @param gender
+	 * @param personPicture
 	 * 
 	 * @author melany
 	 */
 	Character(String dob, String driversID, String firstName, String lastName,
 			String passportID, String address, String city, String region,
-			String postal, String country, String occupation) {
+			String postal, String country, String occupation, Gender gender,
+			PersonPicture personPicture) {
 
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -166,18 +191,21 @@ public class Character {
 		this.region = region;
 		this.postal = postal;
 		this.country = country;
+		this.gender = gender;
+		this.personPicture = personPicture;
 
 	}
 
 	/**
-	 * CSCI331-TAG MW OVERRIDE<br><br>
+	 * CSCI331-TAG MW OVERRIDE<br>
+	 * <br>
 	 * 
 	 * Another override, this one overrides one of the built-in java methods
 	 * rather than two methods I've wrote for different classes.<br>
 	 * 
-	 * I overrode this one because the built-in equals doesn't compare a 
-	 * Character object.  In addition to overriding the equals method, I also 
-	 * overrode the hashCode in case there is every a hashMap of Characters 
+	 * I overrode this one because the built-in equals doesn't compare a
+	 * Character object. In addition to overriding the equals method, I also
+	 * overrode the hashCode in case there is every a hashMap of Characters
 	 * Instantiated, which is shown below.
 	 * 
 	 * @author melany
@@ -190,29 +218,35 @@ public class Character {
 			return true;
 		} else if (obj instanceof Character) {
 			Character c = (Character) obj;
-			if ((((c.getFirstName() == null) && (this.getFirstName() == null)) || (c
-					.getFirstName().equals(this.getFirstName())))
-					&& (((c.getLastName() == null) && (this.getLastName() == null)) || (c
-							.getLastName().equals(this.getLastName())))
-					&& (((c.getDob() == null) && (this.getDob() == null)) || (c
-							.getDob().equals(this.getDob())))
-					&& (((c.getDriversID() == null) && (this.getDriversID() == null)) || (c
-							.getDriversID().equals(this.getDriversID())))
-					&& (((c.getPassportID() == null) && (this.getPassportID() == null)) || (c
-							.getPassportID().equals(this.getPassportID())))
-					&& (((c.getOccupation() == null) && (this.getOccupation() == null)) || (c
-							.getOccupation().equals(this.getOccupation())))
-					&& (((c.getAddress() == null) && (this.getAddress() == null)) || (c
-							.getAddress().equals(this.getAddress())))
-					&& (((c.getCity() == null) && (this.getCity() == null)) || (c
-							.getCity().equals(this.getCity())))
-					&& (((c.getRegion() == null) && (this.getRegion() == null)) || (c
-							.getRegion().equals(this.getRegion())))
-					&& (((c.getPostal() == null) && (this.getPostal() == null)) || (c
-							.getPostal().equals(this.getPostal())))
-					&& (((c.getCountry() == null) && (this.getCountry() == null)) || (c
-							.getCountry().equals(this.getCountry())))
-			) {
+			if ((((c.firstName == null) && (this.firstName == null)) || (c
+					.firstName.equals(this.firstName)))
+					&& (((c.lastName == null) && (this.lastName == null)) || (c
+							.lastName.equals(this.lastName)))
+					&& (((c.dob == null) && (this.dob == null)) || (c
+							.dob.equals(this.dob)))
+					&& (((c.driversID == null) && (this.driversID == null)) || (c
+							.driversID.equals(this.driversID)))
+					&& (((c.passportID == null) && (this.passportID == null)) || (c
+							.passportID.equals(this.passportID)))
+					&& (((c.occupation == null) && (this.occupation == null)) || (c
+							.occupation.equals(this.occupation)))
+					&& (((c.address == null) && (this.address == null)) || (c
+							.address.equals(this.address)))
+					&& (((c.city == null) && (this.city == null)) || (c
+							.city.equals(this.city)))
+					&& (((c.region == null) && (this.region == null)) || (c
+							.region.equals(this.region)))
+					&& (((c.postal == null) && (this.postal == null)) || (c
+							.postal.equals(this.postal)))
+					&& (((c.country == null) && (this.country == null)) || (c
+							.country.equals(this.country)))
+							
+					&& (((c.gender == null) && (this.gender == null)) || (c
+							.gender.equals(this.gender)))
+					&& (((c.personPicture == null) && (this.personPicture == null)) || (c
+							.personPicture.equals(this.personPicture)))
+							
+					) {
 				return true;
 			} else {
 				return false;
@@ -223,7 +257,7 @@ public class Character {
 	}
 
 	/**
-	 * hashCode override, in case there is every a hashMap of Characters 
+	 * hashCode override, in case there is every a hashMap of Characters
 	 * created.
 	 * 
 	 * @author melany
@@ -232,32 +266,38 @@ public class Character {
 	public int hashCode() {
 		int hashCode = 0;
 
-		hashCode = hashCode * 37 + this.firstName.hashCode();
-		hashCode = hashCode * 37 + this.lastName.hashCode();
-		hashCode = hashCode * 37 + this.dob.hashCode();
-		hashCode = hashCode * 37 + this.driversID.hashCode();
-		hashCode = hashCode * 37 + this.passportID.hashCode();
-		hashCode = hashCode * 37 + this.occupation.hashCode();
-		hashCode = hashCode * 37 + this.address.hashCode();
-		hashCode = hashCode * 37 + this.city.hashCode();
-		hashCode = hashCode * 37 + this.region.hashCode();
-		hashCode = hashCode * 37 + this.postal.hashCode();
-		hashCode = hashCode * 37 + this.country.hashCode();
+		hashCode = hashCode * 37 + firstName.hashCode();
+		hashCode = hashCode * 37 + lastName.hashCode();
+		hashCode = hashCode * 37 + dob.hashCode();
+		hashCode = hashCode * 37 + driversID.hashCode();
+		hashCode = hashCode * 37 + passportID.hashCode();
+		hashCode = hashCode * 37 + occupation.hashCode();
+		hashCode = hashCode * 37 + address.hashCode();
+		hashCode = hashCode * 37 + city.hashCode();
+		hashCode = hashCode * 37 + region.hashCode();
+		hashCode = hashCode * 37 + postal.hashCode();
+		hashCode = hashCode * 37 + country.hashCode();
+		hashCode = hashCode * 37 + gender.hashCode();
+		hashCode = hashCode * 37 + personPicture.hashCode();
 
 		return hashCode;
 	}
-	
+
 	@Override
 	public String toString() {
-		
+
 		StringBuilder sb = new StringBuilder();
-	
+
 		sb.append("Name: ");
 		sb.append(firstName);
 		sb.append(" ");
 		sb.append(lastName);
 		sb.append("\n");
 		
+		sb.append("Gender: ");
+		sb.append(gender);
+		sb.append("\n");
+
 		sb.append("Born: ");
 		sb.append(dob);
 		sb.append("\n");
@@ -265,7 +305,7 @@ public class Character {
 		sb.append(occupation);
 		sb.append("\n");
 		sb.append("\n");
-		
+
 		sb.append("Address:\n");
 		sb.append(address);
 		sb.append("\n");
@@ -286,4 +326,5 @@ public class Character {
 		sb.append(passportID);
 		return sb.toString();
 	}
+
 }

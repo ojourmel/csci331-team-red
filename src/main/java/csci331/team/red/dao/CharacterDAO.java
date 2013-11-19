@@ -3,9 +3,16 @@ package csci331.team.red.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import csci331.team.red.shared.Gender;
+import csci331.team.red.shared.PersonPicture;
 
 /**
  * CSCI331-TAG MW SUPERCLASS<br>
@@ -31,16 +38,18 @@ public class CharacterDAO {
 	public static final String POSTAL = "postal";
 	public static final String COUNTRY = "country";
 	public static final String OCCUPATION = "occupation";
+	public static final String GENDER = "gender";
+
+	private static final int EARLIEST_YEAR = Calendar.getInstance().get(
+			Calendar.YEAR) - 95;
+	private static final int LATEST_YEAR = Calendar.getInstance().get(
+			Calendar.YEAR) - 16;
 
 	private static DBConnection conn = DBConnection.getDBCon();
-	
-	
+
 	/**
-	 * CSCI331-TAG MW OVERRIDING<br>
-	 * <br>
-	 * 
 	 * Returns a NEW random character NOT in the current game play character
-	 * database, rather than the CharacterRepository.getCharacter(), which
+	 * database, rather than the CharacterRepository.getCharacter(), which may
 	 * returns a random character of already created characters in the game-play
 	 * database
 	 * 
@@ -48,13 +57,17 @@ public class CharacterDAO {
 	 * @author melany
 	 */
 	public Character getCharacter() {
-		return new Character(getDOB(), getDriversID(),
-				getFName(randomID(FIRSTNAME)), getLName(randomID(LASTNAME)),
+		int fNameID = randomID(FIRSTNAME);
+		
+		Gender g = Gender.fromChar(getGender(fNameID));
+
+		return new Character(getDOB(), getDriversID(), getFName(fNameID),
+				getLName(randomID(LASTNAME)),
 				getPassportID(randomID(PASSPORTID)),
 				getAddress(randomID(ADDRESS)), getCity(randomID(CITY)),
 				getRegion(randomID(REGION)), getPostal(randomID(POSTAL)),
 				getCountry(randomID(COUNTRY)),
-				getOccupation(randomID(OCCUPATION)));
+				getOccupation(randomID(OCCUPATION)), g, PersonPicture.getRandom(g));
 	}
 
 	/**
@@ -97,8 +110,9 @@ public class CharacterDAO {
 	 * @author melany
 	 */
 	private String getDriversID() {
+		// TODO: Verify data using jUnit testing
 		return String
-				.valueOf(((int) (Math.random() * ((9999999 - 1000000) + 1))));
+				.valueOf(((int) (Math.random() * ((9999999 - 1000000) + 1) + 1000000)));
 	}
 
 	/**
@@ -208,6 +222,34 @@ public class CharacterDAO {
 	 * @return random id
 	 * @author melany
 	 */
+	private char getGender(int id) {
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		char c;
+
+		try {
+			if (conn.connection.isClosed()) {
+				System.err.println("OMG");
+			}
+			statement = conn.connection.prepareStatement("SELECT " + GENDER
+					+ " FROM " + FIRSTNAME + " WHERE ID = ?");
+			statement.setInt(1, id);
+			rs = statement.executeQuery();
+
+			c = rs.getString(GENDER).charAt(0);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return c;
+	}
+
+	/**
+	 * Fetches a random id based on the database entity
+	 * 
+	 * @param tableName
+	 * @return random id
+	 * @author melany
+	 */
 	private int randomID(String tableName) {
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -257,4 +299,53 @@ public class CharacterDAO {
 		}
 		return entry;
 	}
+
+	protected boolean isValid(String column, String value) {
+		boolean isValid = false;
+
+		if (column == DOB) {
+			DateFormat formatter = new SimpleDateFormat("YYYY-MMM-DD");
+			formatter.setLenient(false);
+			Date date = null;
+			try {
+				date = formatter.parse(value);
+			} catch (ParseException e) {
+				return false;
+			}
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+
+			Calendar eDate = Calendar.getInstance();
+			eDate.set(Calendar.YEAR, EARLIEST_YEAR);
+
+			Calendar lDate = Calendar.getInstance();
+			lDate.set(Calendar.YEAR, LATEST_YEAR);
+
+			return (calendar.after(eDate) && calendar.before(lDate));
+		} else if (column == DRIVERSID) {
+			return ((Integer.valueOf(value) > 1000000) && (Integer
+					.valueOf(value) < 9999999));
+		}
+
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+
+			statement = conn.connection.prepareStatement("SELECT " + column
+					+ " FROM  " + column + " WHERE " + column + " =  ?");
+			statement.setString(1, value);
+			rs = statement.executeQuery();
+			isValid = rs.next();
+		} catch (SQLException e) {
+			// If anything when wrong with the database, it's because the query
+			// is bad, or the database is corrupt. Either way, it is a
+			// un-recoverable error, and is the programmers fault. End the
+			// program.
+			throw new RuntimeException(e);
+		}
+		return isValid;
+	}
+
 }
