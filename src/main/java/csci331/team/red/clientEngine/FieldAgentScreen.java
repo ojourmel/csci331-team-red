@@ -463,7 +463,7 @@ public class FieldAgentScreen implements Screen
 	public void produceDocument(int documentNumber)
 	{
 		
-		 ticket = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.Pixmaps.get("goldenTicket")) , tweenManager);
+		 ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Pixmaps.get("goldenTicket")) , tweenManager, "Mary Test");
 		 ticket.setDragable();
 		 ticket.scale(-1);
 		 ticket.setPosition(300, 400);

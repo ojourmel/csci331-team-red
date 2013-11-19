@@ -36,6 +36,8 @@ public class TransparentActor extends Actor {
 	       TweenManager tweenmanager;
 	       
 	       Vector2 localCords = null;
+	       
+
 
 	       public TransparentActor (Pixmap incomingPixmap) 
 	       {
@@ -44,52 +46,21 @@ public class TransparentActor extends Actor {
 	       
 	       public TransparentActor (Pixmap incomingPixmap, TweenManager incomingTweener) 
 	       {
-	    		   
-	    	   pixmap = incomingPixmap;
-	    	   tweenmanager = incomingTweener;
-	    	   
-	    	   //incomingPixmap.
-	    		FreeTypeFontGenerator generator;
-	    		BitmapFont loadingFont;
-		   		generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/amiga4ever.ttf"));
-				loadingFont = generator.generateFont(25);
-			
-			
-			//pixmap.drawCircle(100, 100, 100);
-
-			
-			//loadingFont.
-			
-			texture = new Texture(pixmap);
-
-    	   localCords = new Vector2();
-    	   
-    	   
-			SpriteBatch SpriteBatch = new SpriteBatch();
-			
-			FrameBuffer f = new FrameBuffer(Format.RGB888 , pixmap.getWidth() , pixmap.getHeight() , false);
-			f.begin();
-			
-
-			SpriteBatch.begin();
-			SpriteBatch.draw(texture, 0, 0);
-	        loadingFont.draw(SpriteBatch , "test" , 0 , 0);
-	        SpriteBatch.end();
-			
-	        pixmap =  ScreenUtils.getFrameBufferPixmap(0, 0, pixmap.getWidth(), pixmap.getHeight());
-	        
-			f.end();
-    	   
-			texture = new Texture(pixmap);
-	       	
-	       	setWidth(texture.getWidth());
-	       	setHeight(texture.getHeight());
-	       	this.setBounds(0, 0, getWidth() , getHeight());
-	       	
-		    setTouchable(Touchable.enabled);
-		    
-
-	       	
+				pixmap = incomingPixmap;
+				tweenmanager = incomingTweener;
+				
+					
+				texture = new Texture(pixmap);
+				
+				localCords = new Vector2();
+				   
+				texture = new Texture(pixmap);
+				   	
+				setWidth(texture.getWidth());
+				setHeight(texture.getHeight());
+				this.setBounds(0, 0, getWidth() , getHeight());
+				   	
+				setTouchable(Touchable.enabled);
 	       }
 	       
 	       public void setDragable ()
@@ -116,9 +87,9 @@ public class TransparentActor extends Actor {
 	       public void draw (SpriteBatch batch, float parentAlpha) {
 	               Color color = getColor();
 	               batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-	               
+
 	               batch.draw(texture, getX(), getY(), getOriginX(), getOriginY(), texture.getWidth(), texture.getHeight(), getScaleX(), getScaleY(), getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), false,  false);
-	               
+
 	             //  batch.draw(texture, getX(), getY());
 	       }
 	       
