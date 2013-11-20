@@ -1,4 +1,4 @@
-package csci331.team.red;
+package csci331.team.red.example;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -12,6 +12,9 @@ import org.junit.Test;
 
 /**
  * Tester class for {@link Example}
+ *
+ * 
+ * 
  * 
  * @author jourmeob
  * 

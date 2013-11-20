@@ -1,4 +1,4 @@
-package csci331.team.red;
+package csci331.team.red.example;
 
 import java.util.LinkedList;
 import java.util.List;
