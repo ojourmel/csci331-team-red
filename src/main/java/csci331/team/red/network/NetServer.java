@@ -2,6 +2,7 @@ package csci331.team.red.network;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -25,16 +26,11 @@ import csci331.team.red.shared.Role;
  * @author marius
  */
 public class NetServer {
-
-/**  for singleton
-     public static Singleton getInstance () {
-          if (uniqueInstance == null) {
-               uniqueInstance = new Singleton();
-          }
-          return uniqueInstance;
-     }
- */
-//	private static NetServer uniqueInstance;	// only for singleton
+	/**
+	 * for singleton public static Singleton getInstance () { if (uniqueInstance
+	 * == null) { uniqueInstance = new Singleton(); } return uniqueInstance; }
+	 */
+	// private static NetServer uniqueInstance; // only for singleton
 	private ServerEngine gameServer;
 	private Server server;
 	private HashMap<Integer, Role> roles;
@@ -100,12 +96,7 @@ public class NetServer {
 						gameServer.onPlayerConnect(connection);
 						break;
 					case DIALOGUE:
-						// TODO: discuss format with Oliver
-						// Need to send a List to gameServer
-						if (netMsg.obj instanceof List) {
-							// gameServer.onDialogRequest((List) object);
-							gameServer.onDialogRequest((Dialogue) object);
-						}
+						// server should not receive this
 						break;
 					case DISCONNECTED:
 						gameServer.onPlayerDisconnect(roles.get(connection

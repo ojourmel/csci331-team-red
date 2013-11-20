@@ -2,8 +2,10 @@ package csci331.team.red.network;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -71,7 +73,6 @@ public class NetClient {
 			 * Override received method of Listener to specify game specific
 			 * management of received objects
 			 */
-			@SuppressWarnings("unchecked")
 			public void received(Connection connection, Object object) {
 				if (object instanceof NetMessage) {
 					NetMessage netMsg = (NetMessage) object;
@@ -85,17 +86,27 @@ public class NetClient {
 					case CONNECTED:
 						// client should not receive this message
 						break;
+						// onPostureChange(msg, Posture Enum)
 					case DIALOGUE:
-						//TODO: discuss with Oliver
 						if (netMsg.obj instanceof List) {
-							List<Dialogue> list = (List<Dialogue>) netMsg.obj;
-							Dialogue[] dialogue = (Dialogue[]) list.toArray(new Dialogue[list.size()]);
-							gameClient.DisplayDialouge(dialogue);
+							List<Dialogue> dialogueList = new LinkedList<Dialogue>();
+							List<?> generic = (List<?>) netMsg.obj;
+
+							for (Object obj : generic) {
+								if (obj instanceof Dialogue) {
+									dialogueList.add((Dialogue) obj);
+								}
+							}
+
+							Dialogue[] dialogues = new Dialogue[dialogueList
+									.size()];
+							dialogueList.toArray(dialogues);
+
+							gameClient.DisplayDialouge(dialogues);
 						}
 						break;
 					case DISCONNECTED:
-						// TODO: Implement call
-						// gameClient.onServerDisconnect();
+						gameClient.LeaveGame();
 						break;
 					case PAUSE:
 						gameClient.PauseGame();
@@ -133,17 +144,16 @@ public class NetClient {
 			 * it disconnected
 			 */
 			public void disconnected(Connection connection) {
-				// TODO: Implement call
-				// gameClient.onServerDisconnect();
+				gameClient.LeaveGame();
 			}
 		})); // end of addListener
 	} // end of constructor
 
 	/**
-	 * CSCI331 ML STATICBINDING 
+	 * CSCI331 ML STATICBINDING
 	 * 
-	 * Explain how the system will decide which method
-	 * to invoke/variable to access.
+	 * Explain how the system will decide which method to invoke/variable to
+	 * access.
 	 */
 	/**
 	 * @param msg
