@@ -10,10 +10,11 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import csci331.team.red.example.Example;
-
 /**
  * Tester class for {@link Example}
+ *
+ * 
+ * 
  * 
  * @author jourmeob
  * 
