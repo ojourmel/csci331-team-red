@@ -2,6 +2,7 @@ package csci331.team.red.network;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
@@ -9,9 +10,14 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import csci331.team.red.server.ServerEngine;
+import csci331.team.red.shared.Alert;
+import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Role;
 
+/**
+ * CSCI331 ML INTERFACE
+ */
 /**
  * Server end for KryoNet network communications
  * 
@@ -19,6 +25,16 @@ import csci331.team.red.shared.Role;
  * @author marius
  */
 public class NetServer {
+
+/**  for singleton
+     public static Singleton getInstance () {
+          if (uniqueInstance == null) {
+               uniqueInstance = new Singleton();
+          }
+          return uniqueInstance;
+     }
+ */
+//	private static NetServer uniqueInstance;	// only for singleton
 	private ServerEngine gameServer;
 	private Server server;
 	private HashMap<Integer, Role> roles;
@@ -72,6 +88,9 @@ public class NetServer {
 
 					// process message
 					switch (netMsg.msg) {
+					case ALERT:
+						// server should not receive this
+						break;
 					case CONNECTED:
 						if (roles.containsKey(connection.getID())) {
 							// You are already connected
@@ -80,41 +99,59 @@ public class NetServer {
 						}
 						gameServer.onPlayerConnect(connection);
 						break;
+					case DIALOGUE:
+						// TODO: discuss format with Oliver
+						// Need to send a List to gameServer
+						if (netMsg.obj instanceof List) {
+							// gameServer.onDialogRequest((List) object);
+							gameServer.onDialogRequest((Dialogue) object);
+						}
+						break;
 					case DISCONNECTED:
 						gameServer.onPlayerDisconnect(roles.get(connection
 								.getID()));
 						break;
-					case START_LEVEL:
-						// server should not receive this
-						break;
-					case START_STAGE:
-						// server should not receive this
-						break;
-					case READY:
-						// TODO: who will send and receive this
-						break;
 					case PAUSE:
 						gameServer.onPlayerPause(roles.get(connection.getID()));
+						break;
+					case QUIT:
+						gameServer.onPlayerQuit(roles.get(connection.getID()));
 						break;
 					case RESUME:
 						gameServer.onPlayerResume(roles.get(connection.getID()));
 						break;
-					case QUIT:
-						gameServer.onPlayerQuit(roles.get(connection.getID()));
+					case SET_ROLE:
+						// server should not receive this
+						break;
+					case START_LEVEL:
+						// server should not receive this
+						break;
+					case START_INCIDENT:
+						// server should not receive this
 						break;
 					default:
 						break;
 					}
 				}
 			}
+
+			/**
+			 * Called when the remote end is no longer connected. Used to trap
+			 * accidental disconnects, cause client won't be able to tell us
+			 * that it disconnected
+			 */
+			public void disconnected(Connection connection) {
+				gameServer.onPlayerDisconnect(roles.get(connection.getID()));
+			}
 		}); // end of addListener
 	} // end of constructor
 
 	/**
-	 * CSCI331 ML ENCAPSULATION 
-	 * Public access means that anyone outside of this
-	 * class can modify the value, outside of the class's control By having it
-	 * private we can not only control access, but also the values we allow.
+	 * CSCI331 ML ENCAPSULATION
+	 * 
+	 * Public access means that anyone outside of this class can modify the
+	 * value, outside of the class's control By having it private we can not
+	 * only control access, but also the values we allow.
 	 * 
 	 * In this case I need to fetch the connectionID from the connection before
 	 * I add that and the role into a HashMap.
@@ -131,8 +168,9 @@ public class NetServer {
 
 	/**
 	 * CSCI331 ML STATICBINDING
-	 * Explain how the system will decide which method to
-	 * invoke/variable to access.
+	 * 
+	 * Explain how the system will decide which method to invoke/variable to
+	 * access.
 	 */
 	/**
 	 * @param msg

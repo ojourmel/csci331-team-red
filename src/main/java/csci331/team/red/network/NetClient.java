@@ -1,6 +1,8 @@
 package csci331.team.red.network;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -9,10 +11,16 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 
 import csci331.team.red.clientEngine.ClientEngine;
+import csci331.team.red.shared.Alert;
+import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Incident;
+import csci331.team.red.shared.Role;
 
+/**
+ * CSCI331 ML INTERFACE
+ */
 /**
  * Client end for KryoNet network communications
  * 
@@ -32,8 +40,10 @@ public class NetClient {
 	 *            Reference to a {@link ClientEngine}
 	 * @param host
 	 *            Name or ip address of the Server to connect to
+	 * @throws IOException
 	 */
-	public NetClient(final ClientEngine gameClient, String host) {
+	public NetClient(final ClientEngine gameClient, String host)
+			throws IOException {
 		this.host = host;
 		this.gameClient = gameClient;
 		// connects to a server
@@ -44,20 +54,13 @@ public class NetClient {
 		// registered by the same method for both the client and server.
 		Network.register(client);
 
-		try {
-			client.connect(timeout, host, Network.tcpPort);
-			this.send(Message.CONNECTED);
-			/*
-			 * change timeout to 60 secs so that client will not accidently
-			 * disconnect
-			 */
-			setTimeout(60000);
-		} catch (IOException e) {
-			// TODO: should I be catching this, or just pass it on to client?
-			System.out.println("Client bombed");
-			e.printStackTrace();
-			client.stop();
-		}
+		client.connect(timeout, host, Network.tcpPort);
+		this.send(Message.CONNECTED);
+		/*
+		 * change timeout to 60 secs so that client will not accidently
+		 * disconnect
+		 */
+		setTimeout(60000);
 
 		// ThreadedListener runs the listener methods on a different thread.
 		client.addListener(new ThreadedListener(new Listener() {
@@ -68,60 +71,78 @@ public class NetClient {
 			 * Override received method of Listener to specify game specific
 			 * management of received objects
 			 */
+			@SuppressWarnings("unchecked")
 			public void received(Connection connection, Object object) {
 				if (object instanceof NetMessage) {
 					NetMessage netMsg = (NetMessage) object;
 					// process message
 					switch (netMsg.msg) {
+					case ALERT:
+						if (netMsg.obj instanceof Alert) {
+							gameClient.addAlert((Alert) netMsg.obj);
+						}
+						break;
 					case CONNECTED:
 						// client should not receive this message
 						break;
+					case DIALOGUE:
+						//TODO: discuss with Oliver
+						if (netMsg.obj instanceof List) {
+							List<Dialogue> list = (List<Dialogue>) netMsg.obj;
+							Dialogue[] dialogue = (Dialogue[]) list.toArray(new Dialogue[list.size()]);
+							gameClient.DisplayDialouge(dialogue);
+						}
+						break;
 					case DISCONNECTED:
-						// TODO: Implement call and remove print
+						// TODO: Implement call
 						// gameClient.onServerDisconnect();
-						System.out.println("Disconnected...");
+						break;
+					case PAUSE:
+						gameClient.PauseGame();
+						break;
+					case QUIT:
+						gameClient.LeaveGame();
+						break;
+					case RESUME:
+						gameClient.UnpauseGame();
+						break;
+					case SET_ROLE:
+						if (netMsg.obj instanceof Role) {
+							gameClient.SetRole((Role) netMsg.obj);
+						}
 						break;
 					case START_LEVEL:
 						if (netMsg.obj instanceof Level) {
-							Level level = (Level) netMsg.obj;
-							// TODO: Implement call and remove print
-							// gameClient.startLevel(level);
-							System.out.println("Starting level...");
+							gameClient.setLevel((Level) netMsg.obj);
 						}
 						break;
-					case START_STAGE:
+					case START_INCIDENT:
 						if (netMsg.obj instanceof Incident) {
-							Incident incident = (Incident) netMsg.obj;
-							// TODO: Implement call and remove print
-							// gameClient.startIncident(incident);
-							System.out.println("Starting stage...");
+							gameClient.startIncident((Incident) netMsg.obj);
 						}
-						break;
-					case READY:
-						// TODO: what will this be used for?
-						break;
-					case PAUSE:
-						// TODO: Implement call and remove print
-						// gameClient.onPlayerPause();
-						break;
-					case QUIT:
-						// TODO: Implement call and remove print
-						// gameClient.onPlayerQuit();
-						break;
-					case RESUME:
-						// TODO: Implement call and remove print
-						// gameClient.onPlayerResume();
 						break;
 					default:
 						break;
 					}
 				}
 			}
+
+			/**
+			 * Called when the remote end is no longer connected. Used to trap
+			 * accidental disconnects cause server won't be able to tell us that
+			 * it disconnected
+			 */
+			public void disconnected(Connection connection) {
+				// TODO: Implement call
+				// gameClient.onServerDisconnect();
+			}
 		})); // end of addListener
 	} // end of constructor
 
 	/**
-	 * CSCI331 ML STATICBINDING Explain how the system will decide which method
+	 * CSCI331 ML STATICBINDING 
+	 * 
+	 * Explain how the system will decide which method
 	 * to invoke/variable to access.
 	 */
 	/**
