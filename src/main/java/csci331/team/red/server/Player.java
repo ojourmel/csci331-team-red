@@ -1,8 +1,7 @@
 package csci331.team.red.server;
 
-import csci331.team.red.shared.PlayerState;
+import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Role;
-import csci331.team.red.shared.State;
 
 /**
  * A Server-side representation of the two players. Who they are, what their
@@ -13,9 +12,9 @@ import csci331.team.red.shared.State;
  */
 public class Player {
 	private Role role;
-	private PlayerState state;
+	private Posture posture;
 
-	/** 
+	/**
 	 * @param role
 	 *            {@link Role} to set
 	 */
@@ -23,9 +22,8 @@ public class Player {
 		this.role = role;
 	}
 
-	/** 
-	 * @return role
-	 *            {@link Role}
+	/**
+	 * @return role {@link Role}
 	 */
 	public Role getRole() {
 		return role;
@@ -33,10 +31,18 @@ public class Player {
 
 	/**
 	 * @param state
-	 *            {@link PlayerState} to set
+	 *            {@link Posture} to set
 	 */
-	public void setState(PlayerState state) {
-		this.state = state;
+	public void setPosture(Posture posture) {
+		this.posture = posture;
+	}
+	
+	/**
+	 * @return posture
+	 *            {@link Posture} 
+	 */
+	public Posture getPosture() {
+		return posture;
 	}
 
 }

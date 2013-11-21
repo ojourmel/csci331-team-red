@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -22,6 +21,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.callbacks.DBCallback;
 
 /**
  * Scene responsible for the database roll.

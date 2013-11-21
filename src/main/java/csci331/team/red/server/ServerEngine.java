@@ -1,6 +1,7 @@
 package csci331.team.red.server;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
@@ -15,9 +16,9 @@ import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
-import csci331.team.red.shared.PlayerState;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
+import csci331.team.red.shared.callbacks.FieldCallback;
 
 /**
  * Main game logic class. Manages flow of information between the two clients,
@@ -168,22 +169,22 @@ public class ServerEngine extends Thread {
 		return Result.INVALID;
 	}
 
-	/**
-	 * Callback for when a player changes {@link State}
-	 * 
-	 * @param role
-	 *            The role of the player changing state
-	 * @param state
-	 */
-	public void onStateChange(Role role, PlayerState state) {
-		if (playerOne.getRole() == role) {
-			playerOne.setState(state);
-		} else {
-			playerTwo.setState(state);
-		}
-
-		// TODO: Allow for state to have an impact on actors.
-	}
+	// /**
+	// * Callback for when a player changes {@link State}
+	// *
+	// * @param role
+	// * The role of the player changing state
+	// * @param state
+	// */
+	// public void onStateChange(Role role, PlayerState state) {
+	// if (playerOne.getRole() == role) {
+	// playerOne.setState(state);
+	// } else {
+	// playerTwo.setState(state);
+	// }
+	//
+	// // TODO: Allow for state to have an impact on actors.
+	// }
 
 	/**
 	 * Callback for when a player connects. If two players connect, then the
@@ -286,15 +287,13 @@ public class ServerEngine extends Thread {
 						"Ominious Voice" },
 
 		};
-		// FieldCallback[] callarr = { null, null,
-		// csci331.team.red.clientEngine.callback.approachPerson, null,
-		// null, null, null,
-		// csci331.team.red.clientEngine.callback.giveDocuments, null,
-		// null, null, null, null, null };
-		//
-		// List<Dialogue> dialogues = Arrays.asList(Dialogue.returnDialogArray(
-		// strarr, callarr));
+		FieldCallback[] callarr = { null, null, FieldCallback.approachPerson,
+				null, null, null, null, FieldCallback.giveDocuments, null,
+				null, null, null, null, null };
 
-		return null;
+		List<Dialogue> dialogues = Arrays.asList(Dialogue.returnDialogArray(
+				strarr, callarr));
+
+		return dialogues;
 	}
 }

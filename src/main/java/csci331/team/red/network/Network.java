@@ -16,7 +16,6 @@ import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.SoundTrack;
 import csci331.team.red.shared.Incident;
-import csci331.team.red.shared.State;
 
 /**
  * This class is a convenient place to keep things common to both the client and
@@ -25,8 +24,7 @@ import csci331.team.red.shared.State;
  * @author marius
  * 
  */
-public class Network
-{
+public class Network {
 	static public final int tcpPort = 54555;
 	static public final int udpPort = 54777;
 
@@ -35,8 +33,7 @@ public class Network
 	 * 
 	 * @param endPoint
 	 */
-	static public void register(EndPoint endPoint)
-	{
+	static public void register(EndPoint endPoint) {
 		Kryo kryo = endPoint.getKryo();
 		kryo.register(NetMessage.class);
 		kryo.register(Alert.class);
@@ -52,6 +49,5 @@ public class Network
 		kryo.register(Result.class);
 		kryo.register(Role.class);
 		kryo.register(SoundTrack.class);
-		kryo.register(State.class);
 	}
 }

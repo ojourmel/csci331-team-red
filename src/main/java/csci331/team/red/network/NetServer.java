@@ -69,7 +69,7 @@ public class NetServer {
 					// process message
 					switch (netMsg.msg) {
 					case CONNECTED:
-						gameServer.onPlayerConnect();
+//						gameServer.onPlayerConnect();
 						// receive a connection object from client for server
 						break;
 					case DISCONNECTED:
@@ -91,7 +91,7 @@ public class NetServer {
 						gameServer.onPlayerResume();
 						break;
 					case QUIT:
-						gameServer.onPlayerQuit();
+//						gameServer.onPlayerQuit();
 						break;
 					default:
 						break;
