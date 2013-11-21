@@ -1,7 +1,9 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+
+import csci331.team.red.shared.Message;
 
 public class UIControlHandler implements InputProcessor {
 
@@ -22,13 +24,13 @@ public class UIControlHandler implements InputProcessor {
 		if(centralEngine.getScreen() == centralEngine.pauseScreen)
 		{
 				
-			centralEngine.UnpauseGame();
+			centralEngine.network.send(Message.RESUME);
 				
 		}
 		
 		else
 		{
-			centralEngine.PauseGame();
+			centralEngine.network.send(Message.PAUSE);
 		}
 		 
 	}

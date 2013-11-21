@@ -1,4 +1,4 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -28,11 +28,11 @@ public class DialogueWindow extends TextButton {
 		this(dialogue, thespeaker, style, parentStage,  false , 0 , true,  null , null, null);
 	}
 	
-	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c, final DialogCallback<Callback> dcall) {
+	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c, final DialogueCallback<Callback> dcall) {
 		this(dialogue, thespeaker, style , parentStage, useWordWrap , extraPadding , displayNow, nextWindow, c , Gdx.graphics.getHeight(), dcall);
 	}
 	
-	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c , float yPosition, final DialogCallback<Callback> dcall) {
+	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c , float yPosition, final DialogueCallback<Callback> dcall) {
 		super(dialogue, style , useWordWrap , extraPadding);
 		
 		internalReference = this;

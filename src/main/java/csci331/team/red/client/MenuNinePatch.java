@@ -1,4 +1,4 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;

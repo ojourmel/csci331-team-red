@@ -1,4 +1,4 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 /**
  * Enumerates all possible screens
@@ -16,6 +16,7 @@ public enum ScreenEnumerations {
 	FieldAgent,
 	DatabaseAgent,
 	PauseScreen,
+	ErrorScreen,
 	;
 }
 

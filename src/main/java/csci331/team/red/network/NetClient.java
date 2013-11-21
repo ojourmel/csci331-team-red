@@ -1,23 +1,20 @@
 package csci331.team.red.network;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 
-import csci331.team.red.clientEngine.ClientEngine;
 import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
-import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Role;
 
 /**
@@ -30,7 +27,7 @@ import csci331.team.red.shared.Role;
  * @author marius
  */
 public class NetClient {
-	private final ClientEngine gameClient;
+//	private final ClientEngine gameClient;
 	private final Client client;
 	private String host = "127.0.0.1";
 	private static final int timeout = 5000;

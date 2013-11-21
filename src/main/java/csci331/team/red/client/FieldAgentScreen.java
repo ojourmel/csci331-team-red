@@ -1,4 +1,4 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +24,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import csci331.team.red.shared.Character;
+import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Incident;
+import csci331.team.red.shared.Message;
+import csci331.team.red.shared.Posture;
 /**
  * Screen for the field agent
  * @author Lduperron
@@ -57,9 +60,9 @@ public class FieldAgentScreen implements Screen
 	
 	InputMultiplexer multiplexer;
 	
-	TextButton passiveState;
-	TextButton aggressiveState;
-	ButtonGroup states;
+	TextButton passivePostureButton;
+	TextButton aggressivePostureButton;
+	ButtonGroup postureButtonGroup;
 	
 	
 	TextButton allowButton;
@@ -71,13 +74,13 @@ public class FieldAgentScreen implements Screen
 	// Used for controlling stuff moving around.  Going to be moved into the game.
 	TweenManager tweenManager;
 	
-	FieldDialogeCallback<Callback> callbackObject;
+	FieldDialogueCallback<Callback> callbackObject;
 	Incident currentIncident;
 	
 
 	public FieldAgentScreen(ClientEngine parent)
 	{
-		callbackObject = new FieldDialogeCallback<Callback>(this);
+		callbackObject = new FieldDialogueCallback<Callback>(this);
 		
 		// Sets up links to our parent
 		parentEngine = parent;
@@ -128,19 +131,46 @@ public class FieldAgentScreen implements Screen
 	    
 	    
 	    
-	    states = new ButtonGroup();
+	    postureButtonGroup = new ButtonGroup();
 	    
 	    
-	    passiveState = new TextButton("Passive" , parentEngine.radioButtonStyle);
-	    passiveState.setPosition(Gdx.graphics.getWidth()-passiveState.getWidth(), Gdx.graphics.getHeight()-passiveState.getHeight());
-	    states.add(passiveState);
-	    uiStage.addActor(passiveState);
+	    passivePostureButton = new TextButton("Passive" , parentEngine.radioButtonStyle);
+	    passivePostureButton.setPosition(Gdx.graphics.getWidth()-passivePostureButton.getWidth(), Gdx.graphics.getHeight()-passivePostureButton.getHeight());
+	    postureButtonGroup.add(passivePostureButton);
+	    
+	    passivePostureButton.addListener(new ClickListener() {
+    		
+    		
+    	    @Override
+    	    public void clicked(InputEvent event, float x, float y) 
+    	    {
+    		    parentEngine.network.send(Message.ONPOSTURECHANGE, Posture.PASSIVE);
+    	    	
+    	    };
+    		
+    	});
 	    
 	    
-	    aggressiveState = new TextButton("Aggressive" , parentEngine.radioButtonStyle);
-	    aggressiveState.setPosition(Gdx.graphics.getWidth()-aggressiveState.getWidth(), passiveState.getY()-aggressiveState.getHeight());
-	    states.add(aggressiveState);
-	    uiStage.addActor(aggressiveState);
+	    uiStage.addActor(passivePostureButton);
+	    
+	    
+	    aggressivePostureButton = new TextButton("Aggressive" , parentEngine.radioButtonStyle);
+	    aggressivePostureButton.setPosition(Gdx.graphics.getWidth()-aggressivePostureButton.getWidth(), passivePostureButton.getY()-aggressivePostureButton.getHeight());
+	    postureButtonGroup.add(aggressivePostureButton);
+	    
+	    aggressivePostureButton.addListener(new ClickListener() {
+    		
+    		
+    	    @Override
+    	    public void clicked(InputEvent event, float x, float y) 
+    	    {
+    	    	parentEngine.network.send(Message.ONPOSTURECHANGE, Posture.AGGRESSIVE);
+    	    	
+    	    };
+    		
+    	});
+	    
+	    uiStage.addActor(aggressivePostureButton);
 	    
 	    
 	    
@@ -161,16 +191,20 @@ public class FieldAgentScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    		    String[][] strarr = {
-    		    		{"Oh dear, sweetie... it seems you've forgotten your cuffs" , "Ominious Voice"},
-    		    		{"...and your gun...", "Ominious Voice"},
-    		    		{"...and your badge.", "Ominious Voice"},
-    		    		{"You can go this time, citizen." , "You"},
-    		    		
-    		    };
-    		    Dialogue[] d = Dialogue.returnDialogArray(strarr);
-    		    displayDialogue(d);
+//    		    String[][] strarr = {
+//    		    		{"Oh dear, sweetie... it seems you've forgotten your cuffs" , "Ominious Voice"},
+//    		    		{"...and your gun...", "Ominious Voice"},
+//    		    		{"...and your badge.", "Ominious Voice"},
+//    		    		{"You can go this time, citizen." , "You"},
+//    		    		
+//    		    };
+//    		    Dialogue[] d = Dialogue.returnDialogArray(strarr);
+//    		    displayDialogue(d);
     	    	
+    	    	
+    	    	
+    	    	parentEngine.network.send(Message.ONDECISIONEVENT, Decision.DETAIN);
+    	    	detainPerson();
     	    };
     		
     	});
@@ -187,33 +221,27 @@ public class FieldAgentScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    		    String[][] strarr = {
-    		    		{"Get out of my sight." , "You"},
-    		    		{"Well.  That was uneventful." , "Ominious Voice"},
-    		    		{"You should approach him.  He looks suspicious.", "Ominious Voice"},
-    		    		{"420 YOLO SWAG MOFO" , "Thug"},
-    		    		{"Oh dear.  Quick, switch to AGGRESSIVE and use your ULTRATASER 9000 X-TREME EDITION" , "Ominious Voice"},
-    		    		{"...Will you back off, old lady?  I've got this." , "You"},
-    		    		{"...Aren't you Harold's mom?" , "You"},
-    		    		{"I'm just here making sure everything goes okay for him." , "Harold's Mom"},
-    		    		{"..." , "You"},
-    		    		 
-    		    		
-    		    };
-    		    FieldCallback[] callarr = {null, null, FieldCallback.approachPerson};
-    		    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
-    		    displayDialogue(d);
+//    		    String[][] strarr = {
+//    		    		{"Get out of my sight." , "You"},
+//    		    		{"Well.  That was uneventful." , "Ominious Voice"},
+//    		    		{"You should approach him.  He looks suspicious.", "Ominious Voice"},
+//    		    		{"420 YOLO SWAG MOFO" , "Thug"},
+//    		    		{"Oh dear.  Quick, switch to AGGRESSIVE and use your ULTRATASER 9000 X-TREME EDITION" , "Ominious Voice"},
+//    		    		{"...Will you back off, old lady?  I've got this." , "You"},
+//    		    		{"...Aren't you Harold's mom?" , "You"},
+//    		    		{"I'm just here making sure everything goes okay for him." , "Harold's Mom"},
+//    		    		{"..." , "You"},
+//    		    		 
+//    		    		
+//    		    };
+//    		    //FieldCallback[] callarr = {null, null, FieldCallback.approachPerson};
+//    		    //Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
+//    		    Dialogue[] d = Dialogue.returnDialogArray(strarr);
+//    		    displayDialogue(d);
     	    	
-    		    
-    		    
-    		    tweenManager.killTarget(currentPerson);
-    		    tweenManager.killTarget(ticket);
-    		    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-500, -500).ease(Quad.IN).start(tweenManager);
-    		    if(ticket!=null)
-    		    {
-    		    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-500, ticket.getY()).ease(Quad.IN).start(tweenManager);
-    		    }
-    		    
+    	    	parentEngine.network.send(Message.ONDECISIONEVENT, Decision.ALLOW);
+    	    	allowPerson();
+
     		    
     		    
     		    
@@ -240,27 +268,29 @@ public class FieldAgentScreen implements Screen
 	    		
 	    };
 	    FieldCallback[] callarr = {null, null,FieldCallback.approachPerson, null,null, null,null, FieldCallback.giveDocuments, null,null, null , null , null, null};
-	    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
+	    //Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
+	    Dialogue[] d = Dialogue.returnDialogArray(strarr);
+	    
 	    displayDialogue(d);
 
 	    
 	    
 	    
 
-	    TextButton BackButton =  new TextButton("Back" , parentEngine.buttonStyle);
-	    uiStage.addActor(BackButton);
-	    BackButton.toFront();
-	    BackButton.addListener(new ClickListener() {
-    		
-    		
-    	    @Override
-    	    public void clicked(InputEvent event, float x, float y) 
-    	    {
-    	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
-    	    	
-    	    };
-    		
-    	});
+//	    TextButton BackButton =  new TextButton("Back" , parentEngine.buttonStyle);
+//	    uiStage.addActor(BackButton);
+//	    BackButton.toFront();
+//	    BackButton.addListener(new ClickListener() {
+//    		
+//    		
+//    	    @Override
+//    	    public void clicked(InputEvent event, float x, float y) 
+//    	    {
+//    	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
+//    	    	
+//    	    };
+//    		
+//    	});
 	    
 	    
 	}
@@ -365,6 +395,7 @@ public class FieldAgentScreen implements Screen
 
 	@Override
 	public void dispose() {
+		parentEngine.fieldAgentScreen = null;
 	}
 	
 
@@ -425,6 +456,34 @@ public class FieldAgentScreen implements Screen
 			}
 		}
 		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode(), callbackObject);
+		
+	}
+	
+	public void allowPerson()
+	{
+		
+	    tweenManager.killTarget(currentPerson);
+	    tweenManager.killTarget(ticket);
+	    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-500, -500).ease(Quad.IN).start(tweenManager);
+	    if(ticket!=null)
+	    {
+	    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-500, ticket.getY()).ease(Quad.IN).start(tweenManager);
+	    }
+	    
+		
+	}
+	
+	public void detainPerson()
+	{
+		
+	    tweenManager.killTarget(currentPerson);
+	    tweenManager.killTarget(ticket);
+	    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-500, -500).ease(Quad.IN).start(tweenManager);
+	    if(ticket!=null)
+	    {
+	    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-500, ticket.getY()).ease(Quad.IN).start(tweenManager);
+	    }
+	    
 		
 	}
 }
