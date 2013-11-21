@@ -7,12 +7,17 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.esotericsoftware.kryonet.Connection;
+
+import csci331.team.red.dao.CharacterDAO;
 import csci331.team.red.network.NetServer;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
+import csci331.team.red.shared.PlayerState;
 import csci331.team.red.shared.Result;
+import csci331.team.red.shared.Role;
 
 /**
  * Main game logic class. Manages flow of information between the two clients,
@@ -22,8 +27,7 @@ import csci331.team.red.shared.Result;
  * 
  * @author ojourmel
  */
-public class ServerEngine extends Thread
-{
+public class ServerEngine extends Thread {
 
 	/**
 	 * The maximum number of players supported by this game.
@@ -35,6 +39,7 @@ public class ServerEngine extends Thread
 	private List<Incident> stages;
 	private List<Level> levels;
 	private Incident currentStage;
+	private CharacterDAO dao;
 
 	// The two players in the game
 	private Player playerOne;
@@ -57,8 +62,10 @@ public class ServerEngine extends Thread
 	 * 
 	 * @author ojourmel
 	 */
-	public ServerEngine()
-	{
+	public ServerEngine() {
+
+		dao = new CharacterDAO();
+
 		levels = new LinkedList<Level>();
 		stages = new LinkedList<Incident>();
 
@@ -70,93 +77,71 @@ public class ServerEngine extends Thread
 	 * Main entry point to game logic. Called via {@link ServerEngine#start()}
 	 */
 	@Override
-	public void run()
-	{
+	public void run() {
 
 		// The network could not bind a port. Fatal error
-		try
-		{
+		try {
 			network = new NetServer(this);
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
-		while (numPlayerConnected < 2)
-		{
-			try
-			{
+		while (numPlayerConnected < 2) {
+			try {
 				lock.lock();
 				clientsConnected.await();
-			}
-			catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
 				// game shutting down due to clientDisconect.
-				// onClientDisconnect will handle the details, just quit.
-
-				System.err.println("Quiting");
-
+				System.err.println("Server thread shutting down");
 				return;
-			}
-			finally
-			{
+			} finally {
 				lock.unlock();
 			}
 		}
-		
-		// we now have two clients connected.
-		levels.add(Level.getWait());
-		network.send(Message.START_LEVEL, Level.getWait());
 
+		// Set up the first level
 		// set up the environment for level one. (Campus)
 		Level one = Level.getCampus();
 		levels.add(one);
+
 		// start level one.
 		network.send(Message.START_LEVEL, one);
-		for (int i = 0; i < 3; i++)
-		{
+
+		// Set up an incident, with corresponding dialog for field and client
+
+		for (int i = 0; i < 3; i++) {
 			// set up a stage. Use the stats from the previous stages to affect
 			// the next stage.
 			// TODO: Get Characters from the Database Access Objects
 
 			// send the stage to the clients
-			//network.send(Message.START_STAGE, stage);
+			// network.send(Message.START_STAGE, stage);
 
 			// since everything that can happen in a stage is purly reactive,
 			// (ie.
 			// clients initiat calles...), simply wait for the clients to accept
 			// or
 			// reject this stage, then make a new one!
-			try
-			{
+			try {
 				lock.lock();
 				stageOver.await();
-			}
-			catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
+				// We got interrupted. Game Over. Save nothing.
 				return;
-			}
-			finally
-			{
+			} finally {
 				lock.unlock();
 			}
 		}
 
 		// boss stage time!
 
-		//network.send(Message.START_STAGE, stage);
-		try
-		{
+		// network.send(Message.START_STAGE, stage);
+		try {
 			lock.lock();
 			stageOver.await();
-		}
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			return;
-		}
-		finally
-		{
+		} finally {
 			lock.unlock();
 		}
 
@@ -175,48 +160,43 @@ public class ServerEngine extends Thread
 	 *            executed
 	 * @return the {@link Result} of the query
 	 */
-	public Result onDatabaseSearch(String query)
-	{
+	public Result onDatabaseSearch(String query) {
+
+		query = query.toUpperCase();
+
 		// TODO: Handle database queries
 		return Result.INVALID;
-	}
-
-	public Dialogue onDialogRequest(Dialogue incoming)
-	{
-		/**
-		 * Callback for when a player requests additional dialog
-		 * 
-		 * @param incoming
-		 *            {@link Dialog}
-		 * @return Additional {@link Dialog} for the player
-		 */
-		// TODO: Handle proper dialog requests.
-		return Dialogue.GENERIC;
 	}
 
 	/**
 	 * Callback for when a player changes {@link State}
 	 * 
-	 * @deprecated Because this server must know <b> which </b> player has
-	 *             changed state.
+	 * @param role
+	 *            The role of the player changing state
 	 * @param state
 	 */
-	@Deprecated
-	public void onStateChange(State state)
-	{
-		// TODO: Allow for state to have an impact on actors.
+	public void onStateChange(Role role, PlayerState state) {
+		if (playerOne.getRole() == role) {
+			playerOne.setState(state);
+		} else {
+			playerTwo.setState(state);
+		}
 
+		// TODO: Allow for state to have an impact on actors.
 	}
 
 	/**
 	 * Callback for when a player connects. If two players connect, then the
 	 * main game logic is started.
 	 */
-	public void onPlayerConnect()
-	{
+	public void onPlayerConnect(Connection connection) {
 		numPlayerConnected++;
-		if (numPlayerConnected == MAX_PLAYERS)
-		{
+		// TODO: Assign rols to connections using:
+
+		// network.assignRole(connection, Role.DATABASE);
+
+		// Get the game going if we have enough players
+		if (numPlayerConnected == MAX_PLAYERS) {
 			lock.lock();
 			clientsConnected.signal();
 			lock.unlock();
@@ -229,8 +209,7 @@ public class ServerEngine extends Thread
 	 * TODO: Consider implementing a reconnect period, where a player could
 	 * resume their game
 	 */
-	public void onPlayerDisconnect()
-	{
+	public void onPlayerDisconnect() {
 		network.send(Message.DISCONNECTED);
 
 		// Doing things this way means that all "Condition.await()" blocks will
@@ -242,8 +221,7 @@ public class ServerEngine extends Thread
 	 * Callback for when a player has quit. Shut down the other clients, and
 	 * stop this {@link ServerEngine}
 	 */
-	public void onPlayerQuit()
-	{
+	public void onPlayerQuit(Role role) {
 		network.send(Message.QUIT);
 		// TODO: This code *might* have some problems interrupting it'self. See
 		// onPlayerDisconnect()
@@ -255,8 +233,7 @@ public class ServerEngine extends Thread
 	 * TODO: Determine how to keep track of <b> which</b> player paused, if
 	 * necessary.
 	 */
-	public void onPlayerPause()
-	{
+	public void onPlayerPause() {
 		// pause any time-counting variables
 		network.send(Message.PAUSE);
 	}
@@ -265,8 +242,7 @@ public class ServerEngine extends Thread
 	 * Callback when a player resumes their game. TODO: Determine how to keep
 	 * track of <b> which</b> player resumed, if necessary
 	 */
-	public void onPlayerResume()
-	{
+	public void onPlayerResume() {
 		// resume any time-counting variables
 		network.send(Message.RESUME);
 	}
@@ -275,8 +251,7 @@ public class ServerEngine extends Thread
 	 * Callback when a stage is completed. Causes a new stage to be sent to the
 	 * players
 	 */
-	public void onStageComplete(boolean decition)
-	{
+	public void onStageComplete(boolean decition) {
 
 		// update player scores from the outcome of this stage. Update any
 		// environment variables, and tell run() to wake up, and do another
@@ -287,9 +262,39 @@ public class ServerEngine extends Thread
 		lock.unlock();
 	}
 
-	public void kill()
-	{
+	public void kill() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	private List<Dialogue> getIntroDialogue(Role role) {
+		String[][] strarr = {
+				{ "Well then... (Click to continue)", "Ominious Voice" },
+				{ "Welcome to your first day on the job.", "Ominious Voice" },
+				{ "Why don't we approach someone?", "Ominious Voice" },
+				{ "Hey, you!  Stop!", "You" },
+				{ "...What?", "Girl" },
+				{ "...Turn around", "You" },
+				{ "...No.", "Girl" },
+				{ "...Well, let's see your ID.", "You" },
+				{ "Here.", "Girl" },
+				{
+						"You should call your partner and ask him if the infomation you've recieved is correct.",
+						"Ominious Voice" },
+				{
+						"But I can tell you it is this time.  You should let her go.",
+						"Ominious Voice" },
+
+		};
+		// FieldCallback[] callarr = { null, null,
+		// csci331.team.red.clientEngine.callback.approachPerson, null,
+		// null, null, null,
+		// csci331.team.red.clientEngine.callback.giveDocuments, null,
+		// null, null, null, null, null };
+		//
+		// List<Dialogue> dialogues = Arrays.asList(Dialogue.returnDialogArray(
+		// strarr, callarr));
+
+		return null;
 	}
 }

@@ -1,5 +1,6 @@
 package csci331.team.red.server;
 
+import csci331.team.red.shared.PlayerState;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.State;
 
@@ -12,9 +13,9 @@ import csci331.team.red.shared.State;
  */
 public class Player {
 	private Role role;
-	private State state;
+	private PlayerState state;
 
-	/**
+	/** 
 	 * @param role
 	 *            {@link Role} to set
 	 */
@@ -22,11 +23,20 @@ public class Player {
 		this.role = role;
 	}
 
+	/** 
+	 * @return role
+	 *            {@link Role}
+	 */
+	public Role getRole() {
+		return role;
+	}
+
 	/**
 	 * @param state
-	 *            {@link State} to set
+	 *            {@link PlayerState} to set
 	 */
-	public void setState(State state) {
+	public void setState(PlayerState state) {
 		this.state = state;
 	}
+
 }
