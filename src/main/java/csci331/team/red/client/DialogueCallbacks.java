@@ -1,4 +1,4 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 
 interface Callback
@@ -18,17 +18,17 @@ enum DBCallback implements Callback
 	startAlerts, stopAlerts, MaryTestAlert,
 }
 
-interface DialogCallback<T extends Callback>
+interface DialogueCallback<T extends Callback>
 {
 	void call(Callback c);
 }
 
-class DatabaseDialogeCallback<T extends Callback> implements
-		DialogCallback<Callback>
+class DatabaseDialogueCallback<T extends Callback> implements
+		DialogueCallback<Callback>
 {
 	protected DatabaseAgentScreen entity;
 
-	protected DatabaseDialogeCallback(DatabaseAgentScreen entity)
+	protected DatabaseDialogueCallback(DatabaseAgentScreen entity)
 	{
 		this.entity = entity;
 	}
@@ -56,12 +56,12 @@ class DatabaseDialogeCallback<T extends Callback> implements
 	}
 }
 
-class FieldDialogeCallback<T extends Callback> implements
-		DialogCallback<Callback>
+class FieldDialogueCallback<T extends Callback> implements
+		DialogueCallback<Callback>
 {
 	protected FieldAgentScreen entity;
 
-	protected FieldDialogeCallback(FieldAgentScreen entity)
+	protected FieldDialogueCallback(FieldAgentScreen entity)
 	{
 		this.entity = entity;
 	}

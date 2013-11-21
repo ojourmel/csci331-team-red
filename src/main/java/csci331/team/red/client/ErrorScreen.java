@@ -1,4 +1,4 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -21,7 +21,7 @@ import csci331.team.red.shared.Background;
  */
 
 
-public class PauseScreen implements Screen 
+public class ErrorScreen implements Screen 
 {
 	ClientEngine parentEngine;
 	
@@ -36,7 +36,7 @@ public class PauseScreen implements Screen
 	InputMultiplexer multiplexer;
 	
 
-	public PauseScreen(ClientEngine parent)
+	public ErrorScreen(ClientEngine parent)
 	{
 		// Sets up links to our parent
 		parentEngine = parent;
@@ -44,7 +44,7 @@ public class PauseScreen implements Screen
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.WAITING));
+		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.ERROR));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -55,16 +55,17 @@ public class PauseScreen implements Screen
 	    
 	    // Sets up an input multiplexer to handle our input to the buttons
 	    multiplexer = new InputMultiplexer();
-	    multiplexer.addProcessor(parentEngine.uiControlHandler);
 	    multiplexer.addProcessor(settingsStage);
 	    
 	    
 	    // Creates our buttons
-	    TextButton SettingsLabel = new TextButton("PAUSED\r\nPress escape to resume" , parentEngine.buttonStyle);
+	    TextButton SettingsLabel = new TextButton("ERROR" , parentEngine.buttonStyle);
 	    settingsStage.addActor(SettingsLabel);
   
-
-	    TextButton BackButton =  new TextButton("Back to main menu" , parentEngine.buttonStyle);
+	    TextButton ErrorText = new TextButton(parentEngine.errorText , parentEngine.buttonStyle);
+	    settingsStage.addActor(ErrorText);
+	    
+	    TextButton BackButton =  new TextButton("Back" , parentEngine.buttonStyle);
 	    settingsStage.addActor(BackButton);
 	    BackButton.addListener(new ClickListener() {
     		
@@ -73,6 +74,7 @@ public class PauseScreen implements Screen
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
+    	    	dispose();
     	    	
     	    };
     		
@@ -80,6 +82,7 @@ public class PauseScreen implements Screen
 	    
 	    // Sets the position of the buttons
 	    SettingsLabel.setPosition(Gdx.graphics.getWidth()/2-SettingsLabel.getWidth()/2 , (Gdx.graphics.getHeight()/5 *4  )   );
+	    ErrorText.setPosition(Gdx.graphics.getWidth()/2-ErrorText.getWidth()/2 , (Gdx.graphics.getHeight()/5  *2 )   );
 	    BackButton.setPosition(Gdx.graphics.getWidth()/2-BackButton.getWidth()/2 , (Gdx.graphics.getHeight() / (settingsStage.getActors().size+1)/5  )   );
 
 	    
@@ -104,7 +107,7 @@ public class PauseScreen implements Screen
 	    
 		batch.disableBlending();
 
-		batch.draw(backgroundImage , 0 ,0);
+		batch.draw(backgroundImage , 0 ,0, Gdx.graphics.getWidth() , Gdx.graphics.getHeight() );
 	    
 		batch.enableBlending();
 		
@@ -149,4 +152,5 @@ public class PauseScreen implements Screen
 	public void dispose() {
 
 	}
+
 }
