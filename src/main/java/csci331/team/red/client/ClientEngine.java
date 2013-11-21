@@ -1,4 +1,4 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 import java.util.HashMap;
 import aurelienribon.tweenengine.Tween;
@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
-import csci331.team.red.clientEngine.MainMenuScreen;
+import csci331.team.red.client.MainMenuScreen;
 import csci331.team.red.network.NetClient;
 import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Alert;
@@ -103,7 +103,7 @@ public class ClientEngine extends Game
 	FieldAgentScreen fieldAgentScreen;
 	SettingsScreen settingsScreen;
 	PauseScreen pauseScreen;
-	
+	ErrorScreen errorScreen;
 
 	
 	// Handles first-chance keyboard presses
@@ -145,7 +145,7 @@ public class ClientEngine extends Game
 		Level currentLevel;
 	
 		
-	
+	String errorText = "No Error Reported";
 	
 		
 	@Override
@@ -189,8 +189,8 @@ public class ClientEngine extends Game
 		Backgrounds.put(Background.LEVEL1FIELDBG ,new AssetDescriptor<Texture>("backgrounds/level1fieldagent.jpg" , Texture.class) );
 		Backgrounds.put(Background.LEVEL1DATABASEBG, new AssetDescriptor<Texture>("backgrounds/level1databaseagent.png" , Texture.class));
 		Backgrounds.put(Background.MENUSCREEN, new AssetDescriptor<Texture>("backgrounds/level2fieldagent.png" , Texture.class));
-		Backgrounds.put(Background.WAITING, new AssetDescriptor<Texture>("backgrounds/technical-difficulties.jpg" , Texture.class));
-		
+		Backgrounds.put(Background.WAITING, new AssetDescriptor<Texture>("backgrounds/PauseScreen.jpg" , Texture.class));
+		Backgrounds.put(Background.ERROR, new AssetDescriptor<Texture>("backgrounds/TechnicalDifficultyBars.jpg" , Texture.class));
 		
 		// Static Props...
 		Textures.put("clipboard", new AssetDescriptor<Texture>("props/clipboardtransparent.png" , Texture.class));
@@ -424,6 +424,13 @@ public class ClientEngine extends Game
 		switchToNewScreen(ScreenEnumerations.MainMenu);
 		
 	}
+	public void DisconnectByServer()
+	{
+		errorText = "Disconnected by remote host";
+		switchToNewScreen(ScreenEnumerations.ErrorScreen);
+		
+	}
+	
 	public void HostGame()
 	{
 		server = new ServerEngine();
@@ -498,7 +505,6 @@ public class ClientEngine extends Game
 			fieldAgentScreen.displayDialogue(dialogue);
 		}
 	}
-	
 	
 	public void switchToNewScreen(ScreenEnumerations newLevel)
 	{
@@ -575,7 +581,13 @@ public class ClientEngine extends Game
 				this.setScreen(pauseScreen);
 				break;
 				
-				
+			case ErrorScreen:
+				if(errorScreen == null)
+				{
+					errorScreen = new ErrorScreen(this);
+				}
+				this.setScreen(errorScreen);
+				break;
 				
 			default:
 				return;

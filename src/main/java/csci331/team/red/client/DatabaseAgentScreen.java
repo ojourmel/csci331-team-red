@@ -1,4 +1,4 @@
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -63,7 +63,7 @@ public class DatabaseAgentScreen implements Screen
 	InputMultiplexer multiplexer;
 	
 	Boolean displayingAlerts;
-	DatabaseDialogeCallback<Callback> callbackObject;
+	DatabaseDialogueCallback<Callback> callbackObject;
 	
 	
 	long lastAlertTime;
@@ -72,7 +72,7 @@ public class DatabaseAgentScreen implements Screen
 	public DatabaseAgentScreen(ClientEngine parent)
 	{
 		
-		callbackObject = new DatabaseDialogeCallback<Callback>(this);
+		callbackObject = new DatabaseDialogueCallback<Callback>(this);
 		
 //		DatabaseDialogCallbacks.setEntity(this);
 		
@@ -235,19 +235,19 @@ public class DatabaseAgentScreen implements Screen
 	    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
 	    displayDialogue(d);
 
-	    TextButton BackButton =  new TextButton("Back" , parentEngine.buttonStyle);
-	    backgroundStage.addActor(BackButton);
-	    BackButton.addListener(new ClickListener() {
-    		
-    		
-    	    @Override
-    	    public void clicked(InputEvent event, float x, float y) 
-    	    {
-    	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
-    	    	
-    	    };
-    		
-    	});
+//	    TextButton BackButton =  new TextButton("Back" , parentEngine.buttonStyle);
+//	    backgroundStage.addActor(BackButton);
+//	    BackButton.addListener(new ClickListener() {
+//    		
+//    		
+//    	    @Override
+//    	    public void clicked(InputEvent event, float x, float y) 
+//    	    {
+//    	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
+//    	    	
+//    	    };
+//    		
+//    	});
 	    
 	    
 	    
@@ -493,7 +493,7 @@ public class DatabaseAgentScreen implements Screen
 
 	@Override
 	public void dispose() {
-
+		parentEngine.databaseAgentScreen = null;
 	}
 
 }

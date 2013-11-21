@@ -8,6 +8,7 @@ package csci331.team.red.shared;
 public enum Background {
 	WAITING,
 	MENUSCREEN,
+	ERROR,
 	LEVEL1FIELDBG,
 	LEVEL1DATABASEBG,
 	LEVEL2FIELDBG,
