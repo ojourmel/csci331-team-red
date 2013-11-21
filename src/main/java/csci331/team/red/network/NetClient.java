@@ -8,7 +8,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 
-import csci331.team.red.clientEngine.ClientEngine;
+import csci331.team.red.client.ClientEngine;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Incident;
@@ -83,13 +83,13 @@ public class NetClient {
 						// what will this be used for?
 						break;
 					case PAUSE:
-//						gameClient.onPlayerPause();
+						gameClient.PauseGame();
 						break;
 					case QUIT:
 //						gameClient.onPlayerQuit();
 						break;
 					case RESUME:
-//						gameClient.onPlayerResume();
+						gameClient.UnpauseGame();
 						break;
 					default:
 						break;

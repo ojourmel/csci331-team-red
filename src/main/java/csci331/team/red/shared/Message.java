@@ -39,6 +39,16 @@ public enum Message {
 	 * The user has resumed the game
 	 */
 	RESUME,
+	
+	/**
+	 * The field agent has changed their posture.  Comes with a posture enum.
+	 */
+	ONPOSTURECHANGE,
+	
+	/**
+	 * The field agent has made a decision about the stage.  Comes with a decision enum.
+	 */
+	ONDECISIONEVENT,
 
 	/**
 	 * The user has quit the game

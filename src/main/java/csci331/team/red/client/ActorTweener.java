@@ -1,5 +1,5 @@
 
-package csci331.team.red.clientEngine;
+package csci331.team.red.client;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
