@@ -1,4 +1,4 @@
-package csci331.team.red.dao;
+package csci331.team.red.shared;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

@@ -25,8 +25,7 @@ import csci331.team.red.shared.State;
  * @author marius
  * 
  */
-public class Network
-{
+public class Network {
 	static public final int tcpPort = 54555;
 	static public final int udpPort = 54777;
 
@@ -35,10 +34,19 @@ public class Network
 	 * 
 	 * @param endPoint
 	 */
-	static public void register(EndPoint endPoint)
-	{
+	static public void register(EndPoint endPoint) {
+		/*
+		 * Instantiate the serializer
+		 */
 		Kryo kryo = endPoint.getKryo();
+		/*
+		 * Register the message we'll be passing between the client(s) and
+		 * server
+		 */
 		kryo.register(NetMessage.class);
+		/*
+		 * Register all classes in csci331.team.red.shared
+		 */
 		kryo.register(Alert.class);
 		kryo.register(Background.class);
 		kryo.register(Character.class);
