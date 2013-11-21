@@ -73,7 +73,7 @@ public class PersonPictureTest {
 
 		
 		persPic = PersonPicture.getRandom(Gender.fromChar('b'));
-		ass
+		// TODO: Complete me
 	}
 
 }
