@@ -10,6 +10,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 
+import csci331.team.red.client.ClientEngine;
 import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Incident;
@@ -27,7 +28,7 @@ import csci331.team.red.shared.Role;
  * @author marius
  */
 public class NetClient {
-//	private final ClientEngine gameClient;
+	private final ClientEngine gameClient;
 	private final Client client;
 	private String host = "127.0.0.1";
 	private static final int timeout = 5000;
