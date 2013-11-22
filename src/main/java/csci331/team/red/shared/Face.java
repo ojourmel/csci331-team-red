@@ -5,5 +5,7 @@ package csci331.team.red.shared;
  * 
  */
 public enum Face {
-	MALE1, FEMALE1, THUG1;
+	MALE1, 
+	FEMALE1, 
+	THUG1;
 }

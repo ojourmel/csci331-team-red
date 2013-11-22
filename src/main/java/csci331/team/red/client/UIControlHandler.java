@@ -24,13 +24,13 @@ public class UIControlHandler implements InputProcessor {
 		if(centralEngine.getScreen() == centralEngine.pauseScreen)
 		{
 				
-			centralEngine.network.send(Message.RESUME);
+			ClientEngine.network.send(Message.RESUME);
 				
 		}
 		
 		else
 		{
-			centralEngine.network.send(Message.PAUSE);
+			ClientEngine.network.send(Message.PAUSE);
 		}
 		 
 	}

@@ -1,11 +1,14 @@
 package csci331.team.red.shared;
 
+import csci331.team.red.client.DatabaseBoundingBoxes;
+
 /**
  * Java implementation of a game level.<br>
  * 
  * Contains several static methods which return hardcoded instances of
  * {@link Level}<br>
  * FIXME: <b>Stub</b>
+ * This really should be an enum...
  * 
  * @author ojourmel
  * 
@@ -16,7 +19,10 @@ public class Level {
 	private Background database;
 	private Background interactive;
 	private SoundTrack soundTrack;
+	
+	private DatabaseBoundingBoxes bounds;
 
+	
 	/**
 	 * @return a "wait" {@link Level} object
 	 */
@@ -25,6 +31,7 @@ public class Level {
 		wait.setDatabase(Background.WAITING);
 		wait.setInteractive(Background.WAITING);
 		wait.setSoundTrack(SoundTrack.SONG);
+		
 
 		wait.setName("Wait");
 
@@ -38,6 +45,8 @@ public class Level {
 		Level campus = new Level();
 
 		campus.setDatabase(Background.LEVEL1DATABASEBG);
+		campus.setBounds(DatabaseBoundingBoxes.LEVELONE);
+		
 		campus.setInteractive(Background.LEVEL1FIELDBG);
 
 		campus.setSoundTrack(SoundTrack.SONG);
@@ -108,5 +117,15 @@ public class Level {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public DatabaseBoundingBoxes getBounds()
+	{
+		return bounds;
+	}
+
+	public void setBounds(DatabaseBoundingBoxes bounds)
+	{
+		this.bounds = bounds;
 	}
 }

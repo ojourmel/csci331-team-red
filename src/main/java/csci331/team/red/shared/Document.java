@@ -4,9 +4,11 @@ public class Document {
 
 	public Type DocumentType;
 	public String[] TextFields;
+	public Face face;
 
 	public enum Type {
-		DriversLicence, GoldenTicket,
+		DriversLicence, 
+		GoldenTicket,
 	}
 
 	/**
@@ -16,9 +18,10 @@ public class Document {
 	public Document() {
 	}
 
-	public Document(Type t, String[] TextFields) {
+	public Document(Type t, String[] TextFields , Face face) {
 		DocumentType = t;
 		this.TextFields = TextFields;
+		this.face = face;
 	}
 
 }

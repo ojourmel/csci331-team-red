@@ -42,11 +42,11 @@ public class HostingScreen implements Screen
 	{
 		// Sets up links to our parent
 		parentEngine = parent;
-		batch = parentEngine.primarySpriteBatch;
+		batch = ClientEngine.primarySpriteBatch;
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.MENUSCREEN));
+		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(Background.MENUSCREEN));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();

@@ -1,6 +1,7 @@
 package csci331.team.red.client;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import aurelienribon.tweenengine.Tween;
@@ -27,6 +28,8 @@ import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
+import csci331.team.red.shared.Document.Type;
+import csci331.team.red.shared.Face;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
@@ -84,23 +87,23 @@ public class FieldAgentScreen implements Screen
 		
 		// Sets up links to our parent
 		parentEngine = parent;
-		batch = parentEngine.primarySpriteBatch;
+		batch = ClientEngine.primarySpriteBatch;
 		
 		tweenManager = new TweenManager();
 		Tween.registerAccessor(Actor.class, new ActorTweener());
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(parentEngine.currentLevel.getInteractive()));
+		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(parentEngine.currentLevel.getInteractive()));
 		
 		// and the background music
-		BackgroundMusic = parentEngine.gameMusicManager.get(parentEngine.BackgroundMusic.get(parentEngine.currentLevel.getSoundTrack()));
+		BackgroundMusic = ClientEngine.gameMusicManager.get(ClientEngine.BackgroundMusic.get(parentEngine.currentLevel.getSoundTrack()));
 		BackgroundMusic.setLooping(true);
 		BackgroundMusic.play();
 		
 		
 		// Loads other textures
-		clipBoard = parentEngine.gameTextureManager.get(parentEngine.Textures.get("clipboard"));
+		clipBoard = ClientEngine.gameTextureManager.get(ClientEngine.Textures.get("clipboard"));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -135,7 +138,7 @@ public class FieldAgentScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    		    parentEngine.network.send(Message.ONPOSTURECHANGE, Posture.PASSIVE);
+    		    ClientEngine.network.send(Message.ONPOSTURECHANGE, Posture.PASSIVE);
     	    	
     	    };
     		
@@ -155,7 +158,7 @@ public class FieldAgentScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    	    	parentEngine.network.send(Message.ONPOSTURECHANGE, Posture.AGGRESSIVE);
+    	    	ClientEngine.network.send(Message.ONPOSTURECHANGE, Posture.AGGRESSIVE);
     	    	
     	    };
     		
@@ -185,7 +188,7 @@ public class FieldAgentScreen implements Screen
     	    	
     	    	
     	    	
-    	    	parentEngine.network.send(Message.ONDECISIONEVENT, Decision.DETAIN);
+    	    	ClientEngine.network.send(Message.ONDECISIONEVENT, Decision.DETAIN);
     	    	detainPerson();
     	    };
     		
@@ -221,7 +224,7 @@ public class FieldAgentScreen implements Screen
 //    		    Dialogue[] d = Dialogue.returnDialogArray(strarr);
 //    		    displayDialogue(d);
     	    	
-    	    	parentEngine.network.send(Message.ONDECISIONEVENT, Decision.ALLOW);
+    	    	ClientEngine.network.send(Message.ONDECISIONEVENT, Decision.ALLOW);
     	    	allowPerson();
 
     		    
@@ -274,13 +277,18 @@ public class FieldAgentScreen implements Screen
 //    		
 //    	});
 	    
+	    List<Document> test = new LinkedList<Document>();
 	    
+	    test.add(new Document(Type.DriversLicence , new String[]{"test" , "0/0/0000"} , Face.FEMALE1));
+	    test.add(new Document(Type.DriversLicence , new String[]{"test" , "9/9/9999"} , Face.FEMALE1));
+	    
+	    produceDocuments(test);
 	}
 	
 	void displayNewPerson(Character person)
 	{
 
-		currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(person.getAvatar())) , tweenManager);
+		currentPerson = new TransparentActor(ClientEngine.gamePixmapManager.get(ClientEngine.PersonAvatars.get(person.getAvatar())) , tweenManager);
 		    
 		   
 		charactersStage.addActor(currentPerson);
@@ -388,23 +396,30 @@ public class FieldAgentScreen implements Screen
 			switch(document.DocumentType)
 			{
 				case DriversLicence:
-					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
+					ticket = new DriversLicence(ClientEngine.gamePixmapManager.get(ClientEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields , document.face);
 					break;
 				case GoldenTicket:
-					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
+					//ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
 					break;
 				default:
 					break;
 			}
+			
+			ticket.setDragable();
+			ticket.scale(-1);
+			ticket.setPosition(300, 400);
+			Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
+			    
+			papersStage.addActor(ticket);
 		}
 		
 		
-		ticket.setDragable();
-		ticket.scale(-1);
-		ticket.setPosition(300, 400);
-		Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
-		    
-		papersStage.addActor(ticket);
+//		ticket.setDragable();
+//		ticket.scale(-1);
+//		ticket.setPosition(300, 400);
+//		Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
+//		    
+//		papersStage.addActor(ticket);
 
 	
 	}
