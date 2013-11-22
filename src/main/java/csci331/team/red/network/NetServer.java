@@ -45,14 +45,13 @@ public class NetServer {
 		server = new Server();
 		/* start a thread to handle incoming connections */
 		server.start();
+
 		try {
 			server.bind(Network.tcpPort);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw new IOException("Unable to bind to port");
 		}
-
-		/* Kryo automatically serializes the objects to and from bytes */
 		/* Create HashMap to map connections to roles */
 		roles = new HashMap<Integer, Role>();
 
@@ -172,6 +171,13 @@ public class NetServer {
 	 */
 	public void setRole(Connection connection, Role role) {
 		roles.put(connection.getID(), role);
+	}
+
+	/**
+	 * Stops the Server
+	 */
+	public void killServer() {
+		server.stop();
 	}
 
 	/**
