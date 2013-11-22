@@ -20,5 +20,4 @@ public class Document {
 		DocumentType = t;
 		this.TextFields = TextFields;
 	}
-
 }

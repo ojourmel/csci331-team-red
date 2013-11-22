@@ -1,7 +1,6 @@
 package csci331.team.red.server;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
@@ -10,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.esotericsoftware.kryonet.Connection;
 
-import csci331.team.red.dao.CharacterDAO;
+import csci331.team.red.dao.CharacterRepository;
 import csci331.team.red.network.NetServer;
 import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
@@ -29,6 +28,9 @@ import csci331.team.red.shared.Role;
  * Implements {@link Thread} and is runnable via {@link ServerEngine#start()}
  * 
  * @author ojourmel
+ * 
+ * CONTROLLER PATTERN
+ * 
  */
 public class ServerEngine extends Thread {
 
@@ -39,7 +41,7 @@ public class ServerEngine extends Thread {
 
 	// Core game assets
 	private NetServer network;
-	private CharacterDAO dao;
+	private CharacterRepository repo;
 
 	// The two players in the game
 	private Player playerOne;
@@ -65,7 +67,7 @@ public class ServerEngine extends Thread {
 	 */
 	public ServerEngine() {
 
-		dao = new CharacterDAO();
+		repo = new CharacterRepository();
 
 		playerOne = new Player();
 		playerTwo = new Player();
@@ -122,16 +124,6 @@ public class ServerEngine extends Thread {
 			if (!doIncident()) {
 				tearDown();
 				return;
-			}
-
-			try {
-				lock.lock();
-				incidentOver.await();
-			} catch (InterruptedException e) {
-				tearDown();
-				return;
-			} finally {
-				lock.unlock();
 			}
 		}
 		// boss stage time!
@@ -309,7 +301,7 @@ public class ServerEngine extends Thread {
 
 	private boolean doTutorial() {
 		// TODO: Change these to scripted characters
-		Character c = dao.getCharacter();
+		Character c = repo.getCharacter();
 		List<Document> d = documentHandler.getDocuments(c);
 		Incident i = new Incident(c, d);
 		System.err.println("Starting First (Scripted) Tutorial Incident");
@@ -339,7 +331,7 @@ public class ServerEngine extends Thread {
 		case THUGLIFE:
 
 			// TODO: Change these to scripted bosses
-			Character c = dao.getCharacter();
+			Character c = repo.getCharacter();
 			List<Document> d = documentHandler.getDocuments(c);
 			Incident i = new Incident(c, d);
 			System.err.println("Starting (Scripted) Boss Incident "
@@ -373,7 +365,7 @@ public class ServerEngine extends Thread {
 	}
 
 	private boolean doIncident() {
-		Character character = dao.getCharacter();
+		Character character = repo.getCharacter();
 		List<Document> documents = documentHandler.getDocuments(character);
 		Incident incident = new Incident(character, documents);
 
@@ -382,6 +374,8 @@ public class ServerEngine extends Thread {
 				documents, Role.DATABASE), Role.DATABASE);
 		network.send(Message.DIALOGUE, dialogueHandler.getDialogues(character,
 				documents, Role.FIELDAGENT), Role.FIELDAGENT);
+
+		// alertHandler.
 
 		// wait for player's decision.
 		try {

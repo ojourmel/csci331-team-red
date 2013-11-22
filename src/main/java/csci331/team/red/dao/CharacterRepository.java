@@ -38,7 +38,7 @@ public class CharacterRepository extends CharacterDAO {
 	 * 
 	 * @author melany
 	 */
-	CharacterRepository() {
+	public CharacterRepository() {
 		characters = new ArrayList<Character>();
 	}
 
