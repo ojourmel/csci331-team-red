@@ -3,8 +3,6 @@ package csci331.team.red.network;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.hamcrest.core.IsInstanceOf;
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -47,9 +45,12 @@ public class NetServer {
 		server = new Server();
 		/* start a thread to handle incoming connections */
 		server.start();
-		server.bind(Network.tcpPort);
 
-		/* Kryo automatically serializes the objects to and from bytes */
+		try {
+			server.bind(Network.tcpPort);
+		} catch (IOException e) {
+			throw new IOException("Unable to bind to port");
+		}
 		/* Create HashMap to map connections to roles */
 		roles = new HashMap<Integer, Role>();
 
@@ -172,6 +173,13 @@ public class NetServer {
 	}
 
 	/**
+	 * Stops the Server
+	 */
+	public void killServer() {
+		server.stop();
+	}
+
+	/**
 	 * CSCI331 ML STATICBINDING
 	 * 
 	 * Explain how the system will decide which method to invoke/variable to
@@ -186,26 +194,20 @@ public class NetServer {
 	}
 
 	/**
-	 * Send an Enumerated {@link Message} to the client with a specific
-	 * {@link Role}
-	 * 
-	 * @param msg
-	 * @param role
-	 */
-	public void send(Message msg, Role role) {
-		send(msg, null, role);
-	}
-
-	/**
 	 * Send an Enumerated {@link Message} and a registered (
-	 * {@link Kryo#register(Class)}) Object
+	 * {@link Kryo#register(Class)}) Object or an Enumerated {@link Message} to
+	 * the client with a specific {@link Role}
 	 * 
 	 * @param msg
 	 * @param obj
 	 */
 	public void send(Message msg, Object obj) {
-		NetMessage netMsg = new NetMessage(msg, obj);
-		server.sendToAllTCP(netMsg);
+		if (obj instanceof Role) {
+			send(msg, null, (Role) obj);
+		} else {
+			NetMessage netMsg = new NetMessage(msg, obj);
+			server.sendToAllTCP(netMsg);
+		}
 	}
 
 	/**
