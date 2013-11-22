@@ -42,10 +42,10 @@ public class NetClient {
 	 *            Name or ip address of the Server to connect to
 	 * @throws IOException
 	 */
-	public NetClient(final ClientEngine gameClient, String host)
+	public NetClient(final ClientEngine incomingGameClient, String host)
 			throws IOException {
 		this.host = host;
-		this.gameClient = gameClient;
+		this.gameClient = incomingGameClient;
 		// connects to a server
 		client = new Client();
 		client.start();

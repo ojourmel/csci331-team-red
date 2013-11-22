@@ -11,7 +11,7 @@ import csci331.team.red.shared.Role;
  * @author ojourmel
  */
 public class Player {
-	private Role role;
+	private Role role = Role.UNDEFINDED;
 	private Posture posture;
 
 	/**

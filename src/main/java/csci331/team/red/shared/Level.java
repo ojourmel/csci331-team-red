@@ -12,6 +12,7 @@ package csci331.team.red.shared;
  */
 public class Level {
 
+	private String name;
 	private Background database;
 	private Background interactive;
 	private SoundTrack soundTrack;
@@ -23,8 +24,9 @@ public class Level {
 		Level wait = new Level();
 		wait.setDatabase(Background.WAITING);
 		wait.setInteractive(Background.WAITING);
-
 		wait.setSoundTrack(SoundTrack.SONG);
+
+		wait.setName("Wait");
 
 		return wait;
 	}
@@ -39,6 +41,9 @@ public class Level {
 		campus.setInteractive(Background.LEVEL1FIELDBG);
 
 		campus.setSoundTrack(SoundTrack.SONG);
+
+		campus.setName("Campus");
+
 		return campus;
 	}
 
@@ -52,6 +57,9 @@ public class Level {
 		road.setInteractive(Background.LEVEL2FIELDBG);
 
 		road.setSoundTrack(SoundTrack.SONG);
+	
+		road.setName("Road");
+		
 		return road;
 	}
 
@@ -65,36 +73,40 @@ public class Level {
 		space.setInteractive(Background.LEVEL3FIELDBG);
 
 		space.setSoundTrack(SoundTrack.SONG);
+		
+		space.setName("Space");
 		return space;
 	}
 
-	public Background getDatabase()
-	{
+	public Background getDatabase() {
 		return database;
 	}
 
-	public void setDatabase(Background database)
-	{
+	public void setDatabase(Background database) {
 		this.database = database;
 	}
 
-	public SoundTrack getSoundTrack()
-	{
+	public SoundTrack getSoundTrack() {
 		return soundTrack;
 	}
 
-	public void setSoundTrack(SoundTrack soundTrack)
-	{
+	public void setSoundTrack(SoundTrack soundTrack) {
 		this.soundTrack = soundTrack;
 	}
 
-	public Background getInteractive()
-	{
+	public Background getInteractive() {
 		return interactive;
 	}
 
-	public void setInteractive(Background interactive)
-	{
+	public void setInteractive(Background interactive) {
 		this.interactive = interactive;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

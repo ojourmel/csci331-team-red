@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -35,12 +36,12 @@ public class ServerEngine extends Thread {
 	 * The maximum number of players supported by this game.
 	 */
 	public static final int MAX_PLAYERS = 2;
-
+	
 	// Core game assets
 	private NetServer network;
-	private List<Incident> stages;
+	private List<Incident> incident;
 	private List<Level> levels;
-	private Incident currentStage;
+	private Incident currentIncident;
 	private CharacterDAO dao;
 
 	// The two players in the game
@@ -51,11 +52,13 @@ public class ServerEngine extends Thread {
 
 	// Value to modify the base fraud probability of a Character
 	private double fraudDifficulty = 1;
+	
+	private static final Random RANDOM = new Random();
 
 	// Locks and conditions for blocking on conditions while threading.
 	private final Lock lock = new ReentrantLock();
 	private final Condition clientsConnected = lock.newCondition();
-	private final Condition stageOver = lock.newCondition();
+	private final Condition incidentOver = lock.newCondition();
 	private final Condition paused = lock.newCondition();
 
 	/**
@@ -69,7 +72,7 @@ public class ServerEngine extends Thread {
 		dao = new CharacterDAO();
 
 		levels = new LinkedList<Level>();
-		stages = new LinkedList<Incident>();
+		incident = new LinkedList<Incident>();
 
 		playerOne = new Player();
 		playerTwo = new Player();
@@ -100,18 +103,16 @@ public class ServerEngine extends Thread {
 				lock.unlock();
 			}
 		}
-
-		// we now have two clients connected.
-		levels.add(Level.getWait());
-		network.send(Message.START_LEVEL, Level.getWait());
+		
+		System.err.println("Game Started");
 
 		// Set up the first level
 		// set up the environment for level one. (Campus)
-		Level one = Level.getCampus();
-		levels.add(one);
-
-		// start level one.
-		network.send(Message.START_LEVEL, one);
+		initLevel(Level.getCampus());
+	
+		
+		
+		
 		for (int i = 0; i < 3; i++) {
 			// set up a stage. Use the stats from the previous stages to affect
 			// the next stage.
@@ -127,7 +128,7 @@ public class ServerEngine extends Thread {
 			// reject this stage, then make a new one!
 			try {
 				lock.lock();
-				stageOver.await();
+				incidentOver.await();
 			} catch (InterruptedException e) {
 				// We got interrupted. Game Over. Save nothing.
 				return;
@@ -141,7 +142,7 @@ public class ServerEngine extends Thread {
 		// network.send(Message.START_STAGE, stage);
 		try {
 			lock.lock();
-			stageOver.await();
+			incidentOver.await();
 		} catch (InterruptedException e) {
 			return;
 		} finally {
@@ -176,43 +177,49 @@ public class ServerEngine extends Thread {
 	 * 
 	 * @param role
 	 *            The role of the player changing state
-	 * @param state
+	 * @param posture
 	 */
-	public void onStateChange(Role role, Posture state) {
+
+	public void onPostureChange(Role role, Posture posture) {
 		if (playerOne.getRole() == role) {
-			playerOne.setState(state);
+			playerOne.setState(posture);
 		} else {
-			playerTwo.setState(state);
+			playerTwo.setState(posture);
 		}
-
-		// TODO: Allow for state to have an impact on actors.
-	}
-
-	public Dialogue onDialogRequest(Dialogue incoming) {
-		/**
-		 * Callback for when a player requests additional dialog
-		 * 
-		 * @param incoming
-		 *            {@link Dialog}
-		 * @return Additional {@link Dialog} for the player
-		 */
-		// TODO: Handle proper dialog requests.
-		return Dialogue.GENERIC;
 	}
 
 	public void onPlayerConnect(Connection connection) {
 		numPlayerConnected++;
-		// TODO: Assign rols to connections using:
 
-		// network.assignRole(connection, Role.DATABASE);
+		// First connection is first player, and
+		// get's a random role
+		if(playerOne.getRole() == Role.UNDEFINDED ){
+			if(RANDOM.nextBoolean()){
+				playerOne.setRole(Role.DATABASE);
+			}else{
+				playerOne.setRole(Role.FIELDAGENT);
+			}
+			
+			System.err.println("Player One has connected with Role: " + playerOne.getRole().toString());
+			network.setRole(connection, playerOne.getRole());
+			
+		}else{
+			if(playerOne.getRole() == Role.DATABASE){
+				playerTwo.setRole(Role.FIELDAGENT);
+			}else{
+				playerTwo.setRole(Role.DATABASE);
+			}
 
+			System.err.println("Player Two has connected with Role: " + playerTwo.getRole().toString());
+			network.setRole(connection, playerTwo.getRole());
+		}
+		
 		// Get the game going if we have enough players
 		if (numPlayerConnected == MAX_PLAYERS) {
 			lock.lock();
 			clientsConnected.signal();
 			lock.unlock();
 		}
-		// TODO: Assign Roles to Connections
 	}
 
 	/**
@@ -273,7 +280,7 @@ public class ServerEngine extends Thread {
 		// stage.
 
 		lock.lock();
-		stageOver.signal();
+		incidentOver.signal();
 		lock.unlock();
 	}
 
@@ -309,5 +316,18 @@ public class ServerEngine extends Thread {
 				strarr, callarr));
 
 		return dialogues;
+	}
+	
+	
+	private void initLevel(Level level){
+
+		levels.add(level);
+
+		System.err.println("Starting Level " + level.getName());
+		// start level one.
+		network.send(Message.START_LEVEL, level);
+		// inform each player of the role they will be playing in level one
+		network.send(Message.SET_ROLE, playerOne.getRole(), playerOne.getRole());
+		network.send(Message.SET_ROLE, playerTwo.getRole(), playerTwo.getRole());
 	}
 }

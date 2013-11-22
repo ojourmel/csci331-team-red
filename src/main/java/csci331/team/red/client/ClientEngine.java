@@ -1,5 +1,6 @@
 package csci331.team.red.client;
 
+import java.io.IOException;
 import java.util.HashMap;
 import aurelienribon.tweenengine.Tween;
 
@@ -415,8 +416,12 @@ public class ClientEngine extends Game
 	
 	public void JoinGame(String desiredConnectTarget)
 	{
+		try{
 		network = new NetClient(this, desiredConnectTarget);
 		network.send(Message.CONNECTED);
+		}catch (IOException e){
+			throw new RuntimeException(e);
+		}
 		
 	}
 	public void LeaveGame()
