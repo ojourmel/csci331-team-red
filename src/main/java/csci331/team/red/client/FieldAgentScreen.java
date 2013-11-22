@@ -87,11 +87,8 @@ public class FieldAgentScreen implements Screen
 		parentEngine = parent;
 		batch = parentEngine.primarySpriteBatch;
 		
-		
-		
 		tweenManager = new TweenManager();
 		Tween.registerAccessor(Actor.class, new ActorTweener());
-		
 		
 		
 		// Loads the background image
@@ -125,12 +122,6 @@ public class FieldAgentScreen implements Screen
 	    multiplexer.addProcessor(papersStage);
 	    multiplexer.addProcessor(backgroundStage);
 	    multiplexer.addProcessor(charactersStage);
-	    
-	    
-	    
-	    
-	    
-	    
 	    
 	    postureButtonGroup = new ButtonGroup();
 	    
@@ -172,15 +163,6 @@ public class FieldAgentScreen implements Screen
     	});
 	    
 	    uiStage.addActor(aggressivePostureButton);
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	  
-	    
 	    
 	    
 	    
@@ -254,25 +236,25 @@ public class FieldAgentScreen implements Screen
 	    
 	    
 	    
-	    String[][] strarr = {
-	    		{"Well then... (Click to continue)" , "Ominious Voice"},
-	    		{"Welcome to your first day on the job.", "Ominious Voice"},
-	    		{"Why don't we approach someone?", "Ominious Voice"},
-	    		{"Hey, you!  Stop!", "You"},
-	    		{"...What?", "Girl"},
-	    		{"...Turn around", "You"},
-	    		{"...No.", "Girl"},
-	    		{"...Well, let's see your ID." , "You"},
-	    		{"Here." , "Girl"},
-	    		{"You should call your partner and ask him if the infomation you've recieved is correct." , "Ominious Voice"},
-	    		{"But I can tell you it is this time.  You should let her go." , "Ominious Voice"},
-	    		
-	    };
-	    FieldCallback[] callarr = {null, null,FieldCallback.approachPerson, null,null, null,null, FieldCallback.giveDocuments, null,null, null , null , null, null};
-	    //Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
-	    Dialogue[] d = Dialogue.returnDialogArray(strarr);
-	    
-	    displayDialogue(d);
+//	    String[][] strarr = {
+//	    		{"Well then... (Click to continue)" , "Ominious Voice"},
+//	    		{"Welcome to your first day on the job.", "Ominious Voice"},
+//	    		{"Why don't we approach someone?", "Ominious Voice"},
+//	    		{"Hey, you!  Stop!", "You"},
+//	    		{"...What?", "Girl"},
+//	    		{"...Turn around", "You"},
+//	    		{"...No.", "Girl"},
+//	    		{"...Well, let's see your ID." , "You"},
+//	    		{"Here." , "Girl"},
+//	    		{"You should call your partner and ask him if the infomation you've recieved is correct." , "Ominious Voice"},
+//	    		{"But I can tell you it is this time.  You should let her go." , "Ominious Voice"},
+//	    		
+//	    };
+//	    FieldCallback[] callarr = {null, null,FieldCallback.approachPerson, null,null, null,null, FieldCallback.giveDocuments, null,null, null , null , null, null};
+//	    //Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
+//	    Dialogue[] d = Dialogue.returnDialogArray(strarr);
+//	    
+//	    displayDialogue(d);
 
 	    
 	    

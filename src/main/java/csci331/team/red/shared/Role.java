@@ -7,7 +7,5 @@ package csci331.team.red.shared;
  * @author ojourmel
  */
 public enum Role {
-	DATABASE,
-	FIELDAGENT,
-	UNDEFINDED
+	DATABASE, FIELDAGENT, UNDEFINDED
 }

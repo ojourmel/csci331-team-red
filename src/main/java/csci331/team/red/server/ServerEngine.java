@@ -12,8 +12,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.esotericsoftware.kryonet.Connection;
 
 import csci331.team.red.dao.CharacterDAO;
+import csci331.team.red.shared.Character;
 import csci331.team.red.network.NetServer;
+import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
@@ -36,7 +39,7 @@ public class ServerEngine extends Thread {
 	 * The maximum number of players supported by this game.
 	 */
 	public static final int MAX_PLAYERS = 2;
-	
+
 	// Core game assets
 	private NetServer network;
 	private List<Incident> incident;
@@ -52,7 +55,7 @@ public class ServerEngine extends Thread {
 
 	// Value to modify the base fraud probability of a Character
 	private double fraudDifficulty = 1;
-	
+
 	private static final Random RANDOM = new Random();
 
 	// Locks and conditions for blocking on conditions while threading.
@@ -103,16 +106,19 @@ public class ServerEngine extends Thread {
 				lock.unlock();
 			}
 		}
-		
+
 		System.err.println("Game Started");
 
 		// Set up the first level
 		// set up the environment for level one. (Campus)
 		initLevel(Level.getCampus());
-	
-		
-		
-		
+		// Set up the first (scripted incident)
+		Character c = dao.getCharacter();
+		List<Document> d = new LinkedList<Document>();
+		d.add(new Document(Document.Type.GoldenTicket, null));
+		Incident inc = new Incident(c, d);
+		network.send(Message.START_INCIDENT, inc);
+
 		for (int i = 0; i < 3; i++) {
 			// set up a stage. Use the stats from the previous stages to affect
 			// the next stage.
@@ -165,7 +171,7 @@ public class ServerEngine extends Thread {
 	 * @return the {@link Result} of the query
 	 */
 	public Result onDatabaseSearch(String query) {
-
+		System.err.println("onDatabaseSearch: " + query);
 		query = query.toUpperCase();
 
 		// TODO: Handle database queries
@@ -181,6 +187,8 @@ public class ServerEngine extends Thread {
 	 */
 
 	public void onPostureChange(Role role, Posture posture) {
+		System.err.println("onPostureChange " + role.toString() + " "
+				+ posture.toString());
 		if (playerOne.getRole() == role) {
 			playerOne.setState(posture);
 		} else {
@@ -193,27 +201,29 @@ public class ServerEngine extends Thread {
 
 		// First connection is first player, and
 		// get's a random role
-		if(playerOne.getRole() == Role.UNDEFINDED ){
-			if(RANDOM.nextBoolean()){
+		if (playerOne.getRole() == Role.UNDEFINDED) {
+			if (RANDOM.nextBoolean()) {
 				playerOne.setRole(Role.DATABASE);
-			}else{
+			} else {
 				playerOne.setRole(Role.FIELDAGENT);
 			}
-			
-			System.err.println("Player One has connected with Role: " + playerOne.getRole().toString());
+
+			System.err.println("Player One has connected with Role: "
+					+ playerOne.getRole().toString());
 			network.setRole(connection, playerOne.getRole());
-			
-		}else{
-			if(playerOne.getRole() == Role.DATABASE){
+
+		} else {
+			if (playerOne.getRole() == Role.DATABASE) {
 				playerTwo.setRole(Role.FIELDAGENT);
-			}else{
+			} else {
 				playerTwo.setRole(Role.DATABASE);
 			}
 
-			System.err.println("Player Two has connected with Role: " + playerTwo.getRole().toString());
+			System.err.println("Player Two has connected with Role: "
+					+ playerTwo.getRole().toString());
 			network.setRole(connection, playerTwo.getRole());
 		}
-		
+
 		// Get the game going if we have enough players
 		if (numPlayerConnected == MAX_PLAYERS) {
 			lock.lock();
@@ -230,10 +240,9 @@ public class ServerEngine extends Thread {
 	 *            {@link Role}
 	 */
 	public void onPlayerDisconnect(Role role) {
+		System.err.println("onPlayerDisconnect " + role.toString());
 		network.send(Message.DISCONNECTED);
 
-		// Doing things this way means that all "Condition.await()" blocks will
-		// have to be surrounded with try/catch blocks
 		this.interrupt();
 	}
 
@@ -242,9 +251,8 @@ public class ServerEngine extends Thread {
 	 * stop this {@link ServerEngine}
 	 */
 	public void onPlayerQuit(Role role) {
+		System.err.println("onPlayerQuit " + role.toString());
 		network.send(Message.QUIT);
-		// TODO: This code *might* have some problems interrupting it'self. See
-		// onPlayerDisconnect()
 		this.interrupt();
 	}
 
@@ -254,6 +262,7 @@ public class ServerEngine extends Thread {
 	 * necessary.
 	 */
 	public void onPlayerPause(Role role) {
+		System.err.println("onPlayerPause " + role.toString());
 		// pause any time-counting variables
 		network.send(Message.PAUSE);
 	}
@@ -265,6 +274,7 @@ public class ServerEngine extends Thread {
 	 * @param role
 	 */
 	public void onPlayerResume(Role role) {
+		System.err.println("onPlayerResume " + role.toString());
 		// resume any time-counting variables
 		network.send(Message.RESUME);
 	}
@@ -273,7 +283,8 @@ public class ServerEngine extends Thread {
 	 * Callback when a stage is completed. Causes a new stage to be sent to the
 	 * players
 	 */
-	public void onStageComplete(boolean decition) {
+	public void onIncidentComplete(Decision decition) {
+		System.err.println("onIncidentCompleate " + decition.toString());
 
 		// update player scores from the outcome of this stage. Update any
 		// environment variables, and tell run() to wake up, and do another
@@ -284,42 +295,17 @@ public class ServerEngine extends Thread {
 		lock.unlock();
 	}
 
+	/**
+	 * Direct method to kill the server from the client, without going through
+	 * the network.
+	 */
 	public void kill() {
-		// TODO Auto-generated method stub
-
+		System.err.println("Server Killed by Client");
+		network.send(Message.DISCONNECTED);
+		this.interrupt();
 	}
 
-	private List<Dialogue> getIntroDialogue(Role role) {
-		String[][] strarr = {
-				{ "Well then... (Click to continue)", "Ominious Voice" },
-				{ "Welcome to your first day on the job.", "Ominious Voice" },
-				{ "Why don't we approach someone?", "Ominious Voice" },
-				{ "Hey, you!  Stop!", "You" },
-				{ "...What?", "Girl" },
-				{ "...Turn around", "You" },
-				{ "...No.", "Girl" },
-				{ "...Well, let's see your ID.", "You" },
-				{ "Here.", "Girl" },
-				{
-						"You should call your partner and ask him if the infomation you've recieved is correct.",
-						"Ominious Voice" },
-				{
-						"But I can tell you it is this time.  You should let her go.",
-						"Ominious Voice" },
-
-		};
-		FieldCallback[] callarr = { null, null, FieldCallback.approachPerson,
-				null, null, null, null, FieldCallback.giveDocuments, null,
-				null, null, null, null, null };
-
-		List<Dialogue> dialogues = Arrays.asList(Dialogue.returnDialogArray(
-				strarr, callarr));
-
-		return dialogues;
-	}
-	
-	
-	private void initLevel(Level level){
+	private void initLevel(Level level) {
 
 		levels.add(level);
 

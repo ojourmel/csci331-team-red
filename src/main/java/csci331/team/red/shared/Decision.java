@@ -1,9 +1,7 @@
 package csci331.team.red.shared;
 
-public enum Decision
-{
+public enum Decision {
 
-	ALLOW,
-	DETAIN,
-	
+	ALLOW, DETAIN,
+
 }

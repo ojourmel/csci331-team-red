@@ -57,9 +57,9 @@ public class Level {
 		road.setInteractive(Background.LEVEL2FIELDBG);
 
 		road.setSoundTrack(SoundTrack.SONG);
-	
+
 		road.setName("Road");
-		
+
 		return road;
 	}
 
@@ -73,7 +73,7 @@ public class Level {
 		space.setInteractive(Background.LEVEL3FIELDBG);
 
 		space.setSoundTrack(SoundTrack.SONG);
-		
+
 		space.setName("Space");
 		return space;
 	}

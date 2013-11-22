@@ -211,29 +211,29 @@ public class DatabaseAgentScreen implements Screen
 	    });
 	    
 
-
-	    // used in tutorial dialogue
-	    String[][] strarr = {
-	    		{"Well then... (Click to continue)" , "Ominious Voice"},
-	    		{"Welcome to your first day on the job.", "Ominious Voice"},
-	    		{"Oh no!  The alerts start rolling in!", "Ominious Voice"},
-	    		{"Some of them we can ignore, but some of them we should warn our partner about.  Up to you to decide which is which.", "Ominious Voice"},
-	    		{"Others are suspicious.  Like that 'Mary Test' one.", "Ominious Voice"},
-	    		{"We should do a bit of research on her.\nType 'search prism mary test'\non your phone.", "Ominious Voice"},
-	    		{"I assume you did it, given I'm just a voice.  That's an inconsistancy!  We should warn our partner about that too.", "Ominious Voice"},
-	    		{"Your partner will also be reporting suspicious data to you to look up.  For example..." , "Ominious Voice"},
-	    		{"Hey, can you look up DL '123456789' for me, buddy?" , "Jerk"},
-	    		{"These can occasionally bring up a large amount of infomation, and again, you must decide what is important to relay." , "Ominious Voice"},
-	    		{"I have no more guidance to give you." , "Ominious Voice"},
-	    		{"Mom, get out of my office..." , "You"},
-	    		
-	    };
+//
+//	    // used in tutorial dialogue
+//	    String[][] strarr = {
+//	    		{"Well then... (Click to continue)" , "Ominious Voice"},
+//	    		{"Welcome to your first day on the job.", "Ominious Voice"},
+//	    		{"Oh no!  The alerts start rolling in!", "Ominious Voice"},
+//	    		{"Some of them we can ignore, but some of them we should warn our partner about.  Up to you to decide which is which.", "Ominious Voice"},
+//	    		{"Others are suspicious.  Like that 'Mary Test' one.", "Ominious Voice"},
+//	    		{"We should do a bit of research on her.\nType 'search prism mary test'\non your phone.", "Ominious Voice"},
+//	    		{"I assume you did it, given I'm just a voice.  That's an inconsistancy!  We should warn our partner about that too.", "Ominious Voice"},
+//	    		{"Your partner will also be reporting suspicious data to you to look up.  For example..." , "Ominious Voice"},
+//	    		{"Hey, can you look up DL '123456789' for me, buddy?" , "Jerk"},
+//	    		{"These can occasionally bring up a large amount of infomation, and again, you must decide what is important to relay." , "Ominious Voice"},
+//	    		{"I have no more guidance to give you." , "Ominious Voice"},
+//	    		{"Mom, get out of my office..." , "You"},
+//	    		
+//	    };
 	    
 	    
 	    
-	    DBCallback[] callarr = {null, DBCallback.startAlerts, null , DBCallback.MaryTestAlert , null, DBCallback.startAlerts , null , null, null, null, null , null};
-	    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
-	    displayDialogue(d);
+//	    DBCallback[] callarr = {null, DBCallback.startAlerts, null , DBCallback.MaryTestAlert , null, DBCallback.startAlerts , null , null, null, null, null , null};
+//	    Dialogue[] d = Dialogue.returnDialogArray(strarr , callarr);
+//	    displayDialogue(d);
 
 //	    TextButton BackButton =  new TextButton("Back" , parentEngine.buttonStyle);
 //	    backgroundStage.addActor(BackButton);
@@ -252,16 +252,16 @@ public class DatabaseAgentScreen implements Screen
 	    
 	    
 	    
-	    
-	    lastAlertTime = TimeUtils.millis();
-	    
-	    // This will be handled by the server... hardcoded here now just to test
-	    String[] test = {"Person of interest spotted" , "Person of interest spotted" , "Person of interest spotted" ,
-	    		"Person of interest spotted" , "Person of interest spotted" , "Hostile individual wearing 'thug life' tshirt",
-	    "VUI Alerts System Reset", "Potential threat from person here for 'two weeks'"		
-	    
-	    };
-		potentialAlerts = new Array<String> (test);
+//	    
+//	    lastAlertTime = TimeUtils.millis();
+//	    
+//	    // This will be handled by the server... hardcoded here now just to test
+//	    String[] test = {"Person of interest spotted" , "Person of interest spotted" , "Person of interest spotted" ,
+//	    		"Person of interest spotted" , "Person of interest spotted" , "Hostile individual wearing 'thug life' tshirt",
+//	    "VUI Alerts System Reset", "Potential threat from person here for 'two weeks'"		
+//	    
+//	    };
+//		potentialAlerts = new Array<String> (test);
 
 	    
 	}

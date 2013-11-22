@@ -120,7 +120,6 @@ public class NetClient {
 						if (netMsg.obj instanceof Role) 
 						{
 							 // In order to communicate with the GDX rendering thread, we need to spawn a runnable and post it to it
-							
 						      Gdx.app.postRunnable(new Runnable() {
 						          @Override
 						          public void run() {
@@ -129,9 +128,7 @@ public class NetClient {
 						          }
 						       });
 						    }
-							
-							
-						
+
 						break;
 					case START_LEVEL:
 						if (netMsg.obj instanceof Level) {
