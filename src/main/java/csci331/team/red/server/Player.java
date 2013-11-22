@@ -45,4 +45,9 @@ public class Player {
 		return posture;
 	}
 
+	public void setState(Posture state) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -34,8 +34,18 @@ public class Network {
 	 * @param endPoint
 	 */
 	static public void register(EndPoint endPoint) {
+		/*
+		 * Instantiate the serializer
+		 */
 		Kryo kryo = endPoint.getKryo();
+		/*
+		 * Register the message we'll be passing between the client(s) and
+		 * server
+		 */
 		kryo.register(NetMessage.class);
+		/*
+		 * Register all classes in csci331.team.red.shared
+		 */
 		kryo.register(Alert.class);
 		kryo.register(Background.class);
 		kryo.register(Character.class);

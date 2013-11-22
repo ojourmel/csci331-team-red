@@ -16,6 +16,7 @@ import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
+import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.callbacks.FieldCallback;
@@ -100,6 +101,10 @@ public class ServerEngine extends Thread {
 			}
 		}
 
+		// we now have two clients connected.
+		levels.add(Level.getWait());
+		network.send(Message.START_LEVEL, Level.getWait());
+
 		// Set up the first level
 		// set up the environment for level one. (Campus)
 		Level one = Level.getCampus();
@@ -107,9 +112,6 @@ public class ServerEngine extends Thread {
 
 		// start level one.
 		network.send(Message.START_LEVEL, one);
-
-		// Set up an incident, with corresponding dialog for field and client
-
 		for (int i = 0; i < 3; i++) {
 			// set up a stage. Use the stats from the previous stages to affect
 			// the next stage.
@@ -169,27 +171,35 @@ public class ServerEngine extends Thread {
 		return Result.INVALID;
 	}
 
-	// /**
-	// * Callback for when a player changes {@link State}
-	// *
-	// * @param role
-	// * The role of the player changing state
-	// * @param state
-	// */
-	// public void onStateChange(Role role, PlayerState state) {
-	// if (playerOne.getRole() == role) {
-	// playerOne.setState(state);
-	// } else {
-	// playerTwo.setState(state);
-	// }
-	//
-	// // TODO: Allow for state to have an impact on actors.
-	// }
-
 	/**
-	 * Callback for when a player connects. If two players connect, then the
-	 * main game logic is started.
+	 * Callback for when a player changes {@link State}
+	 * 
+	 * @param role
+	 *            The role of the player changing state
+	 * @param state
 	 */
+	public void onStateChange(Role role, Posture state) {
+		if (playerOne.getRole() == role) {
+			playerOne.setState(state);
+		} else {
+			playerTwo.setState(state);
+		}
+
+		// TODO: Allow for state to have an impact on actors.
+	}
+
+	public Dialogue onDialogRequest(Dialogue incoming) {
+		/**
+		 * Callback for when a player requests additional dialog
+		 * 
+		 * @param incoming
+		 *            {@link Dialog}
+		 * @return Additional {@link Dialog} for the player
+		 */
+		// TODO: Handle proper dialog requests.
+		return Dialogue.GENERIC;
+	}
+
 	public void onPlayerConnect(Connection connection) {
 		numPlayerConnected++;
 		// TODO: Assign rols to connections using:
@@ -202,15 +212,17 @@ public class ServerEngine extends Thread {
 			clientsConnected.signal();
 			lock.unlock();
 		}
+		// TODO: Assign Roles to Connections
 	}
 
 	/**
 	 * Callback for when a player has disconnected. Shut down the other clients,
 	 * and stop this {@link ServerEngine} <br>
-	 * TODO: Consider implementing a reconnect period, where a player could
-	 * resume their game
+	 * 
+	 * @param role
+	 *            {@link Role}
 	 */
-	public void onPlayerDisconnect() {
+	public void onPlayerDisconnect(Role role) {
 		network.send(Message.DISCONNECTED);
 
 		// Doing things this way means that all "Condition.await()" blocks will
@@ -234,7 +246,7 @@ public class ServerEngine extends Thread {
 	 * TODO: Determine how to keep track of <b> which</b> player paused, if
 	 * necessary.
 	 */
-	public void onPlayerPause() {
+	public void onPlayerPause(Role role) {
 		// pause any time-counting variables
 		network.send(Message.PAUSE);
 	}
@@ -242,8 +254,10 @@ public class ServerEngine extends Thread {
 	/**
 	 * Callback when a player resumes their game. TODO: Determine how to keep
 	 * track of <b> which</b> player resumed, if necessary
+	 * 
+	 * @param role
 	 */
-	public void onPlayerResume() {
+	public void onPlayerResume(Role role) {
 		// resume any time-counting variables
 		network.send(Message.RESUME);
 	}
