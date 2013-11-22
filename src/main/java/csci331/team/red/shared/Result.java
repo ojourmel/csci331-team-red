@@ -10,9 +10,10 @@ package csci331.team.red.shared;
 public class Result {
 
 	/**
-	 * An INVALID result
+	 * An INVALID COMMAND result
 	 */
-	public static final Result INVALID = new Result(-1);
+	public static final Result INVALID_COMMAND = new Result(
+			"Faild to parse command!");
 
 	/**
 	 * All Serializable classes MUST provide a zero-argument constructor
@@ -23,13 +24,14 @@ public class Result {
 
 	/**
 	 * Create a new result.
-	 * 
-	 * @param id
-	 *            of the new {@link Result}
 	 */
-	public Result(int id) {
-		// TODO Auto-generated constructor stub
+	public Result(String resultText) {
+		this.resultText = resultText;
 	}
 
-	public String resultText;
+	private String resultText;
+
+	public String getResultText() {
+		return resultText;
+	}
 }

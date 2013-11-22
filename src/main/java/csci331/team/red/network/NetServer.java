@@ -46,7 +46,6 @@ public class NetServer {
 		server.bind(Network.tcpPort);
 
 		/* Kryo automatically serializes the objects to and from bytes */
-		Kryo kryo = server.getKryo();
 		/* Create HashMap to map connections to roles */
 		roles = new HashMap<Integer, Role>();
 

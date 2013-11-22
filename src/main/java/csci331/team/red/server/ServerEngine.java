@@ -1,7 +1,6 @@
 package csci331.team.red.server;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -12,10 +11,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.esotericsoftware.kryonet.Connection;
 
 import csci331.team.red.dao.CharacterDAO;
-import csci331.team.red.shared.Character;
 import csci331.team.red.network.NetServer;
+import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
-import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
@@ -23,7 +21,6 @@ import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
-import csci331.team.red.shared.callbacks.FieldCallback;
 
 /**
  * Main game logic class. Manages flow of information between the two clients,
@@ -117,6 +114,7 @@ public class ServerEngine extends Thread {
 		List<Document> d = new LinkedList<Document>();
 		d.add(new Document(Document.Type.GoldenTicket, null));
 		Incident inc = new Incident(c, d);
+		System.err.println("Starting First (Scripted) Incident");
 		network.send(Message.START_INCIDENT, inc);
 
 		for (int i = 0; i < 3; i++) {
@@ -175,7 +173,7 @@ public class ServerEngine extends Thread {
 		query = query.toUpperCase();
 
 		// TODO: Handle database queries
-		return Result.INVALID;
+		return Result.INVALID_COMMAND;
 	}
 
 	/**

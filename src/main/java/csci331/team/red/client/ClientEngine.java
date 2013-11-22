@@ -495,7 +495,7 @@ public class ClientEngine extends Game
 	{
 		if(databaseAgentScreen != null)
 		{
-			databaseAgentScreen.displayComputerResponse(result.resultText);
+			databaseAgentScreen.displayComputerResponse(result.getResultText());
 		}
 		
 	}

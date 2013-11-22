@@ -1,6 +1,5 @@
 package csci331.team.red.shared;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**

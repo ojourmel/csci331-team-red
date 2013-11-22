@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Dialogue;
-import csci331.team.red.shared.callbacks.DBCallback;
 
 /**
  * Scene responsible for the database roll.

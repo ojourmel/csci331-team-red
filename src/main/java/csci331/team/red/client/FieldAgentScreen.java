@@ -30,7 +30,6 @@ import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
-import csci331.team.red.shared.callbacks.FieldCallback;
 /**
  * Screen for the field agent
  * @author Lduperron
