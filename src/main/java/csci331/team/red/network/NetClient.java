@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -73,7 +74,7 @@ public class NetClient {
 			 */
 			public void received(Connection connection, Object object) {
 				if (object instanceof NetMessage) {
-					NetMessage netMsg = (NetMessage) object;
+					final NetMessage netMsg = (NetMessage) object;
 					// process message
 					switch (netMsg.msg) {
 					case ALERT:
@@ -116,9 +117,21 @@ public class NetClient {
 						gameClient.UnpauseGame();
 						break;
 					case SET_ROLE:
-						if (netMsg.obj instanceof Role) {
-							gameClient.SetRole((Role) netMsg.obj);
-						}
+						if (netMsg.obj instanceof Role) 
+						{
+							 // In order to communicate with the GDX rendering thread, we need to spawn a runnable and post it to it
+							
+						      Gdx.app.postRunnable(new Runnable() {
+						          @Override
+						          public void run() {
+						             // process the result, e.g. add it to an Array<Result> field of the ApplicationListener.
+						        	  gameClient.SetRole((Role) netMsg.obj);
+						          }
+						       });
+						    }
+							
+							
+						
 						break;
 					case START_LEVEL:
 						if (netMsg.obj instanceof Level) {

@@ -78,9 +78,11 @@ public class Dialogue {
 		return callbackCode;
 	}
 
-	public List<Dialogue> introDialogue(Role role) {
+	public List<Dialogue> introDialogue(Role role) 
+	{
 		List<Dialogue> dialogues = new LinkedList<Dialogue>();
-		switch (role) {
+		switch (role) 
+		{
 		case DATABASE:
 			String[][] strarr = {
 					{ "Well then... (Click to continue)", "Ominious Voice" },
@@ -105,13 +107,16 @@ public class Dialogue {
 					FieldCallback.giveDocuments, null, null, null, null, null,
 					null };
 
-			List<Dialogue> dialogues = Arrays.asList(Dialogue
+			dialogues = Arrays.asList(Dialogue
 					.returnDialogArray(strarr, callarr));
 
 			return dialogues;
 		case FIELDAGENT:
 			break;
 		}
+		
+		
+		return null;
 	}
 
 }
