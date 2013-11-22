@@ -47,7 +47,12 @@ public class NetServer {
 		server = new Server();
 		/* start a thread to handle incoming connections */
 		server.start();
-		server.bind(Network.tcpPort);
+		try {
+			server.bind(Network.tcpPort);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new IOException("Unable to bind to port");
+		}
 
 		/* Kryo automatically serializes the objects to and from bytes */
 		/* Create HashMap to map connections to roles */
