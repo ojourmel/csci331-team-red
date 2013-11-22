@@ -49,7 +49,6 @@ public class NetServer {
 		try {
 			server.bind(Network.tcpPort);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			throw new IOException("Unable to bind to port");
 		}
 		/* Create HashMap to map connections to roles */
