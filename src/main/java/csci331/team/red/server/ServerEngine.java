@@ -39,9 +39,6 @@ public class ServerEngine extends Thread {
 
 	// Core game assets
 	private NetServer network;
-	private List<Incident> incident;
-	private List<Level> levels;
-	private Incident currentIncident;
 	private CharacterDAO dao;
 
 	// The two players in the game
@@ -50,16 +47,15 @@ public class ServerEngine extends Thread {
 
 	private int numPlayerConnected = 0;
 
-	// Value to modify the base fraud probability of a Character
-	private double fraudDifficulty = 1;
-
+	// Used through the ServerEngine to determine random events.
 	private static final Random RANDOM = new Random();
+	private DialogueHandler dialogueHandler = new DialogueHandler(RANDOM);
+	private DocumentHandler documentHandler = new DocumentHandler(RANDOM);
 
 	// Locks and conditions for blocking on conditions while threading.
 	private final Lock lock = new ReentrantLock();
 	private final Condition clientsConnected = lock.newCondition();
 	private final Condition incidentOver = lock.newCondition();
-	private final Condition paused = lock.newCondition();
 
 	/**
 	 * Create a new {@link ServerEngine} object. Use
@@ -70,9 +66,6 @@ public class ServerEngine extends Thread {
 	public ServerEngine() {
 
 		dao = new CharacterDAO();
-
-		levels = new LinkedList<Level>();
-		incident = new LinkedList<Incident>();
 
 		playerOne = new Player();
 		playerTwo = new Player();
@@ -96,8 +89,8 @@ public class ServerEngine extends Thread {
 				lock.lock();
 				clientsConnected.await();
 			} catch (InterruptedException e) {
-				// game shutting down due to clientDisconect.
-				System.err.println("Server thread shutting down");
+				tearDown();
+
 				return;
 			} finally {
 				lock.unlock();
@@ -105,52 +98,47 @@ public class ServerEngine extends Thread {
 		}
 
 		System.err.println("Game Started");
-
 		// Set up the first level
 		// set up the environment for level one. (Campus)
 		initLevel(Level.getCampus());
 		// Set up the first (scripted incident)
-		Character c = dao.getCharacter();
-		List<Document> d = new LinkedList<Document>();
-		d.add(new Document(Document.Type.GoldenTicket, null));
-		Incident inc = new Incident(c, d);
-		System.err.println("Starting First (Scripted) Incident");
-		network.send(Message.START_INCIDENT, inc);
 
+		if (!doTutorial()) {
+			tearDown();
+			return;
+		}
+
+		// Now begin the standard, random incidents
 		for (int i = 0; i < 3; i++) {
-			// set up a stage. Use the stats from the previous stages to affect
-			// the next stage.
-			// TODO: Get Characters from the Database Access Objects
 
-			// send the stage to the clients
-			// network.send(Message.START_STAGE, stage);
+			// TODO: Allow for past events to affect future events
 
-			// since everything that can happen in a stage is purly reactive,
-			// (ie.
-			// clients initiat calles...), simply wait for the clients to accept
-			// or
-			// reject this stage, then make a new one!
+			// TODO: Handle alert generation, and re-factor to generate
+			// incidents in advance, so that alerts can be done in a reasonable
+			// manner
+
+			System.err.println("Starting Incident " + i);
+
+			if (!doIncident()) {
+				tearDown();
+				return;
+			}
+
 			try {
 				lock.lock();
 				incidentOver.await();
 			} catch (InterruptedException e) {
-				// We got interrupted. Game Over. Save nothing.
+				tearDown();
 				return;
 			} finally {
 				lock.unlock();
 			}
 		}
-
 		// boss stage time!
 
-		// network.send(Message.START_STAGE, stage);
-		try {
-			lock.lock();
-			incidentOver.await();
-		} catch (InterruptedException e) {
+		if (!doBoss(Boss.THUGLIFE)) {
+			tearDown();
 			return;
-		} finally {
-			lock.unlock();
 		}
 
 		// Depending on how the players did...
@@ -239,7 +227,8 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerDisconnect(Role role) {
 		System.err.println("onPlayerDisconnect " + role.toString());
-		network.send(Message.DISCONNECTED);
+		network.send(Message.DISCONNECTED, Role.DATABASE);
+		network.send(Message.DISCONNECTED, Role.FIELDAGENT);
 
 		this.interrupt();
 	}
@@ -250,31 +239,35 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerQuit(Role role) {
 		System.err.println("onPlayerQuit " + role.toString());
-		network.send(Message.QUIT);
+		network.send(Message.QUIT, Role.DATABASE);
+		network.send(Message.QUIT, Role.FIELDAGENT);
 		this.interrupt();
 	}
 
 	/**
 	 * Callback when a player pauses their game.<br>
-	 * TODO: Determine how to keep track of <b> which</b> player paused, if
-	 * necessary.
 	 */
 	public void onPlayerPause(Role role) {
 		System.err.println("onPlayerPause " + role.toString());
 		// pause any time-counting variables
-		network.send(Message.PAUSE);
+
+		// FIXME: send the single message once the network is fixed
+		network.send(Message.PAUSE, Role.DATABASE);
+		network.send(Message.PAUSE, Role.FIELDAGENT);
+
 	}
 
 	/**
-	 * Callback when a player resumes their game. TODO: Determine how to keep
-	 * track of <b> which</b> player resumed, if necessary
+	 * Callback when a player resumes their game.
 	 * 
 	 * @param role
 	 */
 	public void onPlayerResume(Role role) {
 		System.err.println("onPlayerResume " + role.toString());
-		// resume any time-counting variables
-		network.send(Message.RESUME);
+
+		// FIXME: send the single message once the network is fixed
+		network.send(Message.RESUME, Role.DATABASE);
+		network.send(Message.RESUME, Role.FIELDAGENT);
 	}
 
 	/**
@@ -299,13 +292,12 @@ public class ServerEngine extends Thread {
 	 */
 	public void kill() {
 		System.err.println("Server Killed by Client");
-		network.send(Message.DISCONNECTED);
+		network.send(Message.DISCONNECTED, Role.DATABASE);
+		network.send(Message.DISCONNECTED, Role.FIELDAGENT);
 		this.interrupt();
 	}
 
 	private void initLevel(Level level) {
-
-		levels.add(level);
 
 		System.err.println("Starting Level " + level.getName());
 		// start level one.
@@ -313,5 +305,100 @@ public class ServerEngine extends Thread {
 		// inform each player of the role they will be playing in level one
 		network.send(Message.SET_ROLE, playerOne.getRole(), playerOne.getRole());
 		network.send(Message.SET_ROLE, playerTwo.getRole(), playerTwo.getRole());
+	}
+
+	private boolean doTutorial() {
+		// TODO: Change these to scripted characters
+		Character c = dao.getCharacter();
+		List<Document> d = documentHandler.getDocuments(c);
+		Incident i = new Incident(c, d);
+		System.err.println("Starting First (Scripted) Tutorial Incident");
+		network.send(Message.START_INCIDENT, i);
+
+		// Send in the dialogue for both players
+		network.send(Message.DIALOGUE,
+				dialogueHandler.introDialogue(Role.DATABASE), Role.DATABASE);
+		network.send(Message.DIALOGUE,
+				dialogueHandler.introDialogue(Role.FIELDAGENT), Role.FIELDAGENT);
+
+		// wait for player's decision.
+		try {
+			lock.lock();
+			incidentOver.await();
+		} catch (InterruptedException e) {
+			return false;
+		} finally {
+			lock.unlock();
+		}
+
+		return true;
+	}
+
+	private boolean doBoss(Boss boss) {
+		switch (boss) {
+		case THUGLIFE:
+
+			// TODO: Change these to scripted bosses
+			Character c = dao.getCharacter();
+			List<Document> d = documentHandler.getDocuments(c);
+			Incident i = new Incident(c, d);
+			System.err.println("Starting (Scripted) Boss Incident "
+					+ boss.toString());
+			network.send(Message.START_INCIDENT, i);
+
+			// Send in the dialogue for both players
+			network.send(Message.DIALOGUE,
+					dialogueHandler.introDialogue(Role.DATABASE), Role.DATABASE);
+			network.send(Message.DIALOGUE,
+					dialogueHandler.introDialogue(Role.FIELDAGENT),
+					Role.FIELDAGENT);
+
+			break;
+		case ALIEN:
+			break;
+
+		}
+
+		// wait for player's decision.
+		try {
+			lock.lock();
+			incidentOver.await();
+		} catch (InterruptedException e) {
+			return false;
+		} finally {
+			lock.unlock();
+		}
+
+		return true;
+	}
+
+	private boolean doIncident() {
+		Character character = dao.getCharacter();
+		List<Document> documents = documentHandler.getDocuments(character);
+		Incident incident = new Incident(character, documents);
+
+		network.send(Message.START_INCIDENT, incident);
+		network.send(Message.DIALOGUE, dialogueHandler.getDialogues(character,
+				documents, Role.DATABASE), Role.DATABASE);
+		network.send(Message.DIALOGUE, dialogueHandler.getDialogues(character,
+				documents, Role.FIELDAGENT), Role.FIELDAGENT);
+
+		// wait for player's decision.
+		try {
+			lock.lock();
+			incidentOver.await();
+		} catch (InterruptedException e) {
+			return false;
+		} finally {
+			lock.unlock();
+		}
+
+		return true;
+	}
+
+	private void tearDown() {
+		// game shutting down due to clientDisconect.
+		// TODO: Release network connection
+		System.err.println("Server thread shutting down");
 	}
 }

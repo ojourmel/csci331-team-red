@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import csci331.team.red.shared.Background;
+import csci331.team.red.shared.Message;
 
 
 /**
@@ -72,6 +73,7 @@ public class PauseScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
+    	    	parentEngine.network.send(Message.QUIT);
     	    	parentEngine.previousScreen.dispose();
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
     	    	
