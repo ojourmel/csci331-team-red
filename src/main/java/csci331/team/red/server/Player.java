@@ -1,7 +1,7 @@
 package csci331.team.red.server;
 
+import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Role;
-import csci331.team.red.shared.State;
 
 /**
  * A Server-side representation of the two players. Who they are, what their
@@ -11,8 +11,8 @@ import csci331.team.red.shared.State;
  * @author ojourmel
  */
 public class Player {
-	private Role role;
-	private State state;
+	private Role role = Role.UNDEFINDED;
+	private Posture posture;
 
 	/**
 	 * @param role
@@ -23,10 +23,31 @@ public class Player {
 	}
 
 	/**
-	 * @param state
-	 *            {@link State} to set
+	 * @return role {@link Role}
 	 */
-	public void setState(State state) {
-		this.state = state;
+	public Role getRole() {
+		return role;
 	}
+
+	/**
+	 * @param state
+	 *            {@link Posture} to set
+	 */
+	public void setPosture(Posture posture) {
+		this.posture = posture;
+	}
+	
+	/**
+	 * @return posture
+	 *            {@link Posture} 
+	 */
+	public Posture getPosture() {
+		return posture;
+	}
+
+	public void setState(Posture state) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

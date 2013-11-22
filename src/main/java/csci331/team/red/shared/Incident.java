@@ -15,30 +15,26 @@ public class Incident {
 	 */
 	public final Character actor;
 
-	/**
-	 * The probability the {@link Incident#actor} in this {@link Incident} is a fraud
-	 */
-	public final double fraudFactor;
-	
-	/**
-	 * The probability of a clerical error with the {@link Incident#actor}'s information in this {@link Incident}
-	 */
-	public final double errorFactor;
-	
 	public final List<Document> incidentDocuments;
-	
-	
+
+	/**
+	 * All Serializable classes MUST provide a zero-argument constructor
+	 */
+	@Deprecated
+	public Incident() {
+		incidentDocuments = null;
+		actor = null;
+	}
+
 	/**
 	 * Initialize a new @{link Stage}
-	 * @param {@link Incident#actor}
-	 * @param {@link Incident#conFactor}
-	 * @param {@link {@link Incident#errorFactor}
+	 * 
+	 * @param actor
+	 *            {@link Incident#actor}
+	 * @param incidentDocuments
 	 */
-	public Incident(Character actor, double fraudFactor, double errorFactor , List<Document> incidentDocuments) {
+	public Incident(Character actor, List<Document> incidentDocuments) {
 		this.actor = actor;
-		this.fraudFactor = fraudFactor;
-		this.errorFactor = errorFactor;
 		this.incidentDocuments = incidentDocuments;
 	}
 }
-

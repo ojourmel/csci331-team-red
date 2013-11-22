@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -30,7 +31,6 @@ import csci331.team.red.shared.Role;
 public class NetClient {
 	private final ClientEngine gameClient;
 	private final Client client;
-	private String host = "127.0.0.1";
 	private static final int timeout = 5000;
 
 	/**
@@ -42,10 +42,9 @@ public class NetClient {
 	 *            Name or ip address of the Server to connect to
 	 * @throws IOException
 	 */
-	public NetClient(final ClientEngine gameClient, String host)
+	public NetClient(final ClientEngine incomingGameClient, String host)
 			throws IOException {
-		this.host = host;
-		this.gameClient = gameClient;
+		this.gameClient = incomingGameClient;
 		// connects to a server
 		client = new Client();
 		client.start();
@@ -73,7 +72,7 @@ public class NetClient {
 			 */
 			public void received(Connection connection, Object object) {
 				if (object instanceof NetMessage) {
-					NetMessage netMsg = (NetMessage) object;
+					final NetMessage netMsg = (NetMessage) object;
 					// process message
 					switch (netMsg.msg) {
 					case ALERT:
@@ -84,7 +83,7 @@ public class NetClient {
 					case CONNECTED:
 						// client should not receive this message
 						break;
-						// onPostureChange(msg, Posture Enum)
+					// onPostureChange(msg, Posture Enum)
 					case DIALOGUE:
 						if (netMsg.obj instanceof List) {
 							List<Dialogue> dialogueList = new LinkedList<Dialogue>();
@@ -117,8 +116,20 @@ public class NetClient {
 						break;
 					case SET_ROLE:
 						if (netMsg.obj instanceof Role) {
-							gameClient.SetRole((Role) netMsg.obj);
+							// In order to communicate with the GDX rendering
+							// thread, we need to spawn a runnable and post it
+							// to it
+							Gdx.app.postRunnable(new Runnable() {
+								@Override
+								public void run() {
+									// process the result, e.g. add it to an
+									// Array<Result> field of the
+									// ApplicationListener.
+									gameClient.SetRole((Role) netMsg.obj);
+								}
+							});
 						}
+
 						break;
 					case START_LEVEL:
 						if (netMsg.obj instanceof Level) {

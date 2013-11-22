@@ -2,8 +2,6 @@ package csci331.team.red.network;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
@@ -11,8 +9,6 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import csci331.team.red.server.ServerEngine;
-import csci331.team.red.shared.Alert;
-import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Role;
 
@@ -42,15 +38,14 @@ public class NetServer {
 	 *            Reference to a {@link ServerEngine}
 	 * @throws IOException
 	 */
-	public NetServer(final ServerEngine gameServer) throws IOException {
-		this.gameServer = gameServer;
+	public NetServer(final ServerEngine incomingGameServer) throws IOException {
+		this.gameServer = incomingGameServer;
 		server = new Server();
 		/* start a thread to handle incoming connections */
 		server.start();
 		server.bind(Network.tcpPort);
 
 		/* Kryo automatically serializes the objects to and from bytes */
-		Kryo kryo = server.getKryo();
 		/* Create HashMap to map connections to roles */
 		roles = new HashMap<Integer, Role>();
 
@@ -92,8 +87,9 @@ public class NetServer {
 							// You are already connected
 							send(Message.CONNECTED,
 									roles.get(connection.getID()));
+						}else{
+							gameServer.onPlayerConnect(connection);
 						}
-						gameServer.onPlayerConnect(connection);
 						break;
 					case DIALOGUE:
 						// server should not receive this

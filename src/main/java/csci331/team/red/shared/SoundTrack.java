@@ -6,9 +6,5 @@ package csci331.team.red.shared;
  * @author ojourmel
  */
 public enum SoundTrack {
-	WHISTLING,
-	CONTRY_SONG,
-	ROCK_SONG,
-	SPACE_SONG,
-	SONG,
+	WHISTLING, CONTRY_SONG, ROCK_SONG, SPACE_SONG, SONG,
 }

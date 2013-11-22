@@ -1,22 +1,28 @@
 package csci331.team.red.network;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
 import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Background;
+import csci331.team.red.shared.Character;
+import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Face;
 import csci331.team.red.shared.Gender;
+import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
-import csci331.team.red.shared.Character;
+import csci331.team.red.shared.PersonPicture;
+import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.SoundTrack;
-import csci331.team.red.shared.Incident;
-import csci331.team.red.shared.State;
 
 /**
  * This class is a convenient place to keep things common to both the client and
@@ -50,16 +56,34 @@ public class Network {
 		kryo.register(Alert.class);
 		kryo.register(Background.class);
 		kryo.register(Character.class);
+		kryo.register(Decision.class);
 		kryo.register(Dialogue.class);
 		kryo.register(Document.class);
+		kryo.register(Document.Type.class);
 		kryo.register(Face.class);
 		kryo.register(Gender.class);
 		kryo.register(Incident.class);
 		kryo.register(Level.class);
 		kryo.register(Message.class);
+		kryo.register(PersonPicture.class);
+		kryo.register(Posture.class);
 		kryo.register(Result.class);
 		kryo.register(Role.class);
 		kryo.register(SoundTrack.class);
-		kryo.register(State.class);
+		
+		kryo.register(List.class);
+		kryo.register(LinkedList.class);
+		kryo.register(ArrayList.class);
+		
+		kryo.register(String.class);
+		kryo.register(String[].class);
+	    
+	    
+	    
+	    
+	    
+	  
+	    
+	    
 	}
 }

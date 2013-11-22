@@ -3,17 +3,22 @@ package csci331.team.red.server;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.esotericsoftware.kryonet.Connection;
 
+import csci331.team.red.dao.CharacterDAO;
 import csci331.team.red.network.NetServer;
-import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Character;
+import csci331.team.red.shared.Decision;
+import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
+import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 
@@ -34,9 +39,10 @@ public class ServerEngine extends Thread {
 
 	// Core game assets
 	private NetServer network;
-	private List<Incident> stages;
+	private List<Incident> incident;
 	private List<Level> levels;
-	private Incident currentStage;
+	private Incident currentIncident;
+	private CharacterDAO dao;
 
 	// The two players in the game
 	private Player playerOne;
@@ -47,10 +53,12 @@ public class ServerEngine extends Thread {
 	// Value to modify the base fraud probability of a Character
 	private double fraudDifficulty = 1;
 
+	private static final Random RANDOM = new Random();
+
 	// Locks and conditions for blocking on conditions while threading.
 	private final Lock lock = new ReentrantLock();
 	private final Condition clientsConnected = lock.newCondition();
-	private final Condition stageOver = lock.newCondition();
+	private final Condition incidentOver = lock.newCondition();
 	private final Condition paused = lock.newCondition();
 
 	/**
@@ -60,8 +68,11 @@ public class ServerEngine extends Thread {
 	 * @author ojourmel
 	 */
 	public ServerEngine() {
+
+		dao = new CharacterDAO();
+
 		levels = new LinkedList<Level>();
-		stages = new LinkedList<Incident>();
+		incident = new LinkedList<Incident>();
 
 		playerOne = new Player();
 		playerTwo = new Player();
@@ -86,25 +97,26 @@ public class ServerEngine extends Thread {
 				clientsConnected.await();
 			} catch (InterruptedException e) {
 				// game shutting down due to clientDisconect.
-				// onClientDisconnect will handle the details, just quit.
-
-				System.err.println("Quiting");
-
+				System.err.println("Server thread shutting down");
 				return;
 			} finally {
 				lock.unlock();
 			}
 		}
 
-		// we now have two clients connected.
-		levels.add(Level.getWait());
-		network.send(Message.START_LEVEL, Level.getWait());
+		System.err.println("Game Started");
 
+		// Set up the first level
 		// set up the environment for level one. (Campus)
-		Level one = Level.getCampus();
-		levels.add(one);
-		// start level one.
-		network.send(Message.START_LEVEL, one);
+		initLevel(Level.getCampus());
+		// Set up the first (scripted incident)
+		Character c = dao.getCharacter();
+		List<Document> d = new LinkedList<Document>();
+		d.add(new Document(Document.Type.GoldenTicket, null));
+		Incident inc = new Incident(c, d);
+		System.err.println("Starting First (Scripted) Incident");
+		network.send(Message.START_INCIDENT, inc);
+
 		for (int i = 0; i < 3; i++) {
 			// set up a stage. Use the stats from the previous stages to affect
 			// the next stage.
@@ -120,8 +132,9 @@ public class ServerEngine extends Thread {
 			// reject this stage, then make a new one!
 			try {
 				lock.lock();
-				stageOver.await();
+				incidentOver.await();
 			} catch (InterruptedException e) {
+				// We got interrupted. Game Over. Save nothing.
 				return;
 			} finally {
 				lock.unlock();
@@ -133,7 +146,7 @@ public class ServerEngine extends Thread {
 		// network.send(Message.START_STAGE, stage);
 		try {
 			lock.lock();
-			stageOver.await();
+			incidentOver.await();
 		} catch (InterruptedException e) {
 			return;
 		} finally {
@@ -156,61 +169,78 @@ public class ServerEngine extends Thread {
 	 * @return the {@link Result} of the query
 	 */
 	public Result onDatabaseSearch(String query) {
-		// TODO: Handle database queries
-		return Result.INVALID;
-	}
+		System.err.println("onDatabaseSearch: " + query);
+		query = query.toUpperCase();
 
-	public Dialogue onDialogRequest(Dialogue incoming) {
-		/**
-		 * Callback for when a player requests additional dialog
-		 * 
-		 * @param incoming
-		 *            {@link Dialog}
-		 * @return Additional {@link Dialog} for the player
-		 */
-		// TODO: Handle proper dialog requests.
-		return Dialogue.GENERIC;
+		// TODO: Handle database queries
+		return Result.INVALID_COMMAND;
 	}
 
 	/**
 	 * Callback for when a player changes {@link State}
 	 * 
-	 * @deprecated Because this server must know <b> which </b> player has
-	 *             changed state.
-	 * @param state
+	 * @param role
+	 *            The role of the player changing state
+	 * @param posture
 	 */
-	@Deprecated
-	public void onStateChange(State state) {
-		// TODO: Allow for state to have an impact on actors.
 
+	public void onPostureChange(Role role, Posture posture) {
+		System.err.println("onPostureChange " + role.toString() + " "
+				+ posture.toString());
+		if (playerOne.getRole() == role) {
+			playerOne.setState(posture);
+		} else {
+			playerTwo.setState(posture);
+		}
 	}
 
-	/**
-	 * Callback for when a player connects. If two players connect, then the
-	 * main game logic is started.
-	 * 
-	 */
-	public void onPlayerConnect(Connection conn) {
+	public void onPlayerConnect(Connection connection) {
 		numPlayerConnected++;
+
+		// First connection is first player, and
+		// get's a random role
+		if (playerOne.getRole() == Role.UNDEFINDED) {
+			if (RANDOM.nextBoolean()) {
+				playerOne.setRole(Role.DATABASE);
+			} else {
+				playerOne.setRole(Role.FIELDAGENT);
+			}
+
+			System.err.println("Player One has connected with Role: "
+					+ playerOne.getRole().toString());
+			network.setRole(connection, playerOne.getRole());
+
+		} else {
+			if (playerOne.getRole() == Role.DATABASE) {
+				playerTwo.setRole(Role.FIELDAGENT);
+			} else {
+				playerTwo.setRole(Role.DATABASE);
+			}
+
+			System.err.println("Player Two has connected with Role: "
+					+ playerTwo.getRole().toString());
+			network.setRole(connection, playerTwo.getRole());
+		}
+
+		// Get the game going if we have enough players
 		if (numPlayerConnected == MAX_PLAYERS) {
 			lock.lock();
 			clientsConnected.signal();
 			lock.unlock();
 		}
-		// TODO: Assign Roles to Connections
 	}
 
 	/**
 	 * Callback for when a player has disconnected. Shut down the other clients,
 	 * and stop this {@link ServerEngine} <br>
-	 * TODO: Consider implementing a reconnect period, where a player could
-	 * resume their game
+	 * 
+	 * @param role
+	 *            {@link Role}
 	 */
 	public void onPlayerDisconnect(Role role) {
+		System.err.println("onPlayerDisconnect " + role.toString());
 		network.send(Message.DISCONNECTED);
 
-		// Doing things this way means that all "Condition.await()" blocks will
-		// have to be surrounded with try/catch blocks
 		this.interrupt();
 	}
 
@@ -219,9 +249,8 @@ public class ServerEngine extends Thread {
 	 * stop this {@link ServerEngine}
 	 */
 	public void onPlayerQuit(Role role) {
+		System.err.println("onPlayerQuit " + role.toString());
 		network.send(Message.QUIT);
-		// TODO: This code *might* have some problems interrupting it'self. See
-		// onPlayerDisconnect()
 		this.interrupt();
 	}
 
@@ -231,6 +260,7 @@ public class ServerEngine extends Thread {
 	 * necessary.
 	 */
 	public void onPlayerPause(Role role) {
+		System.err.println("onPlayerPause " + role.toString());
 		// pause any time-counting variables
 		network.send(Message.PAUSE);
 	}
@@ -238,8 +268,11 @@ public class ServerEngine extends Thread {
 	/**
 	 * Callback when a player resumes their game. TODO: Determine how to keep
 	 * track of <b> which</b> player resumed, if necessary
+	 * 
+	 * @param role
 	 */
 	public void onPlayerResume(Role role) {
+		System.err.println("onPlayerResume " + role.toString());
 		// resume any time-counting variables
 		network.send(Message.RESUME);
 	}
@@ -248,18 +281,37 @@ public class ServerEngine extends Thread {
 	 * Callback when a stage is completed. Causes a new stage to be sent to the
 	 * players
 	 */
-	public void onStageComplete(boolean decition) {
+	public void onIncidentComplete(Decision decition) {
+		System.err.println("onIncidentCompleate " + decition.toString());
 
 		// update player scores from the outcome of this stage. Update any
 		// environment variables, and tell run() to wake up, and do another
 		// stage.
 
 		lock.lock();
-		stageOver.signal();
+		incidentOver.signal();
 		lock.unlock();
 	}
 
+	/**
+	 * Direct method to kill the server from the client, without going through
+	 * the network.
+	 */
 	public void kill() {
-		// TODO Auto-generated method stub
+		System.err.println("Server Killed by Client");
+		network.send(Message.DISCONNECTED);
+		this.interrupt();
+	}
+
+	private void initLevel(Level level) {
+
+		levels.add(level);
+
+		System.err.println("Starting Level " + level.getName());
+		// start level one.
+		network.send(Message.START_LEVEL, level);
+		// inform each player of the role they will be playing in level one
+		network.send(Message.SET_ROLE, playerOne.getRole(), playerOne.getRole());
+		network.send(Message.SET_ROLE, playerTwo.getRole(), playerTwo.getRole());
 	}
 }

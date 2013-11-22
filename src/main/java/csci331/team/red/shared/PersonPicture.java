@@ -2,7 +2,6 @@ package csci331.team.red.shared;
 
 import java.util.Random;
 
-
 import java.util.ArrayList;
 
 /**
@@ -10,18 +9,26 @@ import java.util.ArrayList;
  * 
  */
 public enum PersonPicture {
-	MALE1(Face.MALE1, Gender.MALE), 
-	FEMALE1(Face.FEMALE1, Gender.FEMALE),
-	THUG1(Face.THUG1, Gender.MALE);
+	MALE1(Face.MALE1, Gender.MALE), FEMALE1(Face.FEMALE1, Gender.FEMALE), THUG1(
+			Face.THUG1, Gender.MALE);
 
 	public final Face f;
 	public final Gender g;
+
+	/**
+	 * All Serializable classes MUST provide a zero-argument constructor
+	 */
+	@Deprecated
+	private PersonPicture() {
+		f = null;
+		g = null;
+	}
 
 	private PersonPicture(Face f, Gender g) {
 		this.f = f;
 		this.g = g;
 	}
-	
+
 	private static final Random RANDOM = new Random();
 
 	public static PersonPicture getRandom(Gender g) {
@@ -34,13 +41,10 @@ public enum PersonPicture {
 				rightGender.add(pp);
 			}
 		}
-		if (!rightGender.isEmpty()) 
-		{
-			
+		if (!rightGender.isEmpty()) {
+
 			return rightGender.get(RANDOM.nextInt(rightGender.size()));
-		} 
-		else 
-		{
+		} else {
 			throw new RuntimeException("Invalid Gender " + g.name());
 		}
 	}

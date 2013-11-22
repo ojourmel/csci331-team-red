@@ -30,8 +30,7 @@ package csci331.team.red.shared;
  * 
  * @author melany
  */
-public class Character
-{
+public class Character {
 
 	// Character Attribute Variables
 	private String firstName;
@@ -50,144 +49,123 @@ public class Character
 	private boolean fraud;
 
 	// Getters/Setters for Attribute Variables
-	public String getFirstName()
-	{
+	public String getFirstName() {
 		return firstName;
 	}
 
-	public void setFirstName(String firstName)
-	{
+	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
-	public String getLastName()
-	{
+	public String getLastName() {
 		return lastName;
 	}
 
-	public void setLastName(String lastName)
-	{
+	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
-	public String getDob()
-	{
+	public String getDob() {
 		return dob;
 	}
 
-	public void setDob(String dob)
-	{
+	public void setDob(String dob) {
 		this.dob = dob;
 	}
 
-	public String getDriversID()
-	{
+	public String getDriversID() {
 		return driversID;
 	}
 
-	public void setDriversID(String driversID)
-	{
+	public void setDriversID(String driversID) {
 		this.driversID = driversID;
 	}
 
-	public String getPassportID()
-	{
+	public String getPassportID() {
 		return passportID;
 	}
 
-	public void setPassportID(String passportID)
-	{
+	public void setPassportID(String passportID) {
 		this.passportID = passportID;
 	}
 
-	public String getOccupation()
-	{
+	public String getOccupation() {
 		return occupation;
 	}
 
-	public void setOccupation(String occupation)
-	{
+	public void setOccupation(String occupation) {
 		this.occupation = occupation;
 	}
 
-	public String getAddress()
-	{
+	public String getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address)
-	{
+	public void setAddress(String address) {
 		this.address = address;
 	}
 
-	public String getCity()
-	{
+	public String getCity() {
 		return city;
 	}
 
-	public void setCity(String city)
-	{
+	public void setCity(String city) {
 		this.city = city;
 	}
 
-	public String getRegion()
-	{
+	public String getRegion() {
 		return region;
 	}
 
-	public void setRegion(String region)
-	{
+	public void setRegion(String region) {
 		this.region = region;
 	}
 
-	public String getPostal()
-	{
+	public String getPostal() {
 		return postal;
 	}
 
-	public void setPostal(String postal)
-	{
+	public void setPostal(String postal) {
 		this.postal = postal;
 	}
 
-	public String getCountry()
-	{
+	public String getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country)
-	{
+	public void setCountry(String country) {
 		this.country = country;
 	}
 
-	public Gender getGender()
-	{
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(Gender gender)
-	{
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 
-	public PersonPicture getAvatar()
-	{
+	public PersonPicture getAvatar() {
 		return avatar;
 	}
 
-	public void setAvatar(PersonPicture avatar)
-	{
+	public void setAvatar(PersonPicture avatar) {
 		this.avatar = avatar;
 	}
 
-	public void setFraud(boolean fraud)
-	{
+	public void setFraud(boolean fraud) {
 		this.fraud = fraud;
 	}
 
-	public boolean isFraud()
-	{
+	public boolean isFraud() {
 		return fraud;
+	}
+
+	/**
+	 * All Serializable classes MUST provide a zero-argument constructor
+	 */
+	@Deprecated
+	public Character() {
 	}
 
 	/**
@@ -214,8 +192,7 @@ public class Character
 	public Character(String dob, String driversID, String firstName,
 			String lastName, String passportID, String address, String city,
 			String region, String postal, String country, String occupation,
-			Gender gender, PersonPicture avatar)
-	{
+			Gender gender, PersonPicture avatar) {
 
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -249,15 +226,11 @@ public class Character
 	 * 
 	 */
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		// if the two objects are equal in reference, they are equal
-		if (this == obj)
-		{
+		if (this == obj) {
 			return true;
-		}
-		else if (obj instanceof Character)
-		{
+		} else if (obj instanceof Character) {
 			Character c = (Character) obj;
 			if ((((c.firstName == null) && (this.firstName == null)) || (c.firstName
 					.equals(this.firstName)))
@@ -285,17 +258,12 @@ public class Character
 					&& (((c.gender == null) && (this.gender == null)) || (c.gender
 							.equals(this.gender)))
 					&& (((c.avatar == null) && (this.avatar == null)) || (c.avatar
-							.equals(this.avatar))))
-			{
+							.equals(this.avatar)))) {
 				return true;
-			}
-			else
-			{
+			} else {
 				return false;
 			}
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -307,8 +275,7 @@ public class Character
 	 * @author melany
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hashCode = 0;
 
 		hashCode = hashCode * 37 + firstName.hashCode();
@@ -329,8 +296,7 @@ public class Character
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Name: ");
