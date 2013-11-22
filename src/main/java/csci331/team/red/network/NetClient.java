@@ -63,6 +63,8 @@ public class NetClient {
 
 		// ThreadedListener runs the listener methods on a different thread.
 		client.addListener(new ThreadedListener(new Listener() {
+			private Dialogue[] dialogues;
+
 			/**
 			 * CSCI331 ML OVERRIDING
 			 */
@@ -77,7 +79,12 @@ public class NetClient {
 					switch (netMsg.msg) {
 					case ALERT:
 						if (netMsg.obj instanceof Alert) {
-							gameClient.addAlert((Alert) netMsg.obj);
+							Gdx.app.postRunnable(new Runnable() {
+								@Override
+								public void run() {
+									gameClient.addAlert((Alert) netMsg.obj);
+								}
+							});
 						}
 						break;
 					case CONNECTED:
@@ -95,50 +102,95 @@ public class NetClient {
 								}
 							}
 
-							Dialogue[] dialogues = new Dialogue[dialogueList
+							this.dialogues = new Dialogue[dialogueList
 									.size()];
 							dialogueList.toArray(dialogues);
 
-							gameClient.DisplayDialouge(dialogues);
-						}
-						break;
-					case DISCONNECTED:
-						gameClient.LeaveGame();
-						break;
-					case PAUSE:
-						gameClient.PauseGame();
-						break;
-					case QUIT:
-						gameClient.LeaveGame();
-						break;
-					case RESUME:
-						gameClient.UnpauseGame();
-						break;
-					case SET_ROLE:
-						if (netMsg.obj instanceof Role) {
-							// In order to communicate with the GDX rendering
-							// thread, we need to spawn a runnable and post it
-							// to it
 							Gdx.app.postRunnable(new Runnable() {
 								@Override
 								public void run() {
-									// process the result, e.g. add it to an
-									// Array<Result> field of the
-									// ApplicationListener.
+									gameClient.DisplayDialouge(dialogues);
+								}
+							});
+						}
+						break;
+					case DISCONNECTED:
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run() {
+								gameClient.LeaveGame();
+							}
+						});
+						break;
+					case ONPOSTURECHANGE:
+						// client should not receive this message
+						break;
+					case ONDECISIONEVENT:
+						// client should not receive this message
+						break;
+					case PAUSE:
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run() {
+								gameClient.PauseGame();
+							}
+						});
+						break;
+					case QUIT:
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run() {
+								gameClient.LeaveGame();
+							}
+						});
+						break;
+					case RESUME:
+						Gdx.app.postRunnable(new Runnable() {
+							@Override
+							public void run() {
+								gameClient.UnpauseGame();
+							}
+						});
+						break;
+					case SET_ROLE:
+						if (netMsg.obj instanceof Role) {
+							/**
+							 * In order to communicate with the GDX rendering
+							 * thread, we need to spawn a runnable and post it
+							 * to it
+							 */
+							Gdx.app.postRunnable(new Runnable() {
+								@Override
+								public void run() {
+									/**
+									 * process the result, e.g. add it to an
+									 * Array<Result> field of the
+									 * ApplicationListener.
+									 */
 									gameClient.SetRole((Role) netMsg.obj);
 								}
 							});
 						}
-
 						break;
 					case START_LEVEL:
 						if (netMsg.obj instanceof Level) {
-							gameClient.setLevel((Level) netMsg.obj);
+							Gdx.app.postRunnable(new Runnable() {
+								@Override
+								public void run() {
+									gameClient.setLevel((Level) netMsg.obj);
+								}
+							});
 						}
 						break;
 					case START_INCIDENT:
 						if (netMsg.obj instanceof Incident) {
-							gameClient.startIncident((Incident) netMsg.obj);
+							Gdx.app.postRunnable(new Runnable() {
+								@Override
+								public void run() {
+									gameClient
+											.startIncident((Incident) netMsg.obj);
+								}
+							});
 						}
 						break;
 					default:

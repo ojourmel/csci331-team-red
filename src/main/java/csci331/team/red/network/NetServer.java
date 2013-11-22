@@ -3,13 +3,17 @@ package csci331.team.red.network;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.hamcrest.core.IsInstanceOf;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import csci331.team.red.server.ServerEngine;
+import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Message;
+import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Role;
 
 /**
@@ -86,7 +90,7 @@ public class NetServer {
 						if (roles.containsKey(connection.getID())) {
 							// You are already connected
 							send(Message.CONNECTED,
-									roles.get(connection.getID()));
+									(Role) roles.get(connection.getID()));
 						} else {
 							gameServer.onPlayerConnect(connection);
 						}
@@ -95,17 +99,31 @@ public class NetServer {
 						// server should not receive this
 						break;
 					case DISCONNECTED:
-						gameServer.onPlayerDisconnect(roles.get(connection
+						gameServer.onPlayerDisconnect((Role) roles
+								.get(connection.getID()));
+						break;
+					case ONPOSTURECHANGE:
+						if (netMsg.obj instanceof Posture) {
+							gameServer.onPostureChange(
+									(Role) roles.get(connection.getID()),
+									(Posture) netMsg.obj);
+						}
+					case ONDECISIONEVENT:
+						if (netMsg.obj instanceof Decision) {
+							gameServer
+									.onIncidentComplete((Decision) netMsg.obj);
+						}
+					case PAUSE:
+						gameServer.onPlayerPause((Role) roles.get(connection
 								.getID()));
 						break;
-					case PAUSE:
-						gameServer.onPlayerPause(roles.get(connection.getID()));
-						break;
 					case QUIT:
-						gameServer.onPlayerQuit(roles.get(connection.getID()));
+						gameServer.onPlayerQuit((Role) roles.get(connection
+								.getID()));
 						break;
 					case RESUME:
-						gameServer.onPlayerResume(roles.get(connection.getID()));
+						gameServer.onPlayerResume((Role) roles.get(connection
+								.getID()));
 						break;
 					case SET_ROLE:
 						// server should not receive this
@@ -164,8 +182,6 @@ public class NetServer {
 	 *            Send an Enumerated {@link Message}
 	 */
 	public void send(Message msg) {
-		// FIXME: So this is currently calling send(Message,Role), not
-		// send(Message,Object), as it is intended to...
 		send(msg, null);
 	}
 
