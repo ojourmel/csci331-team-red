@@ -3,8 +3,6 @@ package csci331.team.red.network;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.hamcrest.core.IsInstanceOf;
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -191,26 +189,20 @@ public class NetServer {
 	}
 
 	/**
-	 * Send an Enumerated {@link Message} to the client with a specific
-	 * {@link Role}
-	 * 
-	 * @param msg
-	 * @param role
-	 */
-	public void send(Message msg, Role role) {
-		send(msg, null, role);
-	}
-
-	/**
 	 * Send an Enumerated {@link Message} and a registered (
-	 * {@link Kryo#register(Class)}) Object
+	 * {@link Kryo#register(Class)}) Object or an Enumerated {@link Message} to
+	 * the client with a specific {@link Role}
 	 * 
 	 * @param msg
 	 * @param obj
 	 */
 	public void send(Message msg, Object obj) {
-		NetMessage netMsg = new NetMessage(msg, obj);
-		server.sendToAllTCP(netMsg);
+		if (obj instanceof Role) {
+			send(msg, null, (Role) obj);
+		} else {
+			NetMessage netMsg = new NetMessage(msg, obj);
+			server.sendToAllTCP(netMsg);
+		}
 	}
 
 	/**
