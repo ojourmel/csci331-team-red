@@ -5,8 +5,11 @@ import java.util.Random;
 import java.util.ArrayList;
 
 /**
- * TODO: JavaDoc
+ * Enum to describe all art assets, linked with {@link Face}.
  * 
+ * @author ojourmel
+ * @author melany
+ * @author Lduperron
  */
 public enum PersonPicture {
 	MALE1(Face.MALE1, Gender.MALE), FEMALE1(Face.FEMALE1, Gender.FEMALE), THUG1(
@@ -45,7 +48,11 @@ public enum PersonPicture {
 
 			return rightGender.get(RANDOM.nextInt(rightGender.size()));
 		} else {
-			throw new RuntimeException("Invalid Gender " + g.name());
+			if (g != null) {
+				throw new RuntimeException("Invalid Gender " + g.name());
+			} else {
+				throw new RuntimeException("Null Gender");
+			}
 		}
 	}
 }

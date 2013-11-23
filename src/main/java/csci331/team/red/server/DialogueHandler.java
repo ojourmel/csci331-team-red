@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.callbacks.DBCallback;
@@ -16,10 +17,10 @@ import csci331.team.red.shared.callbacks.FieldCallback;
  */
 public class DialogueHandler {
 
-	private Random random;
+	private final Random RANDOM;
 
-	public DialogueHandler(Random random) {
-		this.random = random;
+	public DialogueHandler(Random RANDOM) {
+		this.RANDOM = RANDOM;
 	}
 
 	/**
@@ -30,7 +31,8 @@ public class DialogueHandler {
 	 * @return A List of {@link Dialogue}s
 	 */
 	public void initDialogue(Incident incident) {
-		List<Dialogue> dialogues = new LinkedList<Dialogue>();
+		List<Dialogue> dbDialogues = new LinkedList<Dialogue>();
+		List<Dialogue> faDialogues = new LinkedList<Dialogue>();
 
 		// TODO: Generate dialogue for both roles
 
@@ -38,6 +40,9 @@ public class DialogueHandler {
 		// documents. Here is where we can corrupt data if we would like
 
 		// build the dialogue for each role
+
+		incident.setDbDialogue(dbDialogues);
+		incident.setFieldDialogue(faDialogues);
 	}
 
 	/**
@@ -46,7 +51,9 @@ public class DialogueHandler {
 	 * @author ojourmel
 	 */
 	public void initIntroDialogue(Incident incident) {
-		// used in tutorial dialogue
+
+		// TODO: Clean up intro dialogues and confirm callback code
+
 		String[][] dbStrArr = {
 				{ "Well then... (Click to continue)", "Ominious Voice" },
 				{ "Welcome to your first day on the job.", "Ominious Voice" },
@@ -83,6 +90,7 @@ public class DialogueHandler {
 
 		incident.setDbDialogue(dbDialogues);
 
+		// TODO: Clean up intro dialogues and confirm callback code
 		String[][] faStrArr = {
 				{ "Well then... (Click to continue)", "Ominious Voice" },
 				{ "Welcome to your first day on the job.", "Ominious Voice" },
@@ -124,6 +132,7 @@ public class DialogueHandler {
 
 			incident.setDbDialogue(dbDialogues);
 
+			// TODO: Clean up intro dialogues and confirm callback code
 			String[][] faStrArr = {
 					{ "Who do we have here?", "Ominious Voice" },
 					{ "You should approach him.  He looks suspicious.",
@@ -145,11 +154,6 @@ public class DialogueHandler {
 							faCallArr)));
 
 			incident.setFieldDialogue(faDialogues);
-
-			break;
-		case ALIEN:
-
-			// Unimplemented
 
 			break;
 		}

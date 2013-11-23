@@ -67,11 +67,12 @@ public class PersonPictureTest {
 	@Test
 	public void testGetRandom() {
 		persPic = PersonPicture.getRandom(Gender.FEMALE);
-		assertEquals("getRandom gender incorrectly set", Gender.FEMALE, persPic.g);
+		assertEquals("getRandom gender incorrectly set", Gender.FEMALE,
+				persPic.g);
 		persPic = PersonPicture.getRandom(Gender.MALE);
-		assertEquals("getRandom gender incorrectly set", Gender.FEMALE, persPic.g);
+		assertEquals("getRandom gender incorrectly set", Gender.MALE,
+				persPic.g);
 
-		
 		persPic = PersonPicture.getRandom(Gender.fromChar('b'));
 		// TODO: Complete me
 	}

@@ -2,6 +2,7 @@ package csci331.team.red.server;
 
 import java.util.Random;
 
+import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Incident;
 
 /**
@@ -10,10 +11,10 @@ import csci331.team.red.shared.Incident;
  */
 public class DocumentHandler {
 
-	private Random random;
+	private final Random RANDOM;
 
-	public DocumentHandler(Random random) {
-		this.random = random;
+	public DocumentHandler(Random RANDOM) {
+		this.RANDOM = RANDOM;
 	}
 
 	public void initIntroDocuments(Incident incident) {
@@ -32,9 +33,6 @@ public class DocumentHandler {
 		switch (boss) {
 		case THUGLIFE:
 			// TODO:
-			break;
-		case ALIEN:
-
 			break;
 		}
 

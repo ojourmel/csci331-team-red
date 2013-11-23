@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import csci331.team.red.server.Boss;
+import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Character;
 
 /**
@@ -313,6 +313,8 @@ public class CharacterRepository extends CharacterDAO {
 	 */
 	public Character getIntroCharacter() {
 
+		// TODO: Hard-Code the intro characters
+
 		return null;
 	}
 
@@ -325,7 +327,7 @@ public class CharacterRepository extends CharacterDAO {
 		switch (boss) {
 		case THUGLIFE:
 
-		case ALIEN:
+			// TODO: Hard-Code the boss characters
 
 		default:
 			return null;

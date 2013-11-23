@@ -1,8 +1,8 @@
 package csci331.team.red.shared;
 
+import java.lang.Character;
+
 /**
- * TODO: Write me
- * 
  * @author melany
  */
 public enum Gender {
@@ -10,6 +10,7 @@ public enum Gender {
 	MALE, FEMALE;
 
 	public static Gender fromChar(char c) {
+		c = Character.toUpperCase(c);
 		Gender g = FEMALE;
 		switch (c) {
 		case 'M':
@@ -19,8 +20,8 @@ public enum Gender {
 			g = FEMALE;
 			break;
 		default:
+			g = null;
 		}
 		return g;
 	}
-
 }
