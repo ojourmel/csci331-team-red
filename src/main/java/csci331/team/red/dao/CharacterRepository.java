@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import csci331.team.red.server.Boss;
 import csci331.team.red.shared.Character;
 
 /**
@@ -33,9 +34,6 @@ public class CharacterRepository extends CharacterDAO {
 	private static final int MIN_RESULT = 10;
 
 	/**
-	 * The construction creates an initial game-play character database of 50
-	 * random characters
-	 * 
 	 * @author melany
 	 */
 	public CharacterRepository() {
@@ -46,7 +44,8 @@ public class CharacterRepository extends CharacterDAO {
 	 * CSCI331-TAG MW OVERRIDING <br>
 	 * <br>
 	 * 
-	 * Returns a random character and persists it in the game play character database.<br>
+	 * Returns a random character and persists it in the game play character
+	 * database.<br>
 	 * 
 	 * @return Character
 	 * @author melany
@@ -305,6 +304,32 @@ public class CharacterRepository extends CharacterDAO {
 		}
 
 		return matchesAll;
+	}
+
+	/**
+	 * FIXME: <b> Stub </b>
+	 * 
+	 * @author ojourmel
+	 */
+	public Character getIntroCharacter() {
+
+		return null;
+	}
+
+	/**
+	 * FIXME: <b> Stub </b>
+	 * 
+	 * @author ojourmel
+	 */
+	public Character getBossCharacter(Boss boss) {
+		switch (boss) {
+		case THUGLIFE:
+
+		case ALIEN:
+
+		default:
+			return null;
+		}
 	}
 
 	// TODO: Create proper JUnit testing using this kind of testing.

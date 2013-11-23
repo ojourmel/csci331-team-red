@@ -1,8 +1,13 @@
 package csci331.team.red.server;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -13,7 +18,6 @@ import csci331.team.red.dao.CharacterRepository;
 import csci331.team.red.network.NetServer;
 import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
-import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
@@ -29,7 +33,7 @@ import csci331.team.red.shared.Role;
  * 
  * @author ojourmel
  * 
- * CONTROLLER PATTERN
+ *         CONTROLLER PATTERN
  * 
  */
 public class ServerEngine extends Thread {
@@ -37,11 +41,13 @@ public class ServerEngine extends Thread {
 	/**
 	 * The maximum number of players supported by this game.
 	 */
-	public static final int MAX_PLAYERS = 2;
+	private static final int MAX_PLAYERS = 2;
+	private static final int MIN_INCIDENTS = 5;
 
 	// Core game assets
 	private NetServer network;
 	private CharacterRepository repo;
+	private LinkedList<Incident> incidents;
 
 	// The two players in the game
 	private Player playerOne;
@@ -51,8 +57,10 @@ public class ServerEngine extends Thread {
 
 	// Used through the ServerEngine to determine random events.
 	private static final Random RANDOM = new Random();
+
 	private DialogueHandler dialogueHandler = new DialogueHandler(RANDOM);
 	private DocumentHandler documentHandler = new DocumentHandler(RANDOM);
+	private AlertHandler alertHandler = new AlertHandler(RANDOM);
 
 	// Locks and conditions for blocking on conditions while threading.
 	private final Lock lock = new ReentrantLock();
@@ -68,6 +76,8 @@ public class ServerEngine extends Thread {
 	public ServerEngine() {
 
 		repo = new CharacterRepository();
+
+		incidents = new LinkedList<Incident>();
 
 		playerOne = new Player();
 		playerTwo = new Player();
@@ -105,7 +115,7 @@ public class ServerEngine extends Thread {
 		initLevel(Level.getCampus());
 		// Set up the first (scripted incident)
 
-		if (!doTutorial()) {
+		if (!doIntro()) {
 			tearDown();
 			return;
 		}
@@ -175,7 +185,12 @@ public class ServerEngine extends Thread {
 	}
 
 	public void onPlayerConnect(Connection connection) {
-		numPlayerConnected++;
+		if (numPlayerConnected < MAX_PLAYERS) {
+			numPlayerConnected++;
+		} else {
+			network.setRole(connection, Role.UNDEFINDED);
+			network.send(Message.DISCONNECTED, Role.UNDEFINDED);
+		}
 
 		// First connection is first player, and
 		// get's a random role
@@ -219,8 +234,7 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerDisconnect(Role role) {
 		System.err.println("onPlayerDisconnect " + role.toString());
-		network.send(Message.DISCONNECTED, Role.DATABASE);
-		network.send(Message.DISCONNECTED, Role.FIELDAGENT);
+		network.send(Message.DISCONNECTED);
 
 		this.interrupt();
 	}
@@ -231,8 +245,8 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerQuit(Role role) {
 		System.err.println("onPlayerQuit " + role.toString());
-		network.send(Message.QUIT, Role.DATABASE);
-		network.send(Message.QUIT, Role.FIELDAGENT);
+
+		network.send(Message.QUIT);
 		this.interrupt();
 	}
 
@@ -241,11 +255,8 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerPause(Role role) {
 		System.err.println("onPlayerPause " + role.toString());
-		// pause any time-counting variables
 
-		// FIXME: send the single message once the network is fixed
-		network.send(Message.PAUSE, Role.DATABASE);
-		network.send(Message.PAUSE, Role.FIELDAGENT);
+		network.send(Message.PAUSE);
 
 	}
 
@@ -257,9 +268,7 @@ public class ServerEngine extends Thread {
 	public void onPlayerResume(Role role) {
 		System.err.println("onPlayerResume " + role.toString());
 
-		// FIXME: send the single message once the network is fixed
-		network.send(Message.RESUME, Role.DATABASE);
-		network.send(Message.RESUME, Role.FIELDAGENT);
+		network.send(Message.RESUME);
 	}
 
 	/**
@@ -284,34 +293,45 @@ public class ServerEngine extends Thread {
 	 */
 	public void kill() {
 		System.err.println("Server Killed by Client");
-		network.send(Message.DISCONNECTED, Role.DATABASE);
-		network.send(Message.DISCONNECTED, Role.FIELDAGENT);
+		network.send(Message.DISCONNECTED);
 		this.interrupt();
 	}
 
 	private void initLevel(Level level) {
 
+		// preload a few incidents, to be used in this level
+		for (int i = 0; i < MIN_INCIDENTS; i++) {
+			Incident incident = new Incident(repo.getCharacter());
+			documentHandler.initDocuments(incident);
+			dialogueHandler.initDialogue(incident);
+			incidents.add(incident);
+		}
+
 		System.err.println("Starting Level " + level.getName());
 		// start level one.
 		network.send(Message.START_LEVEL, level);
-		// inform each player of the role they will be playing in level one
+		// inform each player of the role they will be playing in this level
 		network.send(Message.SET_ROLE, playerOne.getRole(), playerOne.getRole());
 		network.send(Message.SET_ROLE, playerTwo.getRole(), playerTwo.getRole());
+
 	}
 
-	private boolean doTutorial() {
+	private boolean doIntro() {
 		// TODO: Change these to scripted characters
-		Character c = repo.getCharacter();
-		List<Document> d = documentHandler.getDocuments(c);
-		Incident i = new Incident(c, d);
+		Character character = repo.getIntroCharacter();
+		Incident incident = new Incident(character);
+		documentHandler.initIntroDocuments(incident);
+		dialogueHandler.initIntroDialogue(incident);
+		incident.setAlerts(alertHandler.introAlerts());
+
 		System.err.println("Starting First (Scripted) Tutorial Incident");
-		network.send(Message.START_INCIDENT, i);
+
+		network.send(Message.START_INCIDENT, incident);
 
 		// Send in the dialogue for both players
-		network.send(Message.DIALOGUE,
-				dialogueHandler.introDialogue(Role.DATABASE), Role.DATABASE);
-		network.send(Message.DIALOGUE,
-				dialogueHandler.introDialogue(Role.FIELDAGENT), Role.FIELDAGENT);
+		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
+		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
+				Role.FIELDAGENT);
 
 		// wait for player's decision.
 		try {
@@ -327,29 +347,21 @@ public class ServerEngine extends Thread {
 	}
 
 	private boolean doBoss(Boss boss) {
-		switch (boss) {
-		case THUGLIFE:
 
-			// TODO: Change these to scripted bosses
-			Character c = repo.getCharacter();
-			List<Document> d = documentHandler.getDocuments(c);
-			Incident i = new Incident(c, d);
-			System.err.println("Starting (Scripted) Boss Incident "
-					+ boss.toString());
-			network.send(Message.START_INCIDENT, i);
+		Character character = repo.getBossCharacter(boss);
+		Incident incident = new Incident(character);
+		documentHandler.initBossDocuments(incident, boss);
+		dialogueHandler.initBossDialogue(incident, boss);
+		incident.setAlerts(alertHandler.bossAlerts(boss));
 
-			// Send in the dialogue for both players
-			network.send(Message.DIALOGUE,
-					dialogueHandler.introDialogue(Role.DATABASE), Role.DATABASE);
-			network.send(Message.DIALOGUE,
-					dialogueHandler.introDialogue(Role.FIELDAGENT),
-					Role.FIELDAGENT);
+		System.err.println("Starting (Scripted) Boss Incident "
+				+ boss.toString());
+		network.send(Message.START_INCIDENT, incident);
 
-			break;
-		case ALIEN:
-			break;
-
-		}
+		// Send in the dialogue for both players
+		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
+		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
+				Role.FIELDAGENT);
 
 		// wait for player's decision.
 		try {
@@ -364,18 +376,32 @@ public class ServerEngine extends Thread {
 		return true;
 	}
 
+	/**
+	 * Pulls an incident from the queue to display.<br>
+	 * Gets alerts from <i> an </i> incident in the queue to display.<br>
+	 * Adds a new incident to the queue
+	 * 
+	 * @return false if
+	 */
 	private boolean doIncident() {
+
+		// Save a new incident for later
 		Character character = repo.getCharacter();
-		List<Document> documents = documentHandler.getDocuments(character);
-		Incident incident = new Incident(character, documents);
+		Incident incident = new Incident(character);
+		documentHandler.initDocuments(incident);
+		dialogueHandler.initDialogue(incident);
+		incidents.add(incident);
+
+		// get one for this incident
+		incident = incidents.pollFirst();
+		// generate alerts, using data from a random incident in the list/queue
+		incident.setAlerts(alertHandler.getAlerts(incidents.get(RANDOM
+				.nextInt(incidents.size()))));
 
 		network.send(Message.START_INCIDENT, incident);
-		network.send(Message.DIALOGUE, dialogueHandler.getDialogues(character,
-				documents, Role.DATABASE), Role.DATABASE);
-		network.send(Message.DIALOGUE, dialogueHandler.getDialogues(character,
-				documents, Role.FIELDAGENT), Role.FIELDAGENT);
-
-		// alertHandler.
+		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
+		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
+				Role.FIELDAGENT);
 
 		// wait for player's decision.
 		try {

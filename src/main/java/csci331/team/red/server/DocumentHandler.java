@@ -1,11 +1,8 @@
 package csci331.team.red.server;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
-import csci331.team.red.shared.Character;
-import csci331.team.red.shared.Document;
+import csci331.team.red.shared.Incident;
 
 /**
  * 
@@ -19,18 +16,27 @@ public class DocumentHandler {
 		this.random = random;
 	}
 
+	public void initIntroDocuments(Incident incident) {
+
+	}
+
 	/**
-	 * 
-	 * @param character
-	 * @return A List of {@link Document}s
+	 * FIXME: <b> Stub </b>
 	 */
-	public List<Document> getDocuments(Character character) {
-		List<Document> documents = new LinkedList<Document>();
+	public void initDocuments(Incident incident) {
 
-		// TODO:
-		// generate some documents, pulling values from character.
-		// Here is where we can corrupt data if we would like
+		// TODO: Implemented by melany
+	}
 
-		return documents;
+	public void initBossDocuments(Incident incident, Boss boss) {
+		switch (boss) {
+		case THUGLIFE:
+			// TODO:
+			break;
+		case ALIEN:
+
+			break;
+		}
+
 	}
 }
