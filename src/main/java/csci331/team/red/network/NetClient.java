@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.ws.Response;
+
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -17,6 +19,7 @@ import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
+import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 
 /**
@@ -91,8 +94,10 @@ public class NetClient {
 							});
 						}
 						break;
-					case CONNECTED:
-						// client should not receive this message
+					case DBRESULT:
+						if (netMsg.obj instanceof Result) {
+							gameClient.DatabaseQueryResult((Result) netMsg.obj);
+						}
 						break;
 					case DIALOGUE:
 						if (netMsg.obj instanceof List) {
@@ -123,12 +128,6 @@ public class NetClient {
 								gameClient.LeaveGame();
 							}
 						});
-						break;
-					case ONPOSTURECHANGE:
-						// client should not receive this message
-						break;
-					case ONDECISIONEVENT:
-						// client should not receive this message
 						break;
 					case PAUSE:
 						Gdx.app.postRunnable(new Runnable() {

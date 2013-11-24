@@ -3,6 +3,8 @@ package csci331.team.red.network;
 import java.io.IOException;
 import java.util.HashMap;
 
+import javax.xml.ws.Response;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -84,9 +86,6 @@ public class NetServer {
 
 					// process message
 					switch (netMsg.msg) {
-					case ALERT:
-						// server should not receive this
-						break;
 					case CONNECTED:
 						if (roles.containsKey(connection.getID())) {
 							// You are already connected
@@ -96,8 +95,10 @@ public class NetServer {
 							gameServer.onPlayerConnect(connection);
 						}
 						break;
-					case DIALOGUE:
-						// server should not receive this
+					case DBQUERY:
+						if (netMsg.obj instanceof String) {
+							gameServer.onDatabaseSearch((String) netMsg.obj);
+						}
 						break;
 					case DISCONNECTED:
 						gameServer.onPlayerDisconnect((Role) roles
@@ -125,15 +126,6 @@ public class NetServer {
 					case RESUME:
 						gameServer.onPlayerResume((Role) roles.get(connection
 								.getID()));
-						break;
-					case SET_ROLE:
-						// server should not receive this
-						break;
-					case START_LEVEL:
-						// server should not receive this
-						break;
-					case START_INCIDENT:
-						// server should not receive this
 						break;
 					default:
 						break;
