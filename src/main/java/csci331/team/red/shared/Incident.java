@@ -1,6 +1,7 @@
 package csci331.team.red.shared;
 
 import java.util.List;
+import java.util.Random;
 
 import com.sun.beans.decoder.DocumentHandler;
 
@@ -13,18 +14,23 @@ import csci331.team.red.server.DialogueHandler;
  * 
  * @author ojourmel
  */
-public class Incident {
+public class Incident extends csci331.team.red.dao.CharacterDAO {
 
 	/**
 	 * The actor in this {@link Incident}
 	 */
 	private Character actor;
 	private List<Document> incidentDocuments;
-
-	private List<Alert> alerts;
-
 	private List<Dialogue> dbDialogue;
 	private List<Dialogue> fieldDialogue;
+	private List<Alert> alerts;
+
+	// additional flags for fraud/error factor
+	public boolean fraud;
+	public boolean clericalError;
+
+	// Probability Factor (currently a 3 in 7 chance of error)
+	public final static int PROBABILITY = 7;
 
 	/**
 	 * All Serializable classes MUST provide a zero-argument constructor
@@ -36,6 +42,8 @@ public class Incident {
 		alerts = null;
 		dbDialogue = null;
 		fieldDialogue = null;
+		fraud = false;
+		clericalError = false;
 	}
 
 	/**
@@ -52,6 +60,12 @@ public class Incident {
 
 	/**
 	 * Initialize a new @{link Stage}
+	 * 
+	 * Uses a 3/7 probability for some kind of error or fraud
+	 * 
+	 * FIXME: I don't know if you want to give the constructor a list of
+	 * documents anymore as DocumentHandler takes an Incident and not a
+	 * Character
 	 * 
 	 * @param actor
 	 *            {@link Incident#actor}
@@ -108,6 +122,29 @@ public class Incident {
 
 	public void setIncidentDocuments(List<Document> incidentDocuments) {
 		this.incidentDocuments = incidentDocuments;
-	}
+		alerts = null;
+		dbDialogue = null;
+		fieldDialogue = null;
 
+		Random random = new Random();
+
+		// Determine if this incident has a fraud/error factor
+		if (random.nextInt(PROBABILITY) == 0) {
+			this.fraud = true;
+			this.clericalError = false;
+
+		} else if (random.nextInt(PROBABILITY) == 0) {
+			this.fraud = false;
+			this.clericalError = true;
+
+		} else if (random.nextInt(PROBABILITY) == 0) {
+			this.fraud = true;
+			this.clericalError = true;
+
+		} else {
+			this.fraud = false;
+			this.clericalError = false;
+		}
+
+	}
 }

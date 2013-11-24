@@ -385,13 +385,13 @@ public class FieldAgentScreen implements Screen
 	public void produceDocuments(List<Document> documents)
 	{
 		for(Document document : documents){
-			switch(document.DocumentType)
+			switch(document.documentType)
 			{
 				case DriversLicence:
-					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
+					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.documentType)) , tweenManager, document.textFields);
 					break;
 				case GoldenTicket:
-					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
+					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.documentType)) , tweenManager, document.textFields);
 					break;
 				default:
 					break;

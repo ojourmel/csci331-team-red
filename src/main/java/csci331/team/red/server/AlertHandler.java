@@ -49,12 +49,34 @@ public class AlertHandler {
 	 */
 	private enum Voice {
 		UIV("University of Island Visionaries"), COPS(
-				"Omianan Police Department");
+				"Omianan Police Department"), MANAGMENT("Managment");
 
 		private String who;
+		private static double MANAGMENT_INVOLVMENT = 0.2;
 
 		private Voice(String who) {
 			this.who = who;
+		}
+
+		/**
+		 * @return A voice, and depending on the MANAGMENT_INVOLVMENT, that
+		 *         voice may-or-may-not-be a nosy manger.
+		 * 
+		 * @author ojourmel
+		 */
+		public static Voice getVoice() {
+			Random RANDOM = new Random();
+
+			Voice voice = null;
+			if (RANDOM.nextDouble() < MANAGMENT_INVOLVMENT) {
+				voice = MANAGMENT;
+			} else {
+				while (voice != MANAGMENT) {
+					voice = values()[RANDOM.nextInt(values().length)];
+				}
+
+			}
+			return voice;
 		}
 	}
 
@@ -157,7 +179,18 @@ public class AlertHandler {
 	public List<Alert> getIntroAlerts(Incident incident) {
 		List<Alert> alerts = new LinkedList<Alert>();
 
-		// TODO: Hard-code intro alerts
+		// The intro alerts will be fairly simple, as any scripted alert will
+		// be triggered by a dialogue callback
+
+		Alert newbe = new Alert(
+				"MANAGMENT: NOTICE!\n First day for many Junior Officers. Try not to F*** it up");
+		alerts.add(newbe);
+
+		int nAlerts = RANDOM.nextInt(MAX_ALERTS - MIN_ALERTS) + MIN_ALERTS;
+
+		for (int i = 0; i < nAlerts; i++) {
+			alerts.add(genericAlert());
+		}
 
 		return alerts;
 	}
@@ -191,7 +224,7 @@ public class AlertHandler {
 
 		// TODO make custom build an alert using the character in this incident
 
-		Voice voice = Voice.values()[RANDOM.nextInt(Voice.values().length)];
+		Voice voice = Voice.getVoice();
 		ActionWord word = ActionWord.values()[RANDOM.nextInt(ActionWord
 				.values().length)];
 
