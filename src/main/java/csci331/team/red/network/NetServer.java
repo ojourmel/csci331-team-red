@@ -91,7 +91,7 @@ public class NetServer {
 						if (roles.containsKey(connection.getID())) {
 							// You are already connected
 							send(Message.CONNECTED,
-									(Role) roles.get(connection.getID()));
+									roles.get(connection.getID()));
 						} else {
 							gameServer.onPlayerConnect(connection);
 						}
@@ -190,6 +190,8 @@ public class NetServer {
 	 *            Send an Enumerated {@link Message}
 	 */
 	public void send(Message msg) {
+		// FIXME: So this is currently calling send(Message,Role), not
+		// send(Message,Object), as it is intended to...
 		send(msg, null);
 	}
 

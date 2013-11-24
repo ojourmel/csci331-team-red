@@ -17,11 +17,11 @@ public class FieldDialogueCallback<T extends Callback> implements
 		switch (c) {
 		case approachPerson:
 
-			entity.displayNewPerson(entity.currentIncident.actor);
+			entity.displayNewPerson(entity.currentIncident.getActor());
 			break;
 
 		case giveDocuments:
-			entity.produceDocuments(entity.currentIncident.incidentDocuments);
+			entity.produceDocuments(entity.currentIncident.getIncidentDocuments());
 
 		default:
 			break;

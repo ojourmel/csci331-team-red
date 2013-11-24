@@ -502,7 +502,7 @@ public class ClientEngine extends Game
 	{
 		if(databaseAgentScreen != null)
 		{
-			databaseAgentScreen.addAlert(alert.AlertText);
+			databaseAgentScreen.addAlert(alert.alertText);
 		}
 		
 	}
