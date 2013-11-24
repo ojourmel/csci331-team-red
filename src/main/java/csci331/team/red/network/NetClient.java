@@ -53,7 +53,11 @@ public class NetClient {
 		// registered by the same method for both the client and server.
 		Network.register(client);
 
-		client.connect(timeout, host, Network.tcpPort);
+		try {
+			client.connect(timeout, host, Network.tcpPort);
+		} catch (IOException e) {
+			throw new IOException("Unable to connect to Server");
+		}
 		this.send(Message.CONNECTED);
 		/*
 		 * change timeout to 60 secs so that client will not accidently
@@ -90,7 +94,6 @@ public class NetClient {
 					case CONNECTED:
 						// client should not receive this message
 						break;
-					// onPostureChange(msg, Posture Enum)
 					case DIALOGUE:
 						if (netMsg.obj instanceof List) {
 							List<Dialogue> dialogueList = new LinkedList<Dialogue>();
@@ -102,8 +105,7 @@ public class NetClient {
 								}
 							}
 
-							this.dialogues = new Dialogue[dialogueList
-									.size()];
+							this.dialogues = new Dialogue[dialogueList.size()];
 							dialogueList.toArray(dialogues);
 
 							Gdx.app.postRunnable(new Runnable() {
