@@ -5,10 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import csci331.team.red.dao.CharacterDAO;
 import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Gender;
 import csci331.team.red.shared.Incident;
+import static csci331.team.red.dao.CharacterDAO.*;
 
 /**
  * Responsible for generating documents, corrupting them as we go
@@ -16,9 +18,10 @@ import csci331.team.red.shared.Incident;
  * @author ojourmel
  * @author melany
  */
-public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
+public class DocumentHandler {
 
 	private final Random RANDOM;
+	private final CharacterDAO dao = new CharacterDAO();
 
 	// Probability lets me change one piece of data if fraud/error
 	private static final int PROBABILITY = 11;
@@ -81,7 +84,9 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 	public void initBossDocuments(Incident incident, Boss boss) {
 		switch (boss) {
 		case THUGLIFE:
-			// TODO:
+			// There are no documents associated with this boss. Initialize all
+			// objects to be non null.
+			incident.setIncidentDocuments(new LinkedList<Document>());
 			break;
 		}
 	}
@@ -124,9 +129,10 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 			characterAttributes.put(GENDER, "Female");
 		}
 
-		// If incident.fraud or incident.ClericalError has been flagged
+		// If incident.fraudCaught, (ie, fraud messed up) or
+		// incident.ClericalError has been flagged
 		// corrupt some of the data
-		if ((incident.fraud) || (incident.clericalError)) {
+		if ((incident.fraudCaught) || (incident.clericalError)) {
 
 			// Excluding Gender, there are 11 items that can be messed with
 			// This will corrupt ONE item
@@ -137,7 +143,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change firstName
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getFirstName())) {
-					newInput = getFName(randomID(FIRSTNAME));
+					newInput = dao.getFName(dao.randomID(FIRSTNAME));
 				}
 				characterAttributes.put(FIRSTNAME, newInput);
 				break;
@@ -145,7 +151,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change lastName
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getLastName())) {
-					newInput = getLName(randomID(LASTNAME));
+					newInput = dao.getLName(dao.randomID(LASTNAME));
 				}
 				characterAttributes.put(LASTNAME, newInput);
 				break;
@@ -153,7 +159,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change dob
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getDob())) {
-					newInput = getDOB();
+					newInput = dao.getDOB();
 				}
 				characterAttributes.put(DOB, newInput);
 				break;
@@ -161,7 +167,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change driversID
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getDriversID())) {
-					newInput = getDriversID();
+					newInput = dao.getDriversID();
 				}
 				characterAttributes.put(DRIVERSID, newInput);
 				break;
@@ -169,7 +175,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change passportID
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getPassportID())) {
-					newInput = getPassportID(randomID(PASSPORTID));
+					newInput = dao.getPassportID(dao.randomID(PASSPORTID));
 				}
 				characterAttributes.put(PASSPORTID, newInput);
 				break;
@@ -177,7 +183,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change address
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getAddress())) {
-					newInput = getAddress(randomID(ADDRESS));
+					newInput = dao.getAddress(dao.randomID(ADDRESS));
 				}
 				characterAttributes.put(ADDRESS, newInput);
 				break;
@@ -185,7 +191,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change city
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getCity())) {
-					newInput = getCity(randomID(CITY));
+					newInput = dao.getCity(dao.randomID(CITY));
 				}
 				characterAttributes.put(CITY, newInput);
 				break;
@@ -193,7 +199,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change region
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getRegion())) {
-					newInput = getRegion(randomID(REGION));
+					newInput = dao.getRegion(dao.randomID(REGION));
 				}
 				characterAttributes.put(REGION, newInput);
 				break;
@@ -201,7 +207,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change postal
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getPostal())) {
-					newInput = getPostal(randomID(POSTAL));
+					newInput = dao.getPostal(dao.randomID(POSTAL));
 				}
 				characterAttributes.put(POSTAL, newInput);
 				break;
@@ -209,7 +215,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change country
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getCountry())) {
-					newInput = getCountry(randomID(COUNTRY));
+					newInput = dao.getCountry(dao.randomID(COUNTRY));
 				}
 				characterAttributes.put(COUNTRY, newInput);
 				break;
@@ -217,7 +223,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 				// change occupation
 				while ((newInput != "")
 						&& (newInput != incident.getActor().getOccupation())) {
-					newInput = getOccupation(randomID(OCCUPATION));
+					newInput = dao.getOccupation(dao.randomID(OCCUPATION));
 				}
 				characterAttributes.put(OCCUPATION, newInput);
 				break;

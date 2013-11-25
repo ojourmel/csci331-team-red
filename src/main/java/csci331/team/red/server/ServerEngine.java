@@ -48,6 +48,19 @@ public class ServerEngine extends Thread {
 	 */
 	private static final int MIN_INCIDENTS = 5;
 
+	private static final double FRAUD_CHANCE = 0.25;
+	private static final double ERROR_CHANCE = 0.25;
+
+	/**
+	 * The probiblity that his fraud is a scrub, and thus, get's caught.
+	 */
+	private static final double FRAUD_SCRUB_LEVEL = 0.25;
+	/**
+	 * The probability that the clerk is a beast, and catches a prievious
+	 * mistake
+	 */
+	private static final double CLERK_BEAST_LEVEL = 0.25;
+
 	// Core game assets
 	private NetServer network;
 	private CharacterRepository repo;
@@ -131,12 +144,7 @@ public class ServerEngine extends Thread {
 
 			// TODO: Allow for past events to affect future events
 
-			// TODO: Handle alert generation, and re-factor to generate
-			// incidents in advance, so that alerts can be done in a reasonable
-			// manner
-
 			System.err.println("Starting Incident " + i);
-
 			if (!doIncident()) {
 				tearDown();
 				return;
@@ -183,9 +191,9 @@ public class ServerEngine extends Thread {
 		System.err.println("onPostureChange " + role.toString() + " "
 				+ posture.toString());
 		if (playerOne.getRole() == role) {
-			playerOne.setState(posture);
+			playerOne.setPosture(posture);
 		} else {
-			playerTwo.setState(posture);
+			playerTwo.setPosture(posture);
 		}
 	}
 
@@ -302,9 +310,12 @@ public class ServerEngine extends Thread {
 	public void onIncidentComplete(Decision decition) {
 		System.err.println("onIncidentCompleate " + decition.toString());
 
-		// TODO: update player scores from the outcome of this incident. Update
-		// any environment variables, and tell run() to wake up, and do another
-		// incident
+		// TODO: update player scores from the outcome of this incident.
+
+		/*
+		 * Update any environment variables, and tell run() to wake up, and do
+		 * another incident
+		 */
 
 		lock.lock();
 		incidentOver.signal();
@@ -360,13 +371,10 @@ public class ServerEngine extends Thread {
 		System.err.println("Starting First (Scripted) Tutorial Incident");
 		network.send(Message.START_INCIDENT, incident);
 
-		 System.err.println("send db dialogue");
-		 // Send in the dialogue for both players
-		 network.send(Message.DIALOGUE, incident.getDbDialogue(),
-		 Role.DATABASE);
-		 System.err.println("send field dialogue");
-		 network.send(Message.DIALOGUE, incident.getFieldDialogue(),
-		 Role.FIELDAGENT);
+		// Send in the dialogue for both players
+		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
+		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
+				Role.FIELDAGENT);
 
 		// wait for player's decision.
 		try {
@@ -429,6 +437,36 @@ public class ServerEngine extends Thread {
 		// Save a new incident for later
 		Character character = repo.getCharacter();
 		Incident incident = new Incident(character);
+
+		// random chance that this person is a fraud, or perhaps, is victim of
+		// a clerical error.
+
+		if (RANDOM.nextDouble() < FRAUD_CHANCE) {
+			character.setFraud(true);
+			incident.fraud = true;
+
+			if (RANDOM.nextDouble() < FRAUD_SCRUB_LEVEL) {
+				incident.fraudCaught = true;
+			} else {
+				incident.fraudCaught = false;
+			}
+		} else {
+			character.setFraud(false);
+			incident.fraud = false;
+		}
+
+		if (RANDOM.nextDouble() < ERROR_CHANCE) {
+			incident.clericalError = true;
+
+			if (RANDOM.nextDouble() < CLERK_BEAST_LEVEL) {
+				incident.clericalErrorCaught = true;
+			} else {
+				incident.clericalErrorCaught = false;
+			}
+		} else {
+			incident.clericalError = false;
+		}
+
 		documentHandler.initDocuments(incident);
 		dialogueHandler.initDialogue(incident);
 		incidents.add(incident);
