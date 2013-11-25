@@ -183,7 +183,7 @@ public class AlertHandler {
 		// be triggered by a dialogue callback
 
 		Alert newbe = new Alert(
-				"MANAGMENT: NOTICE!\n First day for many Junior Officers. Try not to F*** it up");
+				"NOTICE!\n First day for many Junior Officers. Try not to F*** it up" ,"MANAGMENT");
 		alerts.add(newbe);
 
 		int nAlerts = RANDOM.nextInt(MAX_ALERTS - MIN_ALERTS) + MIN_ALERTS;
@@ -232,14 +232,14 @@ public class AlertHandler {
 		String message = genericMessage(word);
 
 		// now build the alert
-		StringBuilder alert = new StringBuilder();
-		alert.append(voice.who);
-		alert.append(": ");
-		alert.append(word.toString());
-		alert.append("!\n");
-		alert.append(message);
+//		StringBuilder alert = new StringBuilder();
+//		alert.append(voice.who);
+//		alert.append(": ");
+//		alert.append(word.toString());
+//		alert.append("!\n");
+//		alert.append(message);
 
-		return new Alert(alert.toString());
+		return new Alert(word.toString() , voice.who);
 
 	}
 
@@ -256,14 +256,14 @@ public class AlertHandler {
 		String message = genericMessage(word);
 
 		// now build the alert
-		StringBuilder alert = new StringBuilder();
-		alert.append(voice.who);
-		alert.append(": ");
-		alert.append(word.toString());
-		alert.append("!\n");
-		alert.append(message);
+//		StringBuilder alert = new StringBuilder();
+//		alert.append(voice.who);
+//		alert.append(": ");
+//		alert.append(word.toString());
+//		alert.append("!\n");
+//		alert.append(message);
 
-		return new Alert(alert.toString());
+		return new Alert(word.toString(), voice.who);
 	}
 
 	/**

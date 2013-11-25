@@ -21,7 +21,10 @@ public class FieldDialogueCallback<T extends Callback> implements
 			break;
 
 		case giveDocuments:
-			entity.produceDocuments(entity.currentIncident.getIncidentDocuments());
+			if(entity.currentIncident.getIncidentDocuments() != null)
+			{
+				entity.produceDocuments(entity.currentIncident.getIncidentDocuments());
+			}
 
 		default:
 			break;

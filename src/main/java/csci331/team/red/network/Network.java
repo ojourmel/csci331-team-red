@@ -81,5 +81,9 @@ public class Network {
 
 		kryo.register(String.class);
 		kryo.register(String[].class);
+		
+		kryo.register(csci331.team.red.client.DatabaseBoundingBoxes.class);
+		kryo.register(csci331.team.red.shared.Query.class);
+		
 	}
 }

@@ -2,6 +2,9 @@ package csci331.team.red.client;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import org.junit.experimental.theories.PotentialAssignment;
+
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
@@ -495,6 +498,14 @@ public class ClientEngine extends Game
 		if(fieldAgentScreen != null)
 		{
 			fieldAgentScreen.currentIncident = incident;
+			fieldAgentScreen.displayNewPerson(incident.getCharacter());
+			
+		}
+		if(databaseAgentScreen != null)
+		{
+			databaseAgentScreen.potentialAlerts.clear();
+			databaseAgentScreen.potentialAlerts.addAll(incident.getAlerts().toArray(new Alert[0]));
+			
 		}
 	
 	}
@@ -502,7 +513,7 @@ public class ClientEngine extends Game
 	{
 		if(databaseAgentScreen != null)
 		{
-			databaseAgentScreen.addAlert(alert.alertText);
+			databaseAgentScreen.addAlert(alert);
 		}
 		
 	}

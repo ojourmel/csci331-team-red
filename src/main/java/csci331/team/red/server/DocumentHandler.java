@@ -202,16 +202,16 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 		// ...also why this list of documents...they all have the same info,
 		// whether it is fraudulent or not
 		Document.Type drivers = Document.Type.DriversLicence;
-		Document driversDocument = new Document(drivers, characterAttributes);
+		Document driversDocument = new Document(drivers, characterAttributes , incident.getActor().getAvatar().f);
 		documents.add(driversDocument);
 
 		// FIXME: Remove GoldenTicket
 		Document.Type golden = Document.Type.GoldenTicket;
-		Document goldenDocument = new Document(golden, characterAttributes);
+		Document goldenDocument = new Document(golden, characterAttributes , incident.getActor().getAvatar().f);
 		documents.add(goldenDocument);
 
 		Document.Type passport = Document.Type.Passport;
-		Document passportDocument = new Document(passport, characterAttributes);
+		Document passportDocument = new Document(passport, characterAttributes , incident.getActor().getAvatar().f);
 		documents.add(passportDocument);
 
 		incident.setIncidentDocuments(documents);

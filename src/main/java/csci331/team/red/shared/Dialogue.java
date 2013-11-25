@@ -53,10 +53,13 @@ public class Dialogue {
 
 		for (int i = 0; i < strings.length; i++) {
 			Dialogue tempDialog = null;
-			if (callbackArray[i] != null) {
+			if (callbackArray.length > i && callbackArray[i] != null) 
+			{
 				tempDialog = new Dialogue(strings[i][0], strings[i][1],
 						callbackArray[i]);
-			} else {
+			} 
+			else 
+			{
 				tempDialog = new Dialogue(strings[i][0], strings[i][1]);
 
 			}

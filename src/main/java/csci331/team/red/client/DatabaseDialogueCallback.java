@@ -1,5 +1,6 @@
 package csci331.team.red.client;
 
+import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.callbacks.DBCallback;
 
 public class DatabaseDialogueCallback<T extends Callback> implements
@@ -16,7 +17,7 @@ public class DatabaseDialogueCallback<T extends Callback> implements
 		switch (c) {
 		case MaryTestAlert:
 
-			entity.addAlert("Mary Test Spotted - Looks Very Suspicous, Old Woman Reports");
+			entity.addAlert(new Alert("Mary Test Spotted - Looks Very Suspicous, Old Woman Reports" , "VUI ALERT: "));
 			entity.changeAlertStage(false);
 			break;
 		case startAlerts:

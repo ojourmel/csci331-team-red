@@ -279,8 +279,35 @@ public class FieldAgentScreen implements Screen
 	    
 	    List<Document> test = new LinkedList<Document>();
 	    
-	    test.add(new Document(Type.DriversLicence , new String[]{"test" , "0/0/0000"} , Face.FEMALE1));
-	    test.add(new Document(Type.DriversLicence , new String[]{"test" , "9/9/9999"} , Face.FEMALE1));
+//		public static final String ID = "ID";
+//		public static final String FIRSTNAME = "firstName";
+//		public static final String LASTNAME = "lastName";
+//		public static final String DRIVERSID = "driversID";
+//		public static final String DOB = "dob";
+//		public static final String PASSPORTID = "passportID";
+//		public static final String ADDRESS = "address";
+//		public static final String CITY = "city";
+//		public static final String REGION = "region";
+//		public static final String POSTAL = "postal";
+//		public static final String COUNTRY = "country";
+//		public static final String OCCUPATION = "occupation";
+//		final String GENDER = "gender";
+//		final String PICTURE = "picture";
+	    
+	    test.add(new Document(Type.DriversLicence , new HashMap<String, String>(){{
+	    	put("firstName" , "Test");
+	    	put("lastName" , "mcTest");
+	    	put("dob" , "0/0/0000");
+	    	put("driversID" , "4543543");
+	    	put("address" , "4543543 Fake St.");
+	    	put("city" , "Salt Lake");
+	    	put("region" , "Virgina");
+	    	put("postal" , "10234");
+	    	put("country" , "America");
+	    	put("gender" , "F");
+	    
+	    }} , Face.FEMALE1));
+
 	    
 	    produceDocuments(test);
 	}
@@ -393,10 +420,10 @@ public class FieldAgentScreen implements Screen
 	public void produceDocuments(List<Document> documents)
 	{
 		for(Document document : documents){
-			switch(document.DocumentType)
+			switch(document.documentType)
 			{
 				case DriversLicence:
-					ticket = new DriversLicence(ClientEngine.gamePixmapManager.get(ClientEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields , document.face);
+					ticket = new DriversLicence(ClientEngine.gamePixmapManager.get(ClientEngine.Documents.get(document.documentType)) , tweenManager, document.characterAttributes , document.face);
 					break;
 				case GoldenTicket:
 					//ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
@@ -443,16 +470,16 @@ public class FieldAgentScreen implements Screen
 		DialogueWindow iteratorOld = null;
 		if(dialogueArray.length > 1)
 		{
-			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode(), callbackObject);
+			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 25 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode(),Gdx.graphics.getHeight(),  callbackObject , Gdx.graphics.getWidth() );
 			
 			
 			for(int i = dialogueArray.length-2; i > 0 ; i--)
 			{
-				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld ,dialogueArray[i].getCallbackCode(), callbackObject);
+				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 25 , false, iteratorOld ,dialogueArray[i].getCallbackCode(), Gdx.graphics.getHeight(),  callbackObject , Gdx.graphics.getWidth());
 				iteratorOld = iteratorNew;
 			}
 		}
-		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode(), callbackObject);
+		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 25 , true, iteratorOld , dialogueArray[0].getCallbackCode(), Gdx.graphics.getHeight(),  callbackObject , Gdx.graphics.getWidth());
 		
 	}
 	

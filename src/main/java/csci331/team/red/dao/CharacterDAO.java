@@ -40,6 +40,7 @@ public class CharacterDAO {
 	public static final String COUNTRY = "country";
 	public static final String OCCUPATION = "occupation";
 	public static final String GENDER = "gender";
+	public static final String PICTURE = "picture"; 
 
 	private static final int EARLIEST_YEAR = Calendar.getInstance().get(
 			Calendar.YEAR) - 95;

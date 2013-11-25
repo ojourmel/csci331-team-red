@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import csci331.team.red.server.ServerEngine;
+import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Query;
@@ -68,7 +69,7 @@ public class DatabaseAgentScreen implements Screen
 	
 	
 	long lastAlertTime;
-	Array<String> potentialAlerts;
+	Array<Alert> potentialAlerts = new Array<Alert>();
 
 	public DatabaseAgentScreen(ClientEngine parent)
 	{
@@ -339,10 +340,10 @@ public class DatabaseAgentScreen implements Screen
 	}
 	
 	
-	public void addAlert(String alertText)
+	public void addAlert(Alert alert)
 	{
 		
-    	Label newCommandLabel = new Label("VUI ALERT: " + alertText , parentEngine.rawTextStyle);
+    	Label newCommandLabel = new Label(alert.alertFrom + " " + alert.alertText , parentEngine.rawTextStyle);
     	newCommandLabel.setWrap(true);
     	float alertScreenLength = alertTextScrollingTable.getWidth();
 

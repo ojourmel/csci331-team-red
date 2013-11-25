@@ -5,10 +5,12 @@ import java.util.HashMap;
 public class Document {
 	public Type documentType;
 	public HashMap<String, String> characterAttributes;
-	public String[] textFields;
+	public Face face;
 
 	public enum Type {
-		DriversLicence, GoldenTicket, Passport,
+		DriversLicence, 
+		GoldenTicket, 
+		Passport,
 	}
 
 	/**
@@ -18,8 +20,9 @@ public class Document {
 	public Document() {
 	}
 
-	public Document(Type t, HashMap<String, String> characterAttributes) {
+	public Document(Type t, HashMap<String, String> characterAttributes, Face face) {
 		documentType = t;
 		this.characterAttributes = characterAttributes;
+		this.face = face;
 	}
 }
