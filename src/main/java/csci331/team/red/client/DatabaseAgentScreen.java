@@ -20,7 +20,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import csci331.team.red.server.ServerEngine;
+import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Message;
+import csci331.team.red.shared.Query;
 
 /**
  * Scene responsible for the database roll.
@@ -66,7 +69,7 @@ public class DatabaseAgentScreen implements Screen
 	
 	
 	long lastAlertTime;
-	Array<String> potentialAlerts;
+	Array<Alert> potentialAlerts = new Array<Alert>();
 
 	public DatabaseAgentScreen(ClientEngine parent)
 	{
@@ -78,14 +81,14 @@ public class DatabaseAgentScreen implements Screen
 		
 		// Sets up links to our parent
 		parentEngine = parent;
-		batch = parentEngine.primarySpriteBatch;
+		batch = ClientEngine.primarySpriteBatch;
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(parentEngine.currentLevel.getDatabase()));
+		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(parentEngine.currentLevel.getDatabase()));
 		
 		// and the background music
-		BackgroundMusic = parentEngine.gameMusicManager.get(parentEngine.BackgroundMusic.get(parentEngine.currentLevel.getSoundTrack()));
+		BackgroundMusic = ClientEngine.gameMusicManager.get(ClientEngine.BackgroundMusic.get(parentEngine.currentLevel.getSoundTrack()));
 		BackgroundMusic.setLooping(true);
 		BackgroundMusic.play();
 		
@@ -108,8 +111,16 @@ public class DatabaseAgentScreen implements Screen
 	    multiplexer.addProcessor(backgroundStage);
 	    
 	    computerTextBox = new TextField("" , parentEngine.inputStyle);
-	    computerTextBox.setPosition(410, 0);
-	    computerTextBox.setWidth(240);
+	    //computerTextBox.setPosition(410, 0);
+	    //computerTextBox.setWidth(240);
+	    DatabaseBoundingBoxes bounds = parentEngine.currentLevel.getBounds();
+	    computerTextBox.setBounds(
+	    		bounds.ComputerEntryBoundingBox.x,
+	    		bounds.ComputerEntryBoundingBox.y,
+	    		bounds.ComputerEntryBoundingBox.width,
+	    		bounds.ComputerEntryBoundingBox.height);
+	    
+	    //computerTextBox.setBounds(410, 0, 240, 47);
 	    
     	
 	    computerTextBox.setTextFieldListener(new TextFieldListener() 
@@ -121,8 +132,10 @@ public class DatabaseAgentScreen implements Screen
                 	
                 	Label newCommandLabel = new Label(textField.getText() + "\r\n\r\n", parentEngine.rawTextStyle);
                 	newCommandLabel.setWrap(true);
-                	String computerResponse = computerSearch(textField.getText().trim());
-
+                	//String computerResponse = tutorialComputerSearch(textField.getText().trim());
+                	ClientEngine.network.send(Message.ONSEARCHQUERY, new Query(textField.getText().trim()));
+                	
+                	
                 	textField.setText("");
                 	
                 	
@@ -133,8 +146,6 @@ public class DatabaseAgentScreen implements Screen
 
             	    computerTextLabelContainingTable.row();
             	    
-                	displayComputerResponse(computerResponse);
-
             	    computerTextScroller.layout();
             	    computerTextLabelContainingTable.layout();
             	    computerTextScrollingTable.layout();
@@ -166,7 +177,11 @@ public class DatabaseAgentScreen implements Screen
 	    
 
 	    computerTextScrollingTable = new Table();
-	    computerTextScrollingTable.setBounds(410, 50, 240, 440);
+	    computerTextScrollingTable.setBounds(
+	    		bounds.ComputerDisplayBoundingBox.x,
+	    		bounds.ComputerDisplayBoundingBox.y,
+	    		bounds.ComputerDisplayBoundingBox.width,
+	    		bounds.ComputerDisplayBoundingBox.height);
 	    computerTextScrollingTable.add(computerTextScroller).fill().expand();
 	    
 	    
@@ -183,7 +198,11 @@ public class DatabaseAgentScreen implements Screen
 
 
 	    alertTextScrollingTable = new Table();
-	    alertTextScrollingTable.setBounds(10, 100, 250, 350);
+	    alertTextScrollingTable.setBounds(
+	    		bounds.AlertDisplayBoundingBox.x,
+	    		bounds.AlertDisplayBoundingBox.y,
+	    		bounds.AlertDisplayBoundingBox.width,
+	    		bounds.AlertDisplayBoundingBox.height);
 	    
 	    alertTextScrollingTable.add(alertTextScroller).fill().expand();
 	   
@@ -321,10 +340,10 @@ public class DatabaseAgentScreen implements Screen
 	}
 	
 	
-	public void addAlert(String alertText)
+	public void addAlert(Alert alert)
 	{
 		
-    	Label newCommandLabel = new Label("VUI ALERT: " + alertText , parentEngine.rawTextStyle);
+    	Label newCommandLabel = new Label(alert.alertFrom + " " + alert.alertText , parentEngine.rawTextStyle);
     	newCommandLabel.setWrap(true);
     	float alertScreenLength = alertTextScrollingTable.getWidth();
 
@@ -398,7 +417,7 @@ public class DatabaseAgentScreen implements Screen
 	 * TODO: This will be implemented in {@link ServerEngine}
 	 * Currently used for tutorial
 	 */
-	public String computerSearch(String SearchString)
+	public String tutorialComputerSearch(String SearchString)
 	{
 		String[] tokenizedString = SearchString.split("\\s" , 3);
 		

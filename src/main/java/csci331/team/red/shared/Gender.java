@@ -9,6 +9,10 @@ public enum Gender {
 
 	MALE, FEMALE;
 
+	/**
+	 * @param c
+	 * @return the {@link Gender} equivalent of the <b>c</b>
+	 */
 	public static Gender fromChar(char c) {
 		c = Character.toUpperCase(c);
 		Gender g = FEMALE;
@@ -23,5 +27,22 @@ public enum Gender {
 			g = null;
 		}
 		return g;
+	}
+
+	/**
+	 * @return the single character string equivalent of <b>this</b>
+	 */
+	@Override
+	public String toString() {
+		String s = "F";
+		switch (this) {
+		case MALE:
+			s = "M";
+			break;
+		case FEMALE:
+			s = "F";
+			break;
+		}
+		return s;
 	}
 }

@@ -40,11 +40,11 @@ public class ErrorScreen implements Screen
 	{
 		// Sets up links to our parent
 		parentEngine = parent;
-		batch = parentEngine.primarySpriteBatch;
+		batch = ClientEngine.primarySpriteBatch;
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.ERROR));
+		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(Background.ERROR));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();

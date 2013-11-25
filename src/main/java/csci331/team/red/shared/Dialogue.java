@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 /**
  * Wrapper class for words said by the players and actors. <br>
- * FIXME: <b>Stub</b>
  * 
  * @author ojourmel , lduperron
  */

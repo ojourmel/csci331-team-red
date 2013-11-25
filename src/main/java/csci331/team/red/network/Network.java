@@ -36,8 +36,8 @@ import csci331.team.red.shared.callbacks.FieldCallback;
 public class Network {
 	public static final int tcpPort = 54555;
 	public static final int udpPort = 54777;
-	
-	public static final int BUFFER_SIZE = 4096;
+
+	public static final int BUFFER_SIZE = 16384;
 
 	/**
 	 * Registers objects that will be sent over the network
@@ -81,10 +81,14 @@ public class Network {
 
 		kryo.register(List.class);
 		kryo.register(LinkedList.class);
-		
+
 		kryo.register(HashMap.class);
 
 		kryo.register(String.class);
 		kryo.register(String[].class);
+
+		kryo.register(csci331.team.red.client.DatabaseBoundingBoxes.class);
+		kryo.register(csci331.team.red.shared.Query.class);
+
 	}
 }

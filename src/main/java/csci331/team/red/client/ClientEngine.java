@@ -2,6 +2,7 @@ package csci331.team.red.client;
 
 import java.io.IOException;
 import java.util.HashMap;
+
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
@@ -25,20 +26,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
-import csci331.team.red.client.MainMenuScreen;
 import csci331.team.red.network.NetClient;
 import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Background;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
+import csci331.team.red.shared.Face;
+import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.PersonPicture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.SoundTrack;
-import csci331.team.red.shared.Incident;
 
 /**
  * Main entry point for the game proper.  Handles all shared objects between scenes.
@@ -50,48 +51,49 @@ public class ClientEngine extends Game
 	ServerEngine server;
 	
 	// Used to connect to the server
-	NetClient network;
+	static NetClient network;
 	
 	// Used for branch logic in our render loop.
 	Boolean stillLoading;
 	
 
 	// Used for drawing stuffs
-	SpriteBatch primarySpriteBatch;
+	static SpriteBatch primarySpriteBatch;
 
 	// Three asset managers.  Loading asset manager is guaranteed to be entirely loaded before the first rendering calls are made.  
 	// The other two will be loaded during the loading screen, which is handled in this file.
-	AssetManager loadingAssetManager;
+	static AssetManager loadingAssetManager;
 	
 	// Used for assets that will not be interacted with by the user
-	AssetManager gameTextureManager;
+	static AssetManager gameTextureManager;
 		
 	// Used for assets that will be interacted with by the user (We need the raw pixmap so we can handle transparency when clicking on them)
-	AssetManager gamePixmapManager;
+	static AssetManager gamePixmapManager;
 	
 	// Used for both background music
-	AssetManager gameMusicManager;
+	static AssetManager gameMusicManager;
 	
-	HashMap<String, AssetDescriptor<Texture>> preloadTextures;
+	static HashMap<String, AssetDescriptor<Texture>> preloadTextures;
 	
 	
-	HashMap<String, AssetDescriptor<Texture>> Textures;
-	HashMap<Background, AssetDescriptor<Texture>> Backgrounds;
+	static HashMap<String, AssetDescriptor<Texture>> Textures;
+	static HashMap<Background, AssetDescriptor<Texture>> Backgrounds;
 
 	
-	HashMap<String, AssetDescriptor<Pixmap>> Pixmaps;
-	HashMap<PersonPicture, AssetDescriptor<Pixmap>> PersonPictures;
-	HashMap<Document.Type, AssetDescriptor<Pixmap>> Documents;
+	static HashMap<String, AssetDescriptor<Pixmap>> Pixmaps;
+	static HashMap<PersonPicture, AssetDescriptor<Pixmap>> PersonAvatars;
+	static HashMap<Face , AssetDescriptor<Pixmap>> PersonFaces;
+	static HashMap<Document.Type, AssetDescriptor<Pixmap>> Documents;
 	
 	
 	
-	HashMap<SoundTrack, AssetDescriptor<Music>> BackgroundMusic;
+	static HashMap<SoundTrack, AssetDescriptor<Music>> BackgroundMusic;
 	
 	
 	
 	
 	// Used to display the 'loading' screen
-	FreeTypeFontGenerator generator;
+	static FreeTypeFontGenerator generator;
 	BitmapFont loadingFont;
 	String loadingstr;
 	
@@ -114,7 +116,7 @@ public class ClientEngine extends Game
 	
 	
 	// Font used in the game
-	BitmapFont gameFont;
+	static BitmapFont gameFont;
 	
 	// Styles used in the game
 	TextButtonStyle dialogueStyle;
@@ -176,8 +178,9 @@ public class ClientEngine extends Game
 
 		
 		Pixmaps = new HashMap<String, AssetDescriptor<Pixmap>>() ;
-		PersonPictures = new HashMap<PersonPicture, AssetDescriptor<Pixmap>>();
+		PersonAvatars = new HashMap<PersonPicture, AssetDescriptor<Pixmap>>();
 		Documents = new HashMap<Document.Type, AssetDescriptor<Pixmap>>();
+		PersonFaces = new HashMap<Face, AssetDescriptor<Pixmap>>();
 		
 		BackgroundMusic =  new HashMap<SoundTrack, AssetDescriptor<Music>>() ;
 		
@@ -202,13 +205,16 @@ public class ClientEngine extends Game
 		
 		
 		// Characters...
-		PersonPictures.put(PersonPicture.THUG1, new AssetDescriptor<Pixmap>("characters/level1thug.png" , Pixmap.class));
-		PersonPictures.put(PersonPicture.MALE1, new AssetDescriptor<Pixmap>("characters/maleExtra.png" , Pixmap.class));
-		PersonPictures.put(PersonPicture.FEMALE1, new AssetDescriptor<Pixmap>("characters/femaleExtra.png" , Pixmap.class));
+		PersonAvatars.put(PersonPicture.THUG1, new AssetDescriptor<Pixmap>("characters/level1thug.png" , Pixmap.class));
+		PersonAvatars.put(PersonPicture.MALE1, new AssetDescriptor<Pixmap>("characters/maleExtra.png" , Pixmap.class));
+		PersonAvatars.put(PersonPicture.FEMALE1, new AssetDescriptor<Pixmap>("characters/femaleExtra.png" , Pixmap.class));
 
+		PersonFaces.put(Face.FEMALE1, new AssetDescriptor<Pixmap>("characterPortraits/campusfemalefullnoface.png" , Pixmap.class));
+		
+		
 		// Dynamic Props...
 		Documents.put(Document.Type.GoldenTicket, new  AssetDescriptor<Pixmap>("props/ticket.png" , Pixmap.class));
-
+		Documents.put(Document.Type.DriversLicence, new  AssetDescriptor<Pixmap>("props/BlankID.png" , Pixmap.class));
 		
 		// Music...
 		BackgroundMusic.put(SoundTrack.SONG, new AssetDescriptor<Music>("music/UnreasonableBehaviour.mp3" , Music.class));
@@ -243,7 +249,11 @@ public class ClientEngine extends Game
 			gamePixmapManager.load(thePixmap);
 		}
 
-		for (AssetDescriptor<Pixmap> thePixmap : PersonPictures.values()) {
+		for (AssetDescriptor<Pixmap> thePixmap : PersonAvatars.values()) {
+			gamePixmapManager.load(thePixmap);
+		}
+		
+		for (AssetDescriptor<Pixmap> thePixmap : PersonFaces.values()) {
 			gamePixmapManager.load(thePixmap);
 		}
 		
@@ -416,11 +426,16 @@ public class ClientEngine extends Game
 	
 	public void JoinGame(String desiredConnectTarget)
 	{
-		try{
-		network = new NetClient(this, desiredConnectTarget);
-		network.send(Message.CONNECT);
-		}catch (IOException e){
-			throw new RuntimeException(e);
+		try
+		{
+			network = new NetClient(this, desiredConnectTarget);
+			network.send(Message.CONNECT);
+		}
+		catch (IOException e)
+		{
+			//throw new RuntimeException(e);
+			errorText = "Failed to connect to host:\r\n " + e.getMessage();
+			switchToNewScreen(ScreenEnumerations.ErrorScreen);
 		}
 		
 	}
@@ -481,6 +496,14 @@ public class ClientEngine extends Game
 		if(fieldAgentScreen != null)
 		{
 			fieldAgentScreen.currentIncident = incident;
+			fieldAgentScreen.displayNewPerson(incident.getActor());
+			
+		}
+		if(databaseAgentScreen != null)
+		{
+			databaseAgentScreen.potentialAlerts.clear();
+			databaseAgentScreen.potentialAlerts.addAll(incident.getAlerts().toArray(new Alert[0]));
+			
 		}
 	
 	}
@@ -488,7 +511,7 @@ public class ClientEngine extends Game
 	{
 		if(databaseAgentScreen != null)
 		{
-			databaseAgentScreen.addAlert(alert.alertText);
+			databaseAgentScreen.addAlert(alert);
 		}
 		
 	}

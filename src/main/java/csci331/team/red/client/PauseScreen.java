@@ -41,11 +41,11 @@ public class PauseScreen implements Screen
 	{
 		// Sets up links to our parent
 		parentEngine = parent;
-		batch = parentEngine.primarySpriteBatch;
+		batch = ClientEngine.primarySpriteBatch;
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.WAITING));
+		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(Background.WAITING));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -73,7 +73,7 @@ public class PauseScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    	    	parentEngine.network.send(Message.QUIT);
+    	    	ClientEngine.network.send(Message.QUIT);
     	    	parentEngine.previousScreen.dispose();
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
     	    	

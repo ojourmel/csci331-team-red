@@ -182,7 +182,8 @@ public class AlertHandler {
 		// be triggered by a dialogue callback
 
 		Alert newbe = new Alert(
-				"MANAGMENT: NOTICE!\n First day for many Junior Officers. Try not to F*** it up");
+				"NOTICE!\n First day for many Junior Officers. Try not to F*** it up",
+				"MANAGMENT");
 		alerts.add(newbe);
 
 		int nAlerts = RANDOM.nextInt(MAX_ALERTS - MIN_ALERTS) + MIN_ALERTS;
@@ -204,10 +205,9 @@ public class AlertHandler {
 		case THUGLIFE:
 
 			Alert thugie = new Alert(
-					Voice.UIV.who
-							+ ": "
-							+ ActionWord.ALERT.toString()
-							+ " Hostile individual wearing \"thug life\" tshirt spotted on campus");
+					ActionWord.ALERT.toString()
+							+ " Hostile individual wearing \"thug life\" tshirt spotted on campus",
+					Voice.UIV.who);
 
 			alerts.add(thugie);
 
@@ -296,13 +296,11 @@ public class AlertHandler {
 			}
 		}
 		// now build the alert
-		alert.append(voice.who);
-		alert.append(": ");
 		alert.append(word.toString());
 		alert.append("!\n");
 		alert.append(message);
 
-		return new Alert(alert.toString());
+		return new Alert(alert.toString(), voice.who);
 	}
 
 	/**
@@ -317,15 +315,12 @@ public class AlertHandler {
 		// the message depends on the
 		String message = genericMessage(word);
 
-		// now build the alert
 		StringBuilder alert = new StringBuilder();
-		alert.append(voice.who);
-		alert.append(": ");
 		alert.append(word.toString());
 		alert.append("!\n");
 		alert.append(message);
 
-		return new Alert(alert.toString());
+		return new Alert(alert.toString(), voice.who);
 	}
 
 	/**

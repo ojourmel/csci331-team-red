@@ -8,6 +8,7 @@ package csci331.team.red.shared;
 public class Alert {
 
 	public String alertText;
+	public String alertFrom;
 
 	/**
 	 * All Serializable classes MUST provide a zero-argument constructor
@@ -20,7 +21,8 @@ public class Alert {
 	 * 
 	 * @param alertText
 	 */
-	public Alert(String alertText) {
+	public Alert(String alertText, String alertFrom) {
+		this.alertFrom = alertFrom;
 		this.alertText = alertText;
 	}
 }

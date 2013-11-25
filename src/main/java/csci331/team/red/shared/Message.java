@@ -79,6 +79,11 @@ public enum Message {
 	 * decision enum.
 	 */
 	ONDECISIONEVENT,
+	
+	/**
+	 * The database agent has made a database query request.  Comes with a Query class
+	 */
+	ONSEARCHQUERY,
 
 	/**
 	 * The user has quit the game

@@ -62,14 +62,17 @@ public class DocumentHandler {
 				.put(OCCUPATION, incident.getActor().getOccupation());
 
 		if (incident.getActor().getGender() == Gender.MALE) {
-			characterAttributes.put(GENDER, "Male");
+			characterAttributes.put(GENDER, incident.getActor().getGender()
+					.toString());
 		} else {
-			characterAttributes.put(GENDER, "Female");
+			characterAttributes.put(GENDER, incident.getActor().getGender()
+					.toString());
 		}
 
 		// Now create the driver's licence
 		Document.Type drivers = Document.Type.DriversLicence;
-		Document driversDocument = new Document(drivers, characterAttributes);
+		Document driversDocument = new Document(drivers, characterAttributes,
+				incident.getActor().getAvatar().f);
 		documents.add(driversDocument);
 
 		incident.setIncidentDocuments(documents);
@@ -124,9 +127,11 @@ public class DocumentHandler {
 				.put(OCCUPATION, incident.getActor().getOccupation());
 
 		if (incident.getActor().getGender() == Gender.MALE) {
-			characterAttributes.put(GENDER, "Male");
+			characterAttributes.put(GENDER, incident.getActor().getGender()
+					.toString());
 		} else {
-			characterAttributes.put(GENDER, "Female");
+			characterAttributes.put(GENDER, incident.getActor().getGender()
+					.toString());
 		}
 
 		// If incident.fraudCaught, (ie, fraud messed up) or
@@ -238,16 +243,19 @@ public class DocumentHandler {
 		// ...also why this list of documents...they all have the same info,
 		// whether it is fraudulent or not
 		Document.Type drivers = Document.Type.DriversLicence;
-		Document driversDocument = new Document(drivers, characterAttributes);
+		Document driversDocument = new Document(drivers, characterAttributes,
+				incident.getActor().getAvatar().f);
 		documents.add(driversDocument);
 
 		// FIXME: Remove GoldenTicket
 		Document.Type golden = Document.Type.GoldenTicket;
-		Document goldenDocument = new Document(golden, characterAttributes);
+		Document goldenDocument = new Document(golden, characterAttributes,
+				incident.getActor().getAvatar().f);
 		documents.add(goldenDocument);
 
 		Document.Type passport = Document.Type.Passport;
-		Document passportDocument = new Document(passport, characterAttributes);
+		Document passportDocument = new Document(passport, characterAttributes,
+				incident.getActor().getAvatar().f);
 		documents.add(passportDocument);
 
 		incident.setIncidentDocuments(documents);

@@ -40,11 +40,11 @@ public class ConnectingScreen implements Screen
 	{
 		// Sets up links to our parent
 		parentEngine = parent;
-		batch = parentEngine.primarySpriteBatch;
+		batch = ClientEngine.primarySpriteBatch;
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.MENUSCREEN));
+		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(Background.MENUSCREEN));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -75,7 +75,7 @@ public class ConnectingScreen implements Screen
 	    
 	    TextField connectAddress = new TextField("" , parentEngine.inputStyle);
 	    connectAddress.setMessageText("Enter hostname or IP!");
-	    connectAddress.setWidth(parentEngine.gameFont.getBounds("Enter hostname or IP!").width +20);
+	    connectAddress.setWidth(ClientEngine.gameFont.getBounds("Enter hostname or IP!").width +20);
 	    connectingStage.addActor(connectAddress);
 
 
