@@ -18,7 +18,7 @@ public enum Message {
 	/**
 	 * Connected to client/server, and waiting for game start
 	 */
-	CONNECTED,
+	CONNECT,
 
 	/**
 	 * Sends string to server to query the database, expects a {@link String}
@@ -41,7 +41,7 @@ public enum Message {
 	/**
 	 * Disconnected to client/server, and game is reseting
 	 */
-	DISCONNECTED,
+	DISCONNECT,
 
 	/**
 	 * Sends client Role to client, expects {@link Role} object to be sent with

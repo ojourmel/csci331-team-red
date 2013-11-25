@@ -3,9 +3,8 @@ package csci331.team.red.network;
 import java.io.IOException;
 import java.util.HashMap;
 
-import javax.xml.ws.Response;
-
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -86,11 +85,11 @@ public class NetServer {
 
 					// process message
 					switch (netMsg.msg) {
-					case CONNECTED:
+					case CONNECT:
 						if (roles.containsKey(connection.getID())) {
 							// You are already connected
-							send(Message.CONNECTED,
-									(Role) roles.get(connection.getID()));
+							sendClient((Role) roles.get(connection.getID()),
+									Message.CONNECT);
 						} else {
 							gameServer.onPlayerConnect(connection);
 						}
@@ -100,9 +99,16 @@ public class NetServer {
 							gameServer.onDatabaseSearch((String) netMsg.obj);
 						}
 						break;
-					case DISCONNECTED:
-						gameServer.onPlayerDisconnect((Role) roles
-								.get(connection.getID()));
+					case DISCONNECT:
+						// Only notify Server when this connection is in roles
+						if (roles.containsKey(connection.getID())) {
+							// Notify Server of disconnect
+							gameServer.onPlayerDisconnect((Role) roles
+									.get(connection.getID()));
+							// Remove connection from list of roles
+							roles.remove(connection.getID());
+						}
+						// ignore disconnects from unregistered connections
 						break;
 					case ONPOSTURECHANGE:
 						if (netMsg.obj instanceof Posture) {
@@ -128,6 +134,7 @@ public class NetServer {
 								.getID()));
 						break;
 					default:
+						// invalid messages are simply ignored
 						break;
 					}
 				}
@@ -139,7 +146,13 @@ public class NetServer {
 			 * that it disconnected
 			 */
 			public void disconnected(Connection connection) {
-				gameServer.onPlayerDisconnect(roles.get(connection.getID()));
+				// Only notify Server when this connection is in roles
+				if (roles.containsKey(connection.getID())) {
+					gameServer.onPlayerDisconnect(roles.get(connection.getID()));
+					// Remove connection from list of roles
+					roles.remove(connection.getID());
+				}
+				// ignore disconnects from unregistered connections
 			}
 		}); // end of addListener
 	} // end of constructor
@@ -168,6 +181,12 @@ public class NetServer {
 	 * Stops the Server
 	 */
 	public void killServer() {
+		for (Integer connID : roles.keySet()) {
+			// tell client to disconnect
+			sendClient(roles.get(connID), Message.DISCONNECT);
+			// Remove connection from list of roles
+			roles.remove(connID);
+		}
 		server.stop();
 	}
 
@@ -179,27 +198,43 @@ public class NetServer {
 	 */
 	/**
 	 * @param msg
-	 *            Send an Enumerated {@link Message}
+	 *            Send an Enumerated {@link Message} to all {@link Client}s
 	 */
-	public void send(Message msg) {
-		send(msg, null);
+	public void sendAll(Message msg) {
+		sendAll(msg, null);
 	}
 
 	/**
 	 * Send an Enumerated {@link Message} and a registered (
-	 * {@link Kryo#register(Class)}) Object or an Enumerated {@link Message} to
-	 * the client with a specific {@link Role}
+	 * {@link Kryo#register(Class)}) Object to all {@link Client}s
 	 * 
 	 * @param msg
 	 * @param obj
 	 */
-	public void send(Message msg, Object obj) {
-		if (obj instanceof Role) {
-			send(msg, null, (Role) obj);
-		} else {
-			NetMessage netMsg = new NetMessage(msg, obj);
-			server.sendToAllTCP(netMsg);
-		}
+	public void sendAll(Message msg, Object obj) {
+		NetMessage netMsg = new NetMessage(msg, obj);
+		server.sendToAllTCP(netMsg);
+	}
+
+	/**
+	 * Send an Enumerated {@link Message} to a specific {@link Connection}
+	 * 
+	 * @param conn
+	 * @param msg
+	 */
+	public void sendClient(Connection conn, Message msg) {
+		server.sendToTCP(conn.getID(), msg);
+	}
+
+	/**
+	 * Send an Enumerated {@link Message} to the client with a specific
+	 * {@link Role}
+	 * 
+	 * @param role
+	 * @param msg
+	 */
+	public void sendClient(Role role, Message msg) {
+		sendClient(role, msg, null);
 	}
 
 	/**
@@ -207,11 +242,11 @@ public class NetServer {
 	 * {@link Kryo#register(Class)}) Object to the client with a specific
 	 * {@link Role}
 	 * 
+	 * @param role
 	 * @param msg
 	 * @param obj
-	 * @param role
 	 */
-	public void send(Message msg, Object obj, Role role) {
+	public void sendClient(Role role, Message msg, Object obj) {
 		NetMessage netMsg = new NetMessage(msg, obj);
 		if (roles.containsValue(role)) {
 			for (Integer key : roles.keySet()) {

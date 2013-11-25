@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.ws.Response;
-
 import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
@@ -61,7 +59,7 @@ public class NetClient {
 		} catch (IOException e) {
 			throw new IOException("Unable to connect to Server");
 		}
-		this.send(Message.CONNECTED);
+		this.send(Message.CONNECT);
 		/*
 		 * change timeout to 60 secs so that client will not accidently
 		 * disconnect
@@ -121,7 +119,8 @@ public class NetClient {
 							});
 						}
 						break;
-					case DISCONNECTED:
+					case DISCONNECT:
+						// server requested a disconnect
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
 							public void run() {
@@ -195,6 +194,7 @@ public class NetClient {
 						}
 						break;
 					default:
+						// invalid messages are simply ignored
 						break;
 					}
 				}
@@ -206,6 +206,7 @@ public class NetClient {
 			 * it disconnected
 			 */
 			public void disconnected(Connection connection) {
+				// connection to Server was lost
 				gameClient.LeaveGame();
 			}
 		})); // end of addListener
