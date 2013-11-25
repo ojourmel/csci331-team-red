@@ -20,6 +20,7 @@ import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
+import csci331.team.red.shared.Query;
 import csci331.team.red.shared.Role;
 
 /**
@@ -170,9 +171,9 @@ public class ServerEngine extends Thread {
 	 * @param query
 	 *            executed
 	 */
-	public void onDatabaseSearch(String query) {
-		System.err.println("onDatabaseSearch: " + query);
-		query = query.toUpperCase();
+	public void onDatabaseSearch(Query query) {
+		System.err.println("onDatabaseSearch: " + query.queryText);
+		query.queryText = query.queryText.toUpperCase();
 
 		// network.send(Message.DB_RESULT, Result.INVALID_COMMAND);
 
@@ -301,7 +302,7 @@ public class ServerEngine extends Thread {
 
 	/**
 	 * Callback when an incident is completed. Signals the main thread to
-	 * contiue game play.
+	 * continue game play.
 	 */
 	public void onIncidentComplete(Decision decition) {
 		System.err.println("onIncidentCompleate " + decition.toString());

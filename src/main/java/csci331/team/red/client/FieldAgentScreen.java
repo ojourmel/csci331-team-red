@@ -1,7 +1,6 @@
 package csci331.team.red.client;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import aurelienribon.tweenengine.Tween;
@@ -28,13 +27,9 @@ import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
-import csci331.team.red.shared.Document.Type;
-import csci331.team.red.shared.Face;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
-
-import static csci331.team.red.dao.CharacterRepository.*;
 /**
  * Screen for the field agent
  * @author Lduperron
@@ -279,7 +274,7 @@ public class FieldAgentScreen implements Screen
 //    		
 //    	});
 	    
-	    List<Document> test = new LinkedList<Document>();
+//	    List<Document> test = new LinkedList<Document>();
 	    
 //		public static final String ID = "ID";
 //		public static final String FIRSTNAME = "firstName";
@@ -296,22 +291,22 @@ public class FieldAgentScreen implements Screen
 //		final String GENDER = "gender";
 //		final String PICTURE = "picture";
 	    
-	    test.add(new Document(Type.DriversLicence , new HashMap<String, String>(){{
-	    	put(FIRSTNAME , "Test");
-	    	put(LASTNAME , "mcTest");
-	    	put(DOB , "0/0/0000");
-	    	put(DRIVERSID , "4543543");
-	    	put(ADDRESS , "4543543 Fake St.");
-	    	put(CITY , "Salt Lake");
-	    	put(REGION , "Virgina");
-	    	put(POSTAL , "10234");
-	    	put(COUNTRY , "America");
-	    	put(GENDER , "F");
-	    
-	    }} , Face.FEMALE1));
-
-	    
-	    produceDocuments(test);
+//	    test.add(new Document(Type.DriversLicence , new HashMap<String, String>(){{
+//	    	put(FIRSTNAME , "Test");
+//	    	put(LASTNAME , "mcTest");
+//	    	put(DOB , "0/0/0000");
+//	    	put(DRIVERSID , "4543543");
+//	    	put(ADDRESS , "4543543 Fake St.");
+//	    	put(CITY , "Salt Lake");
+//	    	put(REGION , "Virgina");
+//	    	put(POSTAL , "10234");
+//	    	put(COUNTRY , "America");
+//	    	put(GENDER , "F");
+//	    
+//	    }} , Face.FEMALE1));
+//
+//	    
+//	    produceDocuments(test);
 	}
 	
 	void displayNewPerson(Character person)

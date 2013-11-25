@@ -442,8 +442,10 @@ public class ClientEngine extends Game
 	public void LeaveGame()
 	{
 		switchToNewScreen(ScreenEnumerations.MainMenu);
-		network.kill();
-		network = null;
+		if(network != null){
+			network.kill();
+			network = null;
+		}
 	}
 	public void DisconnectByServer()
 	{

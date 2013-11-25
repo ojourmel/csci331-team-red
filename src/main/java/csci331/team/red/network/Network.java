@@ -7,6 +7,7 @@ import java.util.List;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
+import csci331.team.red.client.DatabaseBoundingBoxes;
 import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Background;
 import csci331.team.red.shared.Character;
@@ -20,6 +21,7 @@ import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.PersonPicture;
 import csci331.team.red.shared.Posture;
+import csci331.team.red.shared.Query;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.SoundTrack;
@@ -74,6 +76,8 @@ public class Network {
 		kryo.register(Posture.class);
 		kryo.register(Result.class);
 		kryo.register(Role.class);
+		kryo.register(DatabaseBoundingBoxes.class);
+		kryo.register(Query.class);
 		kryo.register(SoundTrack.class);
 
 		kryo.register(DBCallback.class);
@@ -86,9 +90,5 @@ public class Network {
 
 		kryo.register(String.class);
 		kryo.register(String[].class);
-
-		kryo.register(csci331.team.red.client.DatabaseBoundingBoxes.class);
-		kryo.register(csci331.team.red.shared.Query.class);
-
 	}
 }

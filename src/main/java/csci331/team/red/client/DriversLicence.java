@@ -123,8 +123,7 @@ public class DriversLicence extends TransparentActor
         
         font.draw(batch , City,
         		getX() +  CityX * getScaleX(),
-        		getY() + CityY* getScaleY() , 0, Math.max(City.length(), 22));
-        
+        		getY() + CityY* getScaleY() , 0, City.length());
         
         font.draw(batch , Postal,
         		getX() +  PostalX * getScaleX(),

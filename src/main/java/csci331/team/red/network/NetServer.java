@@ -13,6 +13,7 @@ import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
+import csci331.team.red.shared.Query;
 import csci331.team.red.shared.Role;
 
 /**
@@ -95,8 +96,8 @@ public class NetServer {
 						}
 						break;
 					case DBQUERY:
-						if (netMsg.obj instanceof String) {
-							gameServer.onDatabaseSearch((String) netMsg.obj);
+						if (netMsg.obj instanceof Query) {
+							gameServer.onDatabaseSearch((Query) netMsg.obj);
 						}
 						break;
 					case DISCONNECT:
@@ -116,11 +117,13 @@ public class NetServer {
 									roles.get(connection.getID()),
 									(Posture) netMsg.obj);
 						}
+						break;
 					case ONDECISIONEVENT:
 						if (netMsg.obj instanceof Decision) {
 							gameServer
 									.onIncidentComplete((Decision) netMsg.obj);
 						}
+						break;
 					case PAUSE:
 						gameServer.onPlayerPause(roles.get(connection.getID()));
 						break;

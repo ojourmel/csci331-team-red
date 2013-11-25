@@ -40,7 +40,7 @@ public class CharacterDAO {
 	public static final String COUNTRY = "country";
 	public static final String OCCUPATION = "occupation";
 	public static final String GENDER = "gender";
-	public static final String PICTURE = "picture"; 
+	public static final String PICTURE = "picture";
 
 	private static final int EARLIEST_YEAR = Calendar.getInstance().get(
 			Calendar.YEAR) - 95;
@@ -84,7 +84,7 @@ public class CharacterDAO {
 
 		GregorianCalendar gc = new GregorianCalendar();
 
-		int year = randBetween(1900, 2010);
+		int year = randBetween(EARLIEST_YEAR, LATEST_YEAR);
 
 		gc.set(Calendar.YEAR, year);
 
@@ -224,9 +224,6 @@ public class CharacterDAO {
 		char c;
 
 		try {
-			if (conn.connection.isClosed()) {
-				System.err.println("OMG");
-			}
 			statement = conn.connection.prepareStatement("SELECT " + GENDER
 					+ " FROM " + FIRSTNAME + " WHERE ID = ?");
 			statement.setInt(1, id);
