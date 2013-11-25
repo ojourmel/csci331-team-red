@@ -21,6 +21,7 @@ import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Query;
+import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 
 /**
@@ -78,12 +79,20 @@ public class ServerEngine extends Thread {
 	// Various random game element handlers
 	private DialogueHandler dialogueHandler = new DialogueHandler(RANDOM);
 	private DocumentHandler documentHandler = new DocumentHandler(RANDOM);
+	private DatabaseHandler databaseHandler = new DatabaseHandler();
 	private AlertHandler alertHandler;
+
+	// Current incident, so that various callbacks can interact with incident
+	// data
+
+	private Incident currentIncident = null;
 
 	// Locks and conditions for blocking on conditions while threading.
 	private final Lock lock = new ReentrantLock();
 	private final Condition clientsConnected = lock.newCondition();
 	private final Condition incidentOver = lock.newCondition();
+
+	private final Lock incidentLock = new ReentrantLock();
 
 	/**
 	 * Create a new {@link ServerEngine} object. Use
@@ -121,7 +130,6 @@ public class ServerEngine extends Thread {
 				clientsConnected.await();
 			} catch (InterruptedException e) {
 				tearDown();
-
 				return;
 			} finally {
 				lock.unlock();
@@ -173,11 +181,14 @@ public class ServerEngine extends Thread {
 	 */
 	public void onDatabaseSearch(Query query) {
 		System.err.println("onDatabaseSearch: " + query.queryText);
-		query.queryText = query.queryText.toUpperCase();
+		Incident incident = null;
 
-		// network.send(Message.DB_RESULT, Result.INVALID_COMMAND);
+		incidentLock.lock();
+		incident = currentIncident;
+		incidentLock.unlock();
 
-		// TODO: Handle database queries
+		Result result = databaseHandler.execute(query.queryText, incident);
+		network.sendClient(Role.DATABASE, Message.DBRESULT, result);
 	}
 
 	/**
@@ -367,6 +378,10 @@ public class ServerEngine extends Thread {
 		dialogueHandler.initIntroDialogue(incident);
 		incident.setAlerts(alertHandler.getIntroAlerts(incident));
 
+		incidentLock.lock();
+		currentIncident = incident;
+		incidentLock.unlock();
+
 		System.err.println("Starting First (Scripted) Tutorial Incident");
 		network.sendAll(Message.START_INCIDENT, incident);
 
@@ -402,6 +417,10 @@ public class ServerEngine extends Thread {
 		documentHandler.initBossDocuments(incident, boss);
 		dialogueHandler.initBossDialogue(incident, boss);
 		incident.setAlerts(alertHandler.getBossAlerts(incident, boss));
+
+		incidentLock.lock();
+		currentIncident = incident;
+		incidentLock.unlock();
 
 		System.err.println("Starting (Scripted) Boss Incident "
 				+ boss.toString());
@@ -484,10 +503,10 @@ public class ServerEngine extends Thread {
 		// assign the alerts, the only thing not yet initialized.
 		incident.setAlerts(alerts);
 
-		// Server/Client responsibilities:
-		// Characters, -- Client
-		// Alerts, -- Client
-		// Dialogue, -- Client
+		incidentLock.lock();
+		currentIncident = incident;
+		incidentLock.unlock();
+		
 		network.sendAll(Message.START_INCIDENT, incident);
 		network.sendClient(Role.DATABASE, Message.DIALOGUE,
 				incident.getDbDialogue());

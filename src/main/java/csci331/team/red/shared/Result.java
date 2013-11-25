@@ -2,8 +2,6 @@ package csci331.team.red.shared;
 
 /**
  * The result of a database query from the player.<br>
- * FIXME: <b>Stub</b> <br>
- * FIXME: Possible naming conflicts with actual database queries...
  * 
  * @author ojourmel
  */
@@ -31,6 +29,17 @@ public class Result {
 
 	private String resultText;
 
+	/**
+	 * @param resultText
+	 *            to set
+	 */
+	public void setResultText(String resultText) {
+		this.resultText = resultText;
+	}
+
+	/**
+	 * @return resultText to get
+	 */
 	public String getResultText() {
 		return resultText;
 	}

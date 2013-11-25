@@ -100,7 +100,7 @@ public class DialogueHandler {
 		String[][] faStrArr = {
 				{ "Well then... (Click to continue)", Voice.OMINIOUS.who },
 				{ "Welcome to your first day on the job.", Voice.OMINIOUS.who },
-				{ "Why don't we approach someone?", Voice.OMINIOUS.who },
+				{ "Who do we have here?", Voice.OMINIOUS.who },
 				{ "Hey, you!  Stop!", Voice.YOU.who },
 				{ "...What?", Voice.GIRL.who },
 				{ "...Turn around", Voice.YOU.who },

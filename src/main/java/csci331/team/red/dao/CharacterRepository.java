@@ -85,7 +85,7 @@ public class CharacterRepository extends CharacterDAO {
 		for (String type : attributes.keySet()) {
 			String val = attributes.get(type);
 
-			if (type == FIRSTNAME) {
+			if (type.equals(FIRSTNAME)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
@@ -93,119 +93,119 @@ public class CharacterRepository extends CharacterDAO {
 				}
 
 				for (Character character : characters) {
-					if (character.getFirstName() == val) {
+					if (character.getFirstName().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
 
-			} else if (type == LASTNAME) {
+			} else if (type.equals(LASTNAME)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getLastName() == val) {
+					if (character.getLastName().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
-			} else if (type == DOB) {
+			} else if (type.equals(DOB)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getDob() == val) {
+					if (character.getDob().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
-			} else if (type == DRIVERSID) {
+			} else if (type.equals(DRIVERSID)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getDriversID() == val) {
+					if (character.getDriversID().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
-			} else if (type == PASSPORTID) {
+			} else if (type.equals(PASSPORTID)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getPassportID() == val) {
+					if (character.getPassportID().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
 
-			} else if (type == OCCUPATION) {
+			} else if (type.equals(OCCUPATION)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getOccupation() == val) {
+					if (character.getOccupation().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
-			} else if (type == ADDRESS) {
+			} else if (type.equals(ADDRESS)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getAddress() == val) {
+					if (character.getAddress().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
-			} else if (type == CITY) {
+			} else if (type.equals(CITY)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getCity() == val) {
+					if (character.getCity().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
-			} else if (type == REGION) {
+			} else if (type.equals(REGION)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getRegion() == val) {
+					if (character.getRegion().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
-			} else if (type == POSTAL) {
+			} else if (type.equals(POSTAL)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getPostal() == val) {
+					if (character.getPostal().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
-			} else if (type == COUNTRY) {
+			} else if (type.equals(COUNTRY)) {
 				List<Character> l = singleMatches.get(type);
 				if (l == null) {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getCountry() == val) {
+					if (character.getCountry().equalsIgnoreCase(val)) {
 						l.add(character);
 					}
 				}
@@ -266,27 +266,27 @@ public class CharacterRepository extends CharacterDAO {
 				String val = attributes.get(type);
 				if (isValid(type, val)) {
 
-					if (type == FIRSTNAME) {
+					if (type.equals(FIRSTNAME)) {
 						temp.setFirstName(val);
-					} else if (type == LASTNAME) {
+					} else if (type.equals(LASTNAME)) {
 						temp.setLastName(val);
-					} else if (type == DOB) {
+					} else if (type.equals(DOB)) {
 						temp.setDob(val);
-					} else if (type == DRIVERSID) {
+					} else if (type.equals(DRIVERSID)) {
 						temp.setDriversID(val);
-					} else if (type == PASSPORTID) {
+					} else if (type.equals(PASSPORTID)) {
 						temp.setPassportID(val);
-					} else if (type == OCCUPATION) {
+					} else if (type.equals(OCCUPATION)) {
 						temp.setOccupation(val);
-					} else if (type == ADDRESS) {
+					} else if (type.equals(ADDRESS)) {
 						temp.setAddress(val);
-					} else if (type == CITY) {
+					} else if (type.equals(CITY)) {
 						temp.setCity(val);
-					} else if (type == REGION) {
+					} else if (type.equals(REGION)) {
 						temp.setRegion(val);
-					} else if (type == POSTAL) {
+					} else if (type.equals(POSTAL)) {
 						temp.setPostal(val);
-					} else if (type == COUNTRY) {
+					} else if (type.equals(COUNTRY)) {
 						temp.setCountry(val);
 					} else {
 						// ERROR, attribute key that was not recognized. This is
@@ -309,8 +309,6 @@ public class CharacterRepository extends CharacterDAO {
 	}
 
 	/**
-	 * FIXME: <b> Stub </b>
-	 * 
 	 * @author ojourmel
 	 */
 	public Character getIntroCharacter() {
@@ -338,8 +336,6 @@ public class CharacterRepository extends CharacterDAO {
 	}
 
 	/**
-	 * FIXME: <b> Stub </b>
-	 * 
 	 * @author ojourmel
 	 */
 	public Character getBossCharacter(Boss boss) {
