@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 /**
  * Wrapper class for words said by the players and actors. <br>
- * FIXME: <b>Stub</b>
  * 
  * @author ojourmel , lduperron
  */
@@ -53,23 +52,18 @@ public class Dialogue {
 
 		for (int i = 0; i < strings.length; i++) {
 			Dialogue tempDialog = null;
-			if (callbackArray.length > i && callbackArray[i] != null) 
-			{
+			if ((i < callbackArray.length) && (callbackArray[i] != null)) {
 				tempDialog = new Dialogue(strings[i][0], strings[i][1],
 						callbackArray[i]);
-			} 
-			else 
-			{
+			} else {
 				tempDialog = new Dialogue(strings[i][0], strings[i][1]);
 
 			}
 
 			temp.add(tempDialog);
-
 		}
 
 		return temp.toArray(new Dialogue[0]);
-
 	}
 
 	public String getDialogue() {

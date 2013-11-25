@@ -40,7 +40,7 @@ public class CharacterDAO {
 	public static final String COUNTRY = "country";
 	public static final String OCCUPATION = "occupation";
 	public static final String GENDER = "gender";
-	public static final String PICTURE = "picture"; 
+	public static final String PICTURE = "picture";
 
 	private static final int EARLIEST_YEAR = Calendar.getInstance().get(
 			Calendar.YEAR) - 95;
@@ -48,7 +48,7 @@ public class CharacterDAO {
 			Calendar.YEAR) - 16;
 
 	private static DBConnection conn = DBConnection.getDBCon();
-	
+
 	/**
 	 * Returns a NEW random character NOT in the current game play character
 	 * database, rather than the CharacterRepository.getCharacter(), which may
@@ -60,7 +60,7 @@ public class CharacterDAO {
 	 */
 	public Character getCharacter() {
 		int fNameID = randomID(FIRSTNAME);
-		
+
 		Gender g = Gender.fromChar(getGender(fNameID));
 
 		return new Character(getDOB(), getDriversID(), getFName(fNameID),
@@ -69,7 +69,8 @@ public class CharacterDAO {
 				getAddress(randomID(ADDRESS)), getCity(randomID(CITY)),
 				getRegion(randomID(REGION)), getPostal(randomID(POSTAL)),
 				getCountry(randomID(COUNTRY)),
-				getOccupation(randomID(OCCUPATION)), g, PersonPicture.getRandom(g));
+				getOccupation(randomID(OCCUPATION)), g,
+				PersonPicture.getRandom(g));
 	}
 
 	/**
@@ -78,12 +79,12 @@ public class CharacterDAO {
 	 * @return Date of Birth
 	 * @author melanyw
 	 */
-	protected String getDOB() {
+	public String getDOB() {
 		String dob;
 
 		GregorianCalendar gc = new GregorianCalendar();
 
-		int year = randBetween(1900, 2010);
+		int year = randBetween(EARLIEST_YEAR, LATEST_YEAR);
 
 		gc.set(Calendar.YEAR, year);
 
@@ -111,7 +112,7 @@ public class CharacterDAO {
 	 * @return DriversID
 	 * @author melany
 	 */
-	protected String getDriversID() {
+	public String getDriversID() {
 		// TODO: Verify data using jUnit testing
 		return String
 				.valueOf(((int) (Math.random() * ((9999999 - 1000000) + 1) + 1000000)));
@@ -124,7 +125,7 @@ public class CharacterDAO {
 	 * @return FirstName from database
 	 * @author melany
 	 */
-	protected String getFName(int id) {
+	public String getFName(int id) {
 		return executeStatement(FIRSTNAME, id);
 	}
 
@@ -135,7 +136,7 @@ public class CharacterDAO {
 	 * @return LastName from database
 	 * @author melany
 	 */
-	protected String getLName(int id) {
+	public String getLName(int id) {
 		return executeStatement(LASTNAME, id);
 	}
 
@@ -146,7 +147,7 @@ public class CharacterDAO {
 	 * @return PassportID from database
 	 * @author melany
 	 */
-	protected String getPassportID(int id) {
+	public String getPassportID(int id) {
 		return executeStatement(PASSPORTID, id);
 	}
 
@@ -157,7 +158,7 @@ public class CharacterDAO {
 	 * @return address from database
 	 * @author melany
 	 */
-	protected String getAddress(int id) {
+	public String getAddress(int id) {
 		return executeStatement(ADDRESS, id);
 	}
 
@@ -168,7 +169,7 @@ public class CharacterDAO {
 	 * @return city from the database
 	 * @author melany
 	 */
-	protected String getCity(int id) {
+	public String getCity(int id) {
 		return executeStatement(CITY, id);
 	}
 
@@ -180,7 +181,7 @@ public class CharacterDAO {
 	 * @return region from the database
 	 * @author melany
 	 */
-	protected String getRegion(int id) {
+	public String getRegion(int id) {
 		return executeStatement(REGION, id);
 	}
 
@@ -191,7 +192,7 @@ public class CharacterDAO {
 	 * @return postal code from the database
 	 * @author melany
 	 */
-	protected String getPostal(int id) {
+	public String getPostal(int id) {
 		return executeStatement(POSTAL, id);
 	}
 
@@ -202,7 +203,7 @@ public class CharacterDAO {
 	 * @return country from the database
 	 * @author melany
 	 */
-	protected String getCountry(int id) {
+	public String getCountry(int id) {
 		return executeStatement(COUNTRY, id);
 	}
 
@@ -213,26 +214,16 @@ public class CharacterDAO {
 	 * @return occupation from the database
 	 * @author melany
 	 */
-	protected String getOccupation(int id) {
+	public String getOccupation(int id) {
 		return executeStatement(OCCUPATION, id);
 	}
 
-	/**
-	 * Fetches a random id based on the database entity
-	 * 
-	 * @param tableName
-	 * @return random id
-	 * @author melany
-	 */
 	private char getGender(int id) {
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 		char c;
 
 		try {
-			if (conn.connection.isClosed()) {
-				System.err.println("OMG");
-			}
 			statement = conn.connection.prepareStatement("SELECT " + GENDER
 					+ " FROM " + FIRSTNAME + " WHERE ID = ?");
 			statement.setInt(1, id);
@@ -252,7 +243,7 @@ public class CharacterDAO {
 	 * @return random id
 	 * @author melany
 	 */
-	protected int randomID(String tableName) {
+	public int randomID(String tableName) {
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 		int tableID = -1;

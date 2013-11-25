@@ -10,6 +10,8 @@ import java.util.Set;
 
 import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Character;
+import csci331.team.red.shared.Gender;
+import csci331.team.red.shared.PersonPicture;
 
 /**
  * CSCI331-TAG MW INTERFACE<br>
@@ -312,10 +314,27 @@ public class CharacterRepository extends CharacterDAO {
 	 * @author ojourmel
 	 */
 	public Character getIntroCharacter() {
+		Character intro = null;
 
-		// TODO: Hard-Code the intro characters
+		String dob = "1990-02-23";
+		String firstName = "Eliza";
+		String lastName = "Ehlers";
+		String driversID = getDriversID();
+		String passportID = getPassportID(randomID(PASSPORTID));
+		String address = getAddress(randomID(ADDRESS));
+		String city = "Omianan";
+		String region = "Aibmuloc Hsitirb";
+		String postal = getPostal(randomID(POSTAL));
+		String country = "Adanac";
+		String occupation = "University Student";
+		Gender gender = Gender.FEMALE;
+		PersonPicture avatar = PersonPicture.FEMALE1;
 
-		return null;
+		intro = new Character(dob, driversID, firstName, lastName, passportID,
+				address, city, region, postal, country, occupation, gender,
+				avatar);
+
+		return intro;
 	}
 
 	/**
@@ -324,14 +343,31 @@ public class CharacterRepository extends CharacterDAO {
 	 * @author ojourmel
 	 */
 	public Character getBossCharacter(Boss boss) {
+		Character bossCharacter = null;
 		switch (boss) {
 		case THUGLIFE:
 
-			// TODO: Hard-Code the boss characters
+			String dob = "1991-04-20";
+			String firstName = "icE";
+			String lastName = "cOld";
+			String driversID = getDriversID();
+			String passportID = getPassportID(randomID(PASSPORTID));
+			String address = getAddress(randomID(ADDRESS));
+			String city = getCity(randomID(CITY));
+			String region = getRegion(randomID(REGION));
+			String postal = getPostal(randomID(POSTAL));
+			String country = "'Merica";
+			String occupation = "Pro-Bono Video Game Tester";
+			Gender gender = Gender.MALE;
+			PersonPicture avatar = PersonPicture.THUG1;
 
-		default:
-			return null;
+			bossCharacter = new Character(dob, driversID, firstName, lastName,
+					passportID, address, city, region, postal, country,
+					occupation, gender, avatar);
+
 		}
+
+		return bossCharacter;
 	}
 
 	// TODO: Create proper JUnit testing using this kind of testing.

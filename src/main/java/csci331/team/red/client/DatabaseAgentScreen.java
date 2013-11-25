@@ -133,7 +133,7 @@ public class DatabaseAgentScreen implements Screen
                 	Label newCommandLabel = new Label(textField.getText() + "\r\n\r\n", parentEngine.rawTextStyle);
                 	newCommandLabel.setWrap(true);
                 	//String computerResponse = tutorialComputerSearch(textField.getText().trim());
-                	ClientEngine.network.send(Message.ONSEARCHQUERY, new Query(textField.getText().trim()));
+                	ClientEngine.network.send(Message.DBQUERY, new Query(textField.getText().trim()));
                 	
                 	
                 	textField.setText("");

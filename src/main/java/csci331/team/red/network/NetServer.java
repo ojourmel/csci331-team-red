@@ -13,6 +13,7 @@ import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
+import csci331.team.red.shared.Query;
 import csci331.team.red.shared.Role;
 
 /**
@@ -43,7 +44,7 @@ public class NetServer {
 	 */
 	public NetServer(final ServerEngine incomingGameServer) throws IOException {
 		this.gameServer = incomingGameServer;
-		server = new Server();
+		server = new Server(Network.BUFFER_SIZE, Network.BUFFER_SIZE);
 		/* start a thread to handle incoming connections */
 		server.start();
 
@@ -88,23 +89,23 @@ public class NetServer {
 					case CONNECT:
 						if (roles.containsKey(connection.getID())) {
 							// You are already connected
-							sendClient((Role) roles.get(connection.getID()),
+							sendClient(roles.get(connection.getID()),
 									Message.CONNECT);
 						} else {
 							gameServer.onPlayerConnect(connection);
 						}
 						break;
 					case DBQUERY:
-						if (netMsg.obj instanceof String) {
-							gameServer.onDatabaseSearch((String) netMsg.obj);
+						if (netMsg.obj instanceof Query) {
+							gameServer.onDatabaseSearch((Query) netMsg.obj);
 						}
 						break;
 					case DISCONNECT:
 						// Only notify Server when this connection is in roles
 						if (roles.containsKey(connection.getID())) {
 							// Notify Server of disconnect
-							gameServer.onPlayerDisconnect((Role) roles
-									.get(connection.getID()));
+							gameServer.onPlayerDisconnect(roles.get(connection
+									.getID()));
 							// Remove connection from list of roles
 							roles.remove(connection.getID());
 						}
@@ -113,25 +114,24 @@ public class NetServer {
 					case ONPOSTURECHANGE:
 						if (netMsg.obj instanceof Posture) {
 							gameServer.onPostureChange(
-									(Role) roles.get(connection.getID()),
+									roles.get(connection.getID()),
 									(Posture) netMsg.obj);
 						}
+						break;
 					case ONDECISIONEVENT:
 						if (netMsg.obj instanceof Decision) {
 							gameServer
 									.onIncidentComplete((Decision) netMsg.obj);
 						}
+						break;
 					case PAUSE:
-						gameServer.onPlayerPause((Role) roles.get(connection
-								.getID()));
+						gameServer.onPlayerPause(roles.get(connection.getID()));
 						break;
 					case QUIT:
-						gameServer.onPlayerQuit((Role) roles.get(connection
-								.getID()));
+						gameServer.onPlayerQuit(roles.get(connection.getID()));
 						break;
 					case RESUME:
-						gameServer.onPlayerResume((Role) roles.get(connection
-								.getID()));
+						gameServer.onPlayerResume(roles.get(connection.getID()));
 						break;
 					default:
 						// invalid messages are simply ignored
@@ -184,9 +184,8 @@ public class NetServer {
 		for (Integer connID : roles.keySet()) {
 			// tell client to disconnect
 			sendClient(roles.get(connID), Message.DISCONNECT);
-			// Remove connection from list of roles
-			roles.remove(connID);
 		}
+		roles.clear();
 		server.stop();
 	}
 

@@ -1,8 +1,17 @@
 package csci331.team.red.client;
 
-import java.util.HashMap;
+import static csci331.team.red.dao.CharacterDAO.ADDRESS;
+import static csci331.team.red.dao.CharacterDAO.CITY;
+import static csci331.team.red.dao.CharacterDAO.COUNTRY;
+import static csci331.team.red.dao.CharacterDAO.DOB;
+import static csci331.team.red.dao.CharacterDAO.DRIVERSID;
+import static csci331.team.red.dao.CharacterDAO.FIRSTNAME;
+import static csci331.team.red.dao.CharacterDAO.GENDER;
+import static csci331.team.red.dao.CharacterDAO.LASTNAME;
+import static csci331.team.red.dao.CharacterDAO.POSTAL;
+import static csci331.team.red.dao.CharacterDAO.REGION;
 
-import javax.management.RuntimeErrorException;
+import java.util.HashMap;
 
 import aurelienribon.tweenengine.TweenManager;
 
@@ -12,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import csci331.team.red.shared.Face;
-import static csci331.team.red.dao.CharacterDAO.*;
 
 public class DriversLicence extends TransparentActor
 {
@@ -92,8 +100,6 @@ public class DriversLicence extends TransparentActor
     public void draw (SpriteBatch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         
-        float y = getScaleY();
-        
         font.setScale(getScaleX(), getScaleY());
         font.draw(batch , DriverName,
         		getX() +  DriverNameX * getScaleX(),
@@ -117,8 +123,7 @@ public class DriversLicence extends TransparentActor
         
         font.draw(batch , City,
         		getX() +  CityX * getScaleX(),
-        		getY() + CityY* getScaleY() , 0, Math.max(City.length(), 22));
-        
+        		getY() + CityY* getScaleY() , 0, City.length());
         
         font.draw(batch , Postal,
         		getX() +  PostalX * getScaleX(),

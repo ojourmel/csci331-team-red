@@ -47,8 +47,7 @@ public class NetClient {
 			throws IOException {
 		this.gameClient = incomingGameClient;
 		// connects to a server
-		// FIXME:  Hack for 'Unable to read object larger than read buffer' error
-		client = new Client(16384, 16384);
+		client = new Client(Network.BUFFER_SIZE, Network.BUFFER_SIZE);
 		client.start();
 
 		// For consistency, the classes to be sent over the network are
@@ -247,5 +246,12 @@ public class NetClient {
 	public void setTimeout(int timeout) {
 		if ((timeout > 0) && (timeout < 60001))
 			client.setTimeout(timeout);
+	}
+
+	/**
+	 * Disconnects the kryo client
+	 */
+	public void kill() {
+		client.stop();
 	}
 }

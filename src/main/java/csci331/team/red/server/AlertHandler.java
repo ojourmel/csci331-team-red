@@ -4,11 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import csci331.team.red.dao.CharacterDAO;
 import csci331.team.red.dao.CharacterRepository;
 import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Incident;
+import static csci331.team.red.dao.CharacterDAO.*;
 
 /**
  * 
@@ -22,14 +24,16 @@ public class AlertHandler {
 
 	private final Random RANDOM;
 	private CharacterRepository repo;
+	private CharacterDAO dao;
 	private AlertBody alertBody = new AlertBody();
 
 	/**
 	 * The probability that any given {@link Alert} is relevant to an incident
 	 */
-	private static final double ALERT_RELEVENCE = 0.2;
+	private static final double ALERT_NOISE = 0.6;
 	private static final int MIN_ALERTS = 6;
 	private static final int MAX_ALERTS = 10;
+	private static final int MAX_GATHERING = 1234;
 
 	/**
 	 * Hard-coded values for colors
@@ -49,34 +53,12 @@ public class AlertHandler {
 	 */
 	private enum Voice {
 		UIV("University of Island Visionaries"), COPS(
-				"Omianan Police Department"), MANAGMENT("Managment");
+				"Omianan Police Department");
 
 		private String who;
-		private static double MANAGMENT_INVOLVMENT = 0.2;
 
 		private Voice(String who) {
 			this.who = who;
-		}
-
-		/**
-		 * @return A voice, and depending on the MANAGMENT_INVOLVMENT, that
-		 *         voice may-or-may-not-be a nosy manger.
-		 * 
-		 * @author ojourmel
-		 */
-		public static Voice getVoice() {
-			Random RANDOM = new Random();
-
-			Voice voice = null;
-			if (RANDOM.nextDouble() < MANAGMENT_INVOLVMENT) {
-				voice = MANAGMENT;
-			} else {
-				while (voice != MANAGMENT) {
-					voice = values()[RANDOM.nextInt(values().length)];
-				}
-
-			}
-			return voice;
 		}
 	}
 
@@ -117,6 +99,15 @@ public class AlertHandler {
 			return body;
 		}
 
+		public String isLeaving(Character character) {
+
+			String body = "A person working as a " + character.getOccupation()
+					+ " visiting from " + character.getCountry()
+					+ " has \"Thoroughly injoyed their time here\"";
+			return body;
+
+		}
+
 		public String gathering(int size) {
 			String body = "A gathering of more than " + size
 					+ " people is expected shortly";
@@ -148,6 +139,7 @@ public class AlertHandler {
 	public AlertHandler(Random RANDOM, CharacterRepository repo) {
 		this.RANDOM = RANDOM;
 		this.repo = repo;
+		this.dao = new CharacterDAO();
 	}
 
 	/**
@@ -160,14 +152,21 @@ public class AlertHandler {
 		List<Alert> alerts = new LinkedList<Alert>();
 
 		int nAlerts = RANDOM.nextInt(MAX_ALERTS - MIN_ALERTS) + MIN_ALERTS;
+		int incidentAlerts = 0;
 
 		// ALERT_RELEVENCE determines if an alert will pertain to the incident
 		for (int i = 0; i < nAlerts; i++) {
-			if (RANDOM.nextDouble() < ALERT_RELEVENCE) {
+			if (RANDOM.nextDouble() > ALERT_NOISE) {
 				alerts.add(getAlert(incident));
+				incidentAlerts++;
 			} else {
 				alerts.add(genericAlert());
 			}
+		}
+
+		while (incidentAlerts < 2) {
+			alerts.add(getAlert(incident));
+			incidentAlerts++;
 		}
 
 		return alerts;
@@ -179,11 +178,12 @@ public class AlertHandler {
 	public List<Alert> getIntroAlerts(Incident incident) {
 		List<Alert> alerts = new LinkedList<Alert>();
 
-		// The intro alerts will be fairly simple, as any scripted alert will
+		// The intro alerts will be fairly simple, as most scripted alert will
 		// be triggered by a dialogue callback
 
 		Alert newbe = new Alert(
-				"NOTICE!\n First day for many Junior Officers. Try not to F*** it up" ,"MANAGMENT");
+				"NOTICE!\n First day for many Junior Officers. Try not to F*** it up",
+				"MANAGMENT");
 		alerts.add(newbe);
 
 		int nAlerts = RANDOM.nextInt(MAX_ALERTS - MIN_ALERTS) + MIN_ALERTS;
@@ -201,10 +201,22 @@ public class AlertHandler {
 	public List<Alert> getBossAlerts(Incident incident, Boss boss) {
 		List<Alert> alerts = new LinkedList<Alert>();
 
-		// TODO: Hard-code boss alerts
-
 		switch (boss) {
 		case THUGLIFE:
+
+			Alert thugie = new Alert(
+					ActionWord.ALERT.toString()
+							+ " Hostile individual wearing \"thug life\" tshirt spotted on campus",
+					Voice.UIV.who);
+
+			alerts.add(thugie);
+
+			int nAlerts = RANDOM.nextInt(MAX_ALERTS - MIN_ALERTS) + MIN_ALERTS;
+
+			for (int i = 0; i < nAlerts; i++) {
+				alerts.add(genericAlert());
+			}
+
 			break;
 		default:
 			// Programmer forgot to handle an additional boss type
@@ -215,32 +227,80 @@ public class AlertHandler {
 	}
 
 	/**
-	 * 
 	 * @param incident
 	 * @return a single alert that is custom built off of the {@link Incident}
 	 *         details
 	 */
 	protected Alert getAlert(Incident incident) {
+		StringBuilder alert = new StringBuilder();
+		Voice voice = Voice.UIV;
+		ActionWord word = ActionWord.NOTICE;
+		String message = "";
 
-		// TODO make custom build an alert using the character in this incident
+		boolean alertPending = true;
+		while (alertPending) {
+			// what variable do you focus on ?
+			int focus = RANDOM.nextInt(3);
 
-		Voice voice = Voice.getVoice();
-		ActionWord word = ActionWord.values()[RANDOM.nextInt(ActionWord
-				.values().length)];
+			switch (focus) {
+			case 0:
+				// look at fraud
+				if (incident.fraud) {
+					// generate a vague warning regarding this person
+					voice = Voice.values()[RANDOM
+							.nextInt(Voice.values().length)];
+					word = ActionWord.NOTICE;
 
-		// the message depends on the
-		String message = genericMessage(word);
+					message = "Local "
+							+ dao.getOccupation(dao.randomID(OCCUPATION))
+							+ " reports seeing a shifty looking "
+							+ incident.getActor().getGender().toString();
 
+					alertPending = false;
+				}
+				break;
+			case 1:
+				// look at fraudCaught
+				if (incident.fraudCaught) {
+					// generate a specific alert regarding this person
+					voice = Voice.values()[RANDOM
+							.nextInt(Voice.values().length)];
+					word = ActionWord.ALERT;
+
+					String age = incident.getActor().getDob().split("-")[0];
+					message = "A " + incident.getActor().getGender().toString()
+							+ " born in " + age
+							+ " has been reported as a Con Artist!";
+
+					alertPending = false;
+				}
+				break;
+			case 2:
+				// look at clericalErrorCaught
+				// look at fraud
+				if (incident.clericalErrorCaught) {
+					// generate a aplolgetic notice regarding false documents.
+					voice = Voice.values()[RANDOM
+							.nextInt(Voice.values().length)];
+					word = ActionWord.NOTICE;
+
+					message = "It has come to the attention of the "
+							+ voice.who
+							+ " that certian errors have been make in processing the information of a one "
+							+ incident.getActor().getFirstName() + " "
+							+ incident.getActor().getLastName() + ".";
+
+					alertPending = false;
+				}
+				break;
+			}
+		}
 		// now build the alert
-//		StringBuilder alert = new StringBuilder();
-//		alert.append(voice.who);
-//		alert.append(": ");
-//		alert.append(word.toString());
-//		alert.append("!\n");
-//		alert.append(message);
+		alert.append(word.toString());
+		alert.append("!\n");
+		alert.append(message);
 
-		return new Alert(word.toString() , voice.who);
-
+		return new Alert(alert.toString(), voice.who);
 	}
 
 	/**
@@ -255,15 +315,12 @@ public class AlertHandler {
 		// the message depends on the
 		String message = genericMessage(word);
 
-		// now build the alert
-//		StringBuilder alert = new StringBuilder();
-//		alert.append(voice.who);
-//		alert.append(": ");
-//		alert.append(word.toString());
-//		alert.append("!\n");
-//		alert.append(message);
+		StringBuilder alert = new StringBuilder();
+		alert.append(word.toString());
+		alert.append("!\n");
+		alert.append(message);
 
-		return new Alert(word.toString(), voice.who);
+		return new Alert(alert.toString(), voice.who);
 	}
 
 	/**
@@ -272,18 +329,26 @@ public class AlertHandler {
 	 */
 	private String genericMessage(ActionWord word) {
 		String msg = "";
-		int MAX_GATHERING = 10000;
 
 		switch (word) {
 		case ALERT:
 			msg = alertBody.personSpoted(getDescription());
 			break;
 		case NOTICE:
-			if (RANDOM.nextDouble() > ALERT_RELEVENCE) {
+			int notice = RANDOM.nextInt(4);
+
+			switch (notice) {
+			case 0:
+			case 1:
 				msg = alertBody.gathering(RANDOM.nextInt(RANDOM
 						.nextInt(MAX_GATHERING)));
-			} else {
+				break;
+			case 2:
 				msg = alertBody.isVisiting(repo.getCharacter());
+				break;
+			case 3:
+				msg = alertBody.isLeaving(repo.getCharacter());
+				break;
 			}
 			break;
 		case WARNING:
@@ -295,13 +360,13 @@ public class AlertHandler {
 		default:
 			break;
 		}
-
 		return msg;
 	}
 
 	/**
 	 * @return a physical description of a person. This description is limited
-	 *         to clothing color and description
+	 *         to clothing color and description, and does NOT have any
+	 *         relevance to the actual appearance of the art assets
 	 */
 	private String getDescription() {
 		String c1 = CLOTHING[RANDOM.nextInt(CLOTHING.length)];
@@ -321,7 +386,6 @@ public class AlertHandler {
 			}
 			desc += c2.toString();
 		}
-
 		return desc;
 	}
 }

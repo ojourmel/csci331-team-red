@@ -2,6 +2,7 @@ package csci331.team.red.server;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -11,6 +12,7 @@ import com.esotericsoftware.kryonet.Connection;
 
 import csci331.team.red.dao.CharacterRepository;
 import csci331.team.red.network.NetServer;
+import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
@@ -18,7 +20,7 @@ import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
-import csci331.team.red.shared.Result;
+import csci331.team.red.shared.Query;
 import csci331.team.red.shared.Role;
 
 /**
@@ -28,8 +30,9 @@ import csci331.team.red.shared.Role;
  * Implements {@link Thread} and is runnable via {@link ServerEngine#start()}
  * 
  * 
- * <br><br><br>
- * TODO: Add CSCI331T Tag for <b>CONTROLLER PATTERN</b>
+ * <br>
+ * <br>
+ * <br>
  * 
  * @author ojourmel
  */
@@ -44,6 +47,19 @@ public class ServerEngine extends Thread {
 	 * The size of the queue of incidents that is maintained
 	 */
 	private static final int MIN_INCIDENTS = 5;
+
+	private static final double FRAUD_CHANCE = 0.25;
+	private static final double ERROR_CHANCE = 0.25;
+
+	/**
+	 * The probiblity that his fraud is a scrub, and thus, get's caught.
+	 */
+	private static final double FRAUD_SCRUB_LEVEL = 0.25;
+	/**
+	 * The probability that the clerk is a beast, and catches a prievious
+	 * mistake
+	 */
+	private static final double CLERK_BEAST_LEVEL = 0.25;
 
 	// Core game assets
 	private NetServer network;
@@ -128,12 +144,7 @@ public class ServerEngine extends Thread {
 
 			// TODO: Allow for past events to affect future events
 
-			// TODO: Handle alert generation, and re-factor to generate
-			// incidents in advance, so that alerts can be done in a reasonable
-			// manner
-
 			System.err.println("Starting Incident " + i);
-
 			if (!doIncident()) {
 				tearDown();
 				return;
@@ -159,14 +170,14 @@ public class ServerEngine extends Thread {
 	 * 
 	 * @param query
 	 *            executed
-	 * @return the {@link Result} of the query
 	 */
-	public Result onDatabaseSearch(String query) {
-		System.err.println("onDatabaseSearch: " + query);
-		query = query.toUpperCase();
+	public void onDatabaseSearch(Query query) {
+		System.err.println("onDatabaseSearch: " + query.queryText);
+		query.queryText = query.queryText.toUpperCase();
+
+		// network.send(Message.DB_RESULT, Result.INVALID_COMMAND);
 
 		// TODO: Handle database queries
-		return Result.INVALID_COMMAND;
 	}
 
 	/**
@@ -180,9 +191,9 @@ public class ServerEngine extends Thread {
 		System.err.println("onPostureChange " + role.toString() + " "
 				+ posture.toString());
 		if (playerOne.getRole() == role) {
-			playerOne.setState(posture);
+			playerOne.setPosture(posture);
 		} else {
-			playerTwo.setState(posture);
+			playerTwo.setPosture(posture);
 		}
 	}
 
@@ -203,13 +214,9 @@ public class ServerEngine extends Thread {
 			numPlayerConnected++;
 		} else {
 			// Two many players, insta-kick the new connection
-			// assign a role via the server because of the Network
 
-			// TODO: Refactor network to allow an explicit send(Message,
-			// Connection)
-			// method for this exact case
-			network.setRole(connection, Role.UNDEFINDED);
-			network.send(Message.DISCONNECTED, Role.UNDEFINDED);
+			network.sendClient(connection, Message.DISCONNECT);
+			return;
 		}
 
 		// First connection is first player, and
@@ -254,7 +261,7 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerDisconnect(Role role) {
 		System.err.println("onPlayerDisconnect " + role.toString());
-		network.send(Message.DISCONNECTED);
+		network.sendAll(Message.DISCONNECT);
 
 		this.interrupt();
 	}
@@ -266,7 +273,7 @@ public class ServerEngine extends Thread {
 	public void onPlayerQuit(Role role) {
 		System.err.println("onPlayerQuit " + role.toString());
 
-		network.send(Message.QUIT);
+		network.sendAll(Message.QUIT);
 		this.interrupt();
 	}
 
@@ -277,7 +284,7 @@ public class ServerEngine extends Thread {
 	public void onPlayerPause(Role role) {
 		System.err.println("onPlayerPause " + role.toString());
 
-		network.send(Message.PAUSE);
+		network.sendAll(Message.PAUSE);
 
 	}
 
@@ -290,19 +297,22 @@ public class ServerEngine extends Thread {
 	public void onPlayerResume(Role role) {
 		System.err.println("onPlayerResume " + role.toString());
 
-		network.send(Message.RESUME);
+		network.sendAll(Message.RESUME);
 	}
 
 	/**
 	 * Callback when an incident is completed. Signals the main thread to
-	 * contiue game play.
+	 * continue game play.
 	 */
 	public void onIncidentComplete(Decision decition) {
 		System.err.println("onIncidentCompleate " + decition.toString());
 
-		// TODO: update player scores from the outcome of this incident. Update
-		// any environment variables, and tell run() to wake up, and do another
-		// incident
+		// TODO: update player scores from the outcome of this incident.
+
+		/*
+		 * Update any environment variables, and tell run() to wake up, and do
+		 * another incident
+		 */
 
 		lock.lock();
 		incidentOver.signal();
@@ -316,7 +326,7 @@ public class ServerEngine extends Thread {
 	 */
 	public void kill() {
 		System.err.println("Server Killed by Client");
-		network.send(Message.DISCONNECTED);
+		network.sendAll(Message.DISCONNECT);
 		this.interrupt();
 	}
 
@@ -337,10 +347,12 @@ public class ServerEngine extends Thread {
 
 		System.err.println("Starting Level " + level.getName());
 		// start level
-		network.send(Message.START_LEVEL, level);
+		network.sendAll(Message.START_LEVEL, level);
 		// inform each player of the role they will be playing in this level
-		network.send(Message.SET_ROLE, playerOne.getRole(), playerOne.getRole());
-		network.send(Message.SET_ROLE, playerTwo.getRole(), playerTwo.getRole());
+		network.sendClient(playerOne.getRole(), Message.SET_ROLE,
+				playerOne.getRole());
+		network.sendClient(playerTwo.getRole(), Message.SET_ROLE,
+				playerTwo.getRole());
 
 	}
 
@@ -350,20 +362,19 @@ public class ServerEngine extends Thread {
 	 * @return false if the thread is interrupted
 	 */
 	private boolean doIntro() {
-		Character character = repo.getIntroCharacter();
-		Incident incident = new Incident(character);
+		Incident incident = new Incident(repo.getIntroCharacter());
 		documentHandler.initIntroDocuments(incident);
 		dialogueHandler.initIntroDialogue(incident);
 		incident.setAlerts(alertHandler.getIntroAlerts(incident));
 
 		System.err.println("Starting First (Scripted) Tutorial Incident");
-
-		network.send(Message.START_INCIDENT, incident);
+		network.sendAll(Message.START_INCIDENT, incident);
 
 		// Send in the dialogue for both players
-		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
-		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
-				Role.FIELDAGENT);
+		network.sendClient(Role.DATABASE, Message.DIALOGUE,
+				incident.getDbDialogue());
+		network.sendClient(Role.FIELDAGENT, Message.DIALOGUE,
+				incident.getFieldDialogue());
 
 		// wait for player's decision.
 		try {
@@ -394,12 +405,13 @@ public class ServerEngine extends Thread {
 
 		System.err.println("Starting (Scripted) Boss Incident "
 				+ boss.toString());
-		network.send(Message.START_INCIDENT, incident);
+		network.sendAll(Message.START_INCIDENT, incident);
 
 		// Send in the dialogue for both players
-		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
-		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
-				Role.FIELDAGENT);
+		network.sendClient(Role.DATABASE, Message.DIALOGUE,
+				incident.getDbDialogue());
+		network.sendClient(Role.FIELDAGENT, Message.DIALOGUE,
+				incident.getFieldDialogue());
 
 		// wait for player's decision.
 		try {
@@ -426,26 +438,61 @@ public class ServerEngine extends Thread {
 		// Save a new incident for later
 		Character character = repo.getCharacter();
 		Incident incident = new Incident(character);
+
+		// random chance that this person is a fraud, or perhaps, is victim of
+		// a clerical error.
+
+		if (RANDOM.nextDouble() < FRAUD_CHANCE) {
+			character.setFraud(true);
+			incident.fraud = true;
+
+			if (RANDOM.nextDouble() < FRAUD_SCRUB_LEVEL) {
+				incident.fraudCaught = true;
+			} else {
+				incident.fraudCaught = false;
+			}
+		} else {
+			character.setFraud(false);
+			incident.fraud = false;
+		}
+
+		if (RANDOM.nextDouble() < ERROR_CHANCE) {
+			incident.clericalError = true;
+
+			if (RANDOM.nextDouble() < CLERK_BEAST_LEVEL) {
+				incident.clericalErrorCaught = true;
+			} else {
+				incident.clericalErrorCaught = false;
+			}
+		} else {
+			incident.clericalError = false;
+		}
+
 		documentHandler.initDocuments(incident);
 		dialogueHandler.initDialogue(incident);
 		incidents.add(incident);
 
-		// get one for this incident, removing it from the queue
-		incident = incidents.pollFirst();
-
-		// TODO: Refactor such that alerts can pertain to more that one future
-		// incident
-		incident.setAlerts(alertHandler.getAlerts(incidents.get(RANDOM
+		List<Alert> alerts = new LinkedList<Alert>();
+		// alerts pertain to two future, (or current) incidents
+		alerts.addAll(alertHandler.getAlerts(incidents.get(RANDOM
+				.nextInt(incidents.size()))));
+		alerts.addAll(alertHandler.getAlerts(incidents.get(RANDOM
 				.nextInt(incidents.size()))));
 
-		// TODO: Confirm Server/Client responsibilities when it comes to:
-		// Characters,
-		// Alerts,
-		// Dialogue
-		network.send(Message.START_INCIDENT, incident);
-		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
-		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
-				Role.FIELDAGENT);
+		// get one for this incident, removing it from the queue
+		incident = incidents.pollFirst();
+		// assign the alerts, the only thing not yet initialized.
+		incident.setAlerts(alerts);
+
+		// Server/Client responsibilities:
+		// Characters, -- Client
+		// Alerts, -- Client
+		// Dialogue, -- Client
+		network.sendAll(Message.START_INCIDENT, incident);
+		network.sendClient(Role.DATABASE, Message.DIALOGUE,
+				incident.getDbDialogue());
+		network.sendClient(Role.FIELDAGENT, Message.DIALOGUE,
+				incident.getFieldDialogue());
 
 		// wait for player's decision.
 		try {

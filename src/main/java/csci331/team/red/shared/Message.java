@@ -2,8 +2,6 @@ package csci331.team.red.shared;
 
 import java.util.List;
 
-import javax.xml.ws.Response;
-
 /**
  * Enumerated values for message to be passed from client to server.
  */
@@ -21,8 +19,9 @@ public enum Message {
 	CONNECT,
 
 	/**
-	 * Sends string to server to query the database, expects a {@link String}
-	 * object to be sent with this message.
+	 * The database agent has made a database query request. Expects a
+	 * {@link Query} object to be sent with this message.
+	 * 
 	 */
 	DBQUERY,
 
@@ -81,11 +80,6 @@ public enum Message {
 	 * decision enum.
 	 */
 	ONDECISIONEVENT,
-	
-	/**
-	 * The database agent has made a database query request.  Comes with a Query class
-	 */
-	ONSEARCHQUERY,
 
 	/**
 	 * The user has quit the game

@@ -14,7 +14,7 @@ import csci331.team.red.server.DialogueHandler;
  * 
  * @author ojourmel
  */
-public class Incident extends csci331.team.red.dao.CharacterDAO {
+public class Incident {
 
 	/**
 	 * The actor in this {@link Incident}
@@ -27,23 +27,18 @@ public class Incident extends csci331.team.red.dao.CharacterDAO {
 
 	// additional flags for fraud/error factor
 	public boolean fraud;
+	public boolean fraudCaught = false;
 	public boolean clericalError;
+	public boolean clericalErrorCaught = false;
 
 	// Probability Factor (currently a 3 in 7 chance of error)
-	public final static int PROBABILITY = 7;
+	private final static int PROBABILITY = 7;
 
 	/**
 	 * All Serializable classes MUST provide a zero-argument constructor
 	 */
 	@Deprecated
 	public Incident() {
-		actor = null;
-		incidentDocuments = null;
-		alerts = null;
-		dbDialogue = null;
-		fieldDialogue = null;
-		fraud = false;
-		clericalError = false;
 	}
 
 	/**

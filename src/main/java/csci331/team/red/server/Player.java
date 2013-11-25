@@ -6,14 +6,13 @@ import csci331.team.red.shared.Role;
 /**
  * A Server-side representation of the two players. Who they are, what their
  * attributes are, score, etc.<br>
- * FIXME: <b>Stub</b>
  * 
  * @author ojourmel
  */
 public class Player {
 	private Role role = Role.UNDEFINDED;
 	private Posture posture;
-
+	
 	/**
 	 * @param role
 	 *            {@link Role} to set
@@ -36,18 +35,11 @@ public class Player {
 	public void setPosture(Posture posture) {
 		this.posture = posture;
 	}
-	
+
 	/**
-	 * @return posture
-	 *            {@link Posture} 
+	 * @return posture {@link Posture}
 	 */
 	public Posture getPosture() {
 		return posture;
 	}
-
-	public void setState(Posture state) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

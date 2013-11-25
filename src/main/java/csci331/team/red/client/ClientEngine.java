@@ -3,8 +3,6 @@ package csci331.team.red.client;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.junit.experimental.theories.PotentialAssignment;
-
 import aurelienribon.tweenengine.Tween;
 
 import com.badlogic.gdx.Game;
@@ -28,7 +26,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
-import csci331.team.red.client.MainMenuScreen;
 import csci331.team.red.network.NetClient;
 import csci331.team.red.server.ServerEngine;
 import csci331.team.red.shared.Alert;
@@ -36,13 +33,13 @@ import csci331.team.red.shared.Background;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Face;
+import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.PersonPicture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.SoundTrack;
-import csci331.team.red.shared.Incident;
 
 /**
  * Main entry point for the game proper.  Handles all shared objects between scenes.
@@ -432,7 +429,7 @@ public class ClientEngine extends Game
 		try
 		{
 			network = new NetClient(this, desiredConnectTarget);
-			network.send(Message.CONNECTED);
+			network.send(Message.CONNECT);
 		}
 		catch (IOException e)
 		{
@@ -445,7 +442,10 @@ public class ClientEngine extends Game
 	public void LeaveGame()
 	{
 		switchToNewScreen(ScreenEnumerations.MainMenu);
-		
+		if(network != null){
+			network.kill();
+			network = null;
+		}
 	}
 	public void DisconnectByServer()
 	{
@@ -498,7 +498,7 @@ public class ClientEngine extends Game
 		if(fieldAgentScreen != null)
 		{
 			fieldAgentScreen.currentIncident = incident;
-			fieldAgentScreen.displayNewPerson(incident.getCharacter());
+			fieldAgentScreen.displayNewPerson(incident.getActor());
 			
 		}
 		if(databaseAgentScreen != null)
