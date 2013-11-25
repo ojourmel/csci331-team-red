@@ -25,7 +25,7 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 
 	/**
 	 * @param RANDOM
-	 *            object to be used for probibility calculations
+	 *            object to be used for probability calculations
 	 */
 	public DocumentHandler(Random RANDOM) {
 		this.RANDOM = RANDOM;
@@ -38,8 +38,38 @@ public class DocumentHandler extends csci331.team.red.dao.CharacterDAO {
 	 */
 	public void initIntroDocuments(Incident incident) {
 
-		// TODO:
+		// The into documents will NOT have any data corruption...
+		// This method assumes it is passed the correct Incident!
+		List<Document> documents = new LinkedList<Document>();
 
+		HashMap<String, String> characterAttributes = new HashMap<String, String>();
+
+		characterAttributes.put(FIRSTNAME, incident.getActor().getFirstName());
+		characterAttributes.put(LASTNAME, incident.getActor().getLastName());
+		characterAttributes.put(DOB, incident.getActor().getDob());
+		characterAttributes.put(DRIVERSID, incident.getActor().getDriversID());
+		characterAttributes
+				.put(PASSPORTID, incident.getActor().getPassportID());
+		characterAttributes.put(ADDRESS, incident.getActor().getAddress());
+		characterAttributes.put(CITY, incident.getActor().getCity());
+		characterAttributes.put(REGION, incident.getActor().getRegion());
+		characterAttributes.put(POSTAL, incident.getActor().getPostal());
+		characterAttributes.put(COUNTRY, incident.getActor().getCountry());
+		characterAttributes
+				.put(OCCUPATION, incident.getActor().getOccupation());
+
+		if (incident.getActor().getGender() == Gender.MALE) {
+			characterAttributes.put(GENDER, "Male");
+		} else {
+			characterAttributes.put(GENDER, "Female");
+		}
+
+		// Now create the driver's licence
+		Document.Type drivers = Document.Type.DriversLicence;
+		Document driversDocument = new Document(drivers, characterAttributes);
+		documents.add(driversDocument);
+
+		incident.setIncidentDocuments(documents);
 	}
 
 	/**

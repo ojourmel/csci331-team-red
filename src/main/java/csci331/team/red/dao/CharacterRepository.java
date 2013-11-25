@@ -315,7 +315,7 @@ public class CharacterRepository extends CharacterDAO {
 
 		// TODO: Hard-Code the intro characters
 
-		return null;
+		return getCharacter();
 	}
 
 	/**

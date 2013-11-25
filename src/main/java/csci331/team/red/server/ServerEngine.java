@@ -2,6 +2,7 @@ package csci331.team.red.server;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -11,6 +12,7 @@ import com.esotericsoftware.kryonet.Connection;
 
 import csci331.team.red.dao.CharacterRepository;
 import csci331.team.red.network.NetServer;
+import csci331.team.red.shared.Alert;
 import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
@@ -18,7 +20,6 @@ import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
-import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 
 /**
@@ -28,7 +29,9 @@ import csci331.team.red.shared.Role;
  * Implements {@link Thread} and is runnable via {@link ServerEngine#start()}
  * 
  * 
- * <br><br><br>
+ * <br>
+ * <br>
+ * <br>
  * TODO: Add CSCI331T Tag for <b>CONTROLLER PATTERN</b>
  * 
  * @author ojourmel
@@ -159,14 +162,14 @@ public class ServerEngine extends Thread {
 	 * 
 	 * @param query
 	 *            executed
-	 * @return the {@link Result} of the query
 	 */
-	public Result onDatabaseSearch(String query) {
+	public void onDatabaseSearch(String query) {
 		System.err.println("onDatabaseSearch: " + query);
 		query = query.toUpperCase();
 
+		// network.send(Message.DB_RESULT, Result.INVALID_COMMAND);
+
 		// TODO: Handle database queries
-		return Result.INVALID_COMMAND;
 	}
 
 	/**
@@ -206,8 +209,7 @@ public class ServerEngine extends Thread {
 			// assign a role via the server because of the Network
 
 			// TODO: Refactor network to allow an explicit send(Message,
-			// Connection)
-			// method for this exact case
+			// Connection) method for this exact case
 			network.setRole(connection, Role.UNDEFINDED);
 			network.send(Message.DISCONNECTED, Role.UNDEFINDED);
 		}
@@ -350,20 +352,21 @@ public class ServerEngine extends Thread {
 	 * @return false if the thread is interrupted
 	 */
 	private boolean doIntro() {
-		Character character = repo.getIntroCharacter();
-		Incident incident = new Incident(character);
+		Incident incident = new Incident(repo.getIntroCharacter());
 		documentHandler.initIntroDocuments(incident);
 		dialogueHandler.initIntroDialogue(incident);
 		incident.setAlerts(alertHandler.getIntroAlerts(incident));
 
 		System.err.println("Starting First (Scripted) Tutorial Incident");
-
 		network.send(Message.START_INCIDENT, incident);
 
-		// Send in the dialogue for both players
-		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
-		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
-				Role.FIELDAGENT);
+		 System.err.println("send db dialogue");
+		 // Send in the dialogue for both players
+		 network.send(Message.DIALOGUE, incident.getDbDialogue(),
+		 Role.DATABASE);
+		 System.err.println("send field dialogue");
+		 network.send(Message.DIALOGUE, incident.getFieldDialogue(),
+		 Role.FIELDAGENT);
 
 		// wait for player's decision.
 		try {
@@ -430,18 +433,22 @@ public class ServerEngine extends Thread {
 		dialogueHandler.initDialogue(incident);
 		incidents.add(incident);
 
-		// get one for this incident, removing it from the queue
-		incident = incidents.pollFirst();
-
-		// TODO: Refactor such that alerts can pertain to more that one future
-		// incident
-		incident.setAlerts(alertHandler.getAlerts(incidents.get(RANDOM
+		List<Alert> alerts = new LinkedList<Alert>();
+		// alerts pertain to two future, (or current) incidents
+		alerts.addAll(alertHandler.getAlerts(incidents.get(RANDOM
+				.nextInt(incidents.size()))));
+		alerts.addAll(alertHandler.getAlerts(incidents.get(RANDOM
 				.nextInt(incidents.size()))));
 
-		// TODO: Confirm Server/Client responsibilities when it comes to:
-		// Characters,
-		// Alerts,
-		// Dialogue
+		// get one for this incident, removing it from the queue
+		incident = incidents.pollFirst();
+		// assign the alerts, the only thing not yet initialized.
+		incident.setAlerts(alerts);
+
+		// Server/Client responsibilities:
+		// Characters, -- Client
+		// Alerts, -- Client
+		// Dialogue, -- Client
 		network.send(Message.START_INCIDENT, incident);
 		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
 		network.send(Message.DIALOGUE, incident.getFieldDialogue(),

@@ -42,7 +42,7 @@ public class NetServer {
 	 */
 	public NetServer(final ServerEngine incomingGameServer) throws IOException {
 		this.gameServer = incomingGameServer;
-		server = new Server();
+		server = new Server(Network.BUFFER_SIZE, Network.BUFFER_SIZE);
 		/* start a thread to handle incoming connections */
 		server.start();
 
@@ -106,7 +106,7 @@ public class NetServer {
 					case ONPOSTURECHANGE:
 						if (netMsg.obj instanceof Posture) {
 							gameServer.onPostureChange(
-									(Role) roles.get(connection.getID()),
+									roles.get(connection.getID()),
 									(Posture) netMsg.obj);
 						}
 					case ONDECISIONEVENT:
@@ -190,8 +190,6 @@ public class NetServer {
 	 *            Send an Enumerated {@link Message}
 	 */
 	public void send(Message msg) {
-		// FIXME: So this is currently calling send(Message,Role), not
-		// send(Message,Object), as it is intended to...
 		send(msg, null);
 	}
 

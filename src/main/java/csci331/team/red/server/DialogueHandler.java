@@ -35,11 +35,10 @@ public class DialogueHandler {
 	}
 
 	/**
+	 * @param incident
+	 *            to generate dialogue from
 	 * 
-	 * @param character
-	 * @param documents
-	 * @param role
-	 * @return A List of {@link Dialogue}s
+	 * @author ojourmel
 	 */
 	public void initDialogue(Incident incident) {
 		List<Dialogue> dbDialogues = new LinkedList<Dialogue>();
@@ -77,17 +76,19 @@ public class DialogueHandler {
 						"We should do a bit of research on her.\nType 'search prism mary test'\non your phone.",
 						Voice.OMINIOUS.who },
 				{
-						"I assume you did it, given I'm just a voice.  That's an inconsistancy!  We should warn our partner about that too.",
+						"I assume you did it, given I'm just a voice.  That's an inconsistancy!  We should warn our partner if we see anything suspicious.",
 						Voice.OMINIOUS.who },
 				{
-						"Your partner will also be reporting suspicious data to you to look up.  For example...",
+						"Your partner will also be reporting suspicious data to you to look up.  You might want to check in on them, and see how their doing...",
 						Voice.OMINIOUS.who },
+				{ "...", Voice.OMINIOUS.who },
 				{
 						"These can occasionally bring up a large amount of infomation, and again, you must decide what is important to relay.",
 						Voice.OMINIOUS.who },
 				{ "I have no more guidance to give you.", Voice.OMINIOUS.who },
 				{ "Mom, get out of my office...", Voice.YOU.who }, };
 
+		// Set up the callbacks, forcing some alerts to trigger on dialogue
 		DBCallback[] dbCallArr = { null, DBCallback.startAlerts, null,
 				DBCallback.MaryTestAlert, null, DBCallback.startAlerts };
 
@@ -115,6 +116,8 @@ public class DialogueHandler {
 				{
 						"Well, if there isn't any problems, you should probibly let her go...",
 						Voice.OMINIOUS.who }, };
+		// Set up the callbacks, forcing documents to be presented after some
+		// piece of dialogue
 		FieldCallback[] faCallArr = { null, null, null, null, null, null, null,
 				FieldCallback.giveDocuments };
 

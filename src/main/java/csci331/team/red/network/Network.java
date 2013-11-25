@@ -1,5 +1,6 @@
 package csci331.team.red.network;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,8 +34,10 @@ import csci331.team.red.shared.callbacks.FieldCallback;
  * 
  */
 public class Network {
-	static public final int tcpPort = 54555;
-	static public final int udpPort = 54777;
+	public static final int tcpPort = 54555;
+	public static final int udpPort = 54777;
+	
+	public static final int BUFFER_SIZE = 4096;
 
 	/**
 	 * Registers objects that will be sent over the network
@@ -78,6 +81,8 @@ public class Network {
 
 		kryo.register(List.class);
 		kryo.register(LinkedList.class);
+		
+		kryo.register(HashMap.class);
 
 		kryo.register(String.class);
 		kryo.register(String[].class);

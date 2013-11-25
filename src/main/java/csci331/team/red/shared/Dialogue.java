@@ -53,7 +53,7 @@ public class Dialogue {
 
 		for (int i = 0; i < strings.length; i++) {
 			Dialogue tempDialog = null;
-			if (callbackArray[i] != null) {
+			if ((i < callbackArray.length) && (callbackArray[i] != null)) {
 				tempDialog = new Dialogue(strings[i][0], strings[i][1],
 						callbackArray[i]);
 			} else {
@@ -62,11 +62,9 @@ public class Dialogue {
 			}
 
 			temp.add(tempDialog);
-
 		}
 
 		return temp.toArray(new Dialogue[0]);
-
 	}
 
 	public String getDialogue() {

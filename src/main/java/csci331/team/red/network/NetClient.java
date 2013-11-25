@@ -46,7 +46,7 @@ public class NetClient {
 			throws IOException {
 		this.gameClient = incomingGameClient;
 		// connects to a server
-		client = new Client();
+		client = new Client(Network.BUFFER_SIZE, Network.BUFFER_SIZE);
 		client.start();
 
 		// For consistency, the classes to be sent over the network are
