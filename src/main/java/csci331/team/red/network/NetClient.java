@@ -17,6 +17,7 @@ import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
+import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 
 /**
@@ -58,7 +59,7 @@ public class NetClient {
 		} catch (IOException e) {
 			throw new IOException("Unable to connect to Server");
 		}
-		this.send(Message.CONNECTED);
+		this.send(Message.CONNECT);
 		/*
 		 * change timeout to 60 secs so that client will not accidently
 		 * disconnect
@@ -91,8 +92,10 @@ public class NetClient {
 							});
 						}
 						break;
-					case CONNECTED:
-						// client should not receive this message
+					case DBRESULT:
+						if (netMsg.obj instanceof Result) {
+							gameClient.DatabaseQueryResult((Result) netMsg.obj);
+						}
 						break;
 					case DIALOGUE:
 						if (netMsg.obj instanceof List) {
@@ -116,19 +119,14 @@ public class NetClient {
 							});
 						}
 						break;
-					case DISCONNECTED:
+					case DISCONNECT:
+						// server requested a disconnect
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
 							public void run() {
 								gameClient.LeaveGame();
 							}
 						});
-						break;
-					case ONPOSTURECHANGE:
-						// client should not receive this message
-						break;
-					case ONDECISIONEVENT:
-						// client should not receive this message
 						break;
 					case PAUSE:
 						Gdx.app.postRunnable(new Runnable() {
@@ -196,6 +194,7 @@ public class NetClient {
 						}
 						break;
 					default:
+						// invalid messages are simply ignored
 						break;
 					}
 				}
@@ -207,6 +206,7 @@ public class NetClient {
 			 * it disconnected
 			 */
 			public void disconnected(Connection connection) {
+				// connection to Server was lost
 				gameClient.LeaveGame();
 			}
 		})); // end of addListener
