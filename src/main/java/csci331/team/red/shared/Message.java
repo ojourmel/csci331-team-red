@@ -16,7 +16,19 @@ public enum Message {
 	/**
 	 * Connected to client/server, and waiting for game start
 	 */
-	CONNECTED,
+	CONNECT,
+
+	/**
+	 * Sends string to server to query the database, expects a {@link String}
+	 * object to be sent with this message.
+	 */
+	DBQUERY,
+
+	/**
+	 * Sends the result of a {@link Message.DBQUERY} to client, expects a
+	 * {@link Result} object to be sent with this message.
+	 */
+	DBRESULT,
 
 	/**
 	 * Sends dialogue to client/server, expects a {@link List} of
@@ -27,7 +39,7 @@ public enum Message {
 	/**
 	 * Disconnected to client/server, and game is reseting
 	 */
-	DISCONNECTED,
+	DISCONNECT,
 
 	/**
 	 * Sends client Role to client, expects {@link Role} object to be sent with

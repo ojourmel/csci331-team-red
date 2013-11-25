@@ -32,7 +32,6 @@ import csci331.team.red.shared.Role;
  * <br>
  * <br>
  * <br>
- * TODO: Add CSCI331T Tag for <b>CONTROLLER PATTERN</b>
  * 
  * @author ojourmel
  */
@@ -214,12 +213,9 @@ public class ServerEngine extends Thread {
 			numPlayerConnected++;
 		} else {
 			// Two many players, insta-kick the new connection
-			// assign a role via the server because of the Network
 
-			// TODO: Refactor network to allow an explicit send(Message,
-			// Connection) method for this exact case
-			network.setRole(connection, Role.UNDEFINDED);
-			network.send(Message.DISCONNECTED, Role.UNDEFINDED);
+			network.sendClient(connection, Message.DISCONNECT);
+			return;
 		}
 
 		// First connection is first player, and
@@ -264,7 +260,7 @@ public class ServerEngine extends Thread {
 	 */
 	public void onPlayerDisconnect(Role role) {
 		System.err.println("onPlayerDisconnect " + role.toString());
-		network.send(Message.DISCONNECTED);
+		network.sendAll(Message.DISCONNECT);
 
 		this.interrupt();
 	}
@@ -276,7 +272,7 @@ public class ServerEngine extends Thread {
 	public void onPlayerQuit(Role role) {
 		System.err.println("onPlayerQuit " + role.toString());
 
-		network.send(Message.QUIT);
+		network.sendAll(Message.QUIT);
 		this.interrupt();
 	}
 
@@ -287,7 +283,7 @@ public class ServerEngine extends Thread {
 	public void onPlayerPause(Role role) {
 		System.err.println("onPlayerPause " + role.toString());
 
-		network.send(Message.PAUSE);
+		network.sendAll(Message.PAUSE);
 
 	}
 
@@ -300,7 +296,7 @@ public class ServerEngine extends Thread {
 	public void onPlayerResume(Role role) {
 		System.err.println("onPlayerResume " + role.toString());
 
-		network.send(Message.RESUME);
+		network.sendAll(Message.RESUME);
 	}
 
 	/**
@@ -329,7 +325,7 @@ public class ServerEngine extends Thread {
 	 */
 	public void kill() {
 		System.err.println("Server Killed by Client");
-		network.send(Message.DISCONNECTED);
+		network.sendAll(Message.DISCONNECT);
 		this.interrupt();
 	}
 
@@ -350,10 +346,12 @@ public class ServerEngine extends Thread {
 
 		System.err.println("Starting Level " + level.getName());
 		// start level
-		network.send(Message.START_LEVEL, level);
+		network.sendAll(Message.START_LEVEL, level);
 		// inform each player of the role they will be playing in this level
-		network.send(Message.SET_ROLE, playerOne.getRole(), playerOne.getRole());
-		network.send(Message.SET_ROLE, playerTwo.getRole(), playerTwo.getRole());
+		network.sendClient(playerOne.getRole(), Message.SET_ROLE,
+				playerOne.getRole());
+		network.sendClient(playerTwo.getRole(), Message.SET_ROLE,
+				playerTwo.getRole());
 
 	}
 
@@ -369,12 +367,13 @@ public class ServerEngine extends Thread {
 		incident.setAlerts(alertHandler.getIntroAlerts(incident));
 
 		System.err.println("Starting First (Scripted) Tutorial Incident");
-		network.send(Message.START_INCIDENT, incident);
+		network.sendAll(Message.START_INCIDENT, incident);
 
 		// Send in the dialogue for both players
-		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
-		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
-				Role.FIELDAGENT);
+		network.sendClient(Role.DATABASE, Message.DIALOGUE,
+				incident.getDbDialogue());
+		network.sendClient(Role.FIELDAGENT, Message.DIALOGUE,
+				incident.getFieldDialogue());
 
 		// wait for player's decision.
 		try {
@@ -405,12 +404,13 @@ public class ServerEngine extends Thread {
 
 		System.err.println("Starting (Scripted) Boss Incident "
 				+ boss.toString());
-		network.send(Message.START_INCIDENT, incident);
+		network.sendAll(Message.START_INCIDENT, incident);
 
 		// Send in the dialogue for both players
-		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
-		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
-				Role.FIELDAGENT);
+		network.sendClient(Role.DATABASE, Message.DIALOGUE,
+				incident.getDbDialogue());
+		network.sendClient(Role.FIELDAGENT, Message.DIALOGUE,
+				incident.getFieldDialogue());
 
 		// wait for player's decision.
 		try {
@@ -487,10 +487,11 @@ public class ServerEngine extends Thread {
 		// Characters, -- Client
 		// Alerts, -- Client
 		// Dialogue, -- Client
-		network.send(Message.START_INCIDENT, incident);
-		network.send(Message.DIALOGUE, incident.getDbDialogue(), Role.DATABASE);
-		network.send(Message.DIALOGUE, incident.getFieldDialogue(),
-				Role.FIELDAGENT);
+		network.sendAll(Message.START_INCIDENT, incident);
+		network.sendClient(Role.DATABASE, Message.DIALOGUE,
+				incident.getDbDialogue());
+		network.sendClient(Role.FIELDAGENT, Message.DIALOGUE,
+				incident.getFieldDialogue());
 
 		// wait for player's decision.
 		try {

@@ -418,7 +418,7 @@ public class ClientEngine extends Game
 	{
 		try{
 		network = new NetClient(this, desiredConnectTarget);
-		network.send(Message.CONNECTED);
+		network.send(Message.CONNECT);
 		}catch (IOException e){
 			throw new RuntimeException(e);
 		}
@@ -427,7 +427,8 @@ public class ClientEngine extends Game
 	public void LeaveGame()
 	{
 		switchToNewScreen(ScreenEnumerations.MainMenu);
-		
+		network.kill();
+		network = null;
 	}
 	public void DisconnectByServer()
 	{
