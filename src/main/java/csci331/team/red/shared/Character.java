@@ -1,5 +1,6 @@
 package csci331.team.red.shared;
 
+
 /**
  * Contains specific game character information, generated from the
  * CharacterDAO.<br>

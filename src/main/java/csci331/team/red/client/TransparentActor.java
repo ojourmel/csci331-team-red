@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 
 /**
@@ -53,6 +54,17 @@ public class TransparentActor extends Actor
 		this.setBounds(0, 0, getWidth() , getHeight());
 				
 		setTouchable(Touchable.enabled);
+		
+		this.addListener((new ClickListener()
+		{
+			
+			public void clicked(InputEvent event, float x, float y)
+			{
+				event.getTarget().toFront();								
+				
+			}
+			
+		}));
 	}
 	
 	public void setDragable ()

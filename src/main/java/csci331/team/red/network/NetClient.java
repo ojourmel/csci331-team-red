@@ -47,7 +47,8 @@ public class NetClient {
 			throws IOException {
 		this.gameClient = incomingGameClient;
 		// connects to a server
-		client = new Client();
+		// FIXME:  Hack for 'Unable to read object larger than read buffer' error
+		client = new Client(16384, 16384);
 		client.start();
 
 		// For consistency, the classes to be sent over the network are

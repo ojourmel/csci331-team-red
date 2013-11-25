@@ -32,7 +32,14 @@ public class DialogueWindow extends TextButton {
 		this(dialogue, thespeaker, style , parentStage, useWordWrap , extraPadding , displayNow, nextWindow, c , Gdx.graphics.getHeight(), dcall);
 	}
 	
+
 	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c , float yPosition, final DialogueCallback<Callback> dcall) {
+		this(dialogue, thespeaker, style , parentStage, useWordWrap , extraPadding , displayNow , nextWindow , c , yPosition, dcall , -1) ;
+			
+	
+	}
+	
+	public DialogueWindow(String dialogue, String thespeaker, TextButtonStyle style , Stage parentStage, boolean useWordWrap , int extraPadding , Boolean displayNow , DialogueWindow nextWindow , Enum<?> c , float yPosition, final DialogueCallback<Callback> dcall , float width) {
 		super(dialogue, style , useWordWrap , extraPadding);
 		
 		internalReference = this;
@@ -50,6 +57,13 @@ public class DialogueWindow extends TextButton {
 		
 		this.setPosition(0 , yPosition - this.getHeight());
 		
+		
+		if(width != -1)
+		{
+			this.setWidth(width);
+			
+		}
+
 		Speaker = new TextButton(thespeaker, style , false , 0);
     	Speaker.setPosition(0, this.getY()-Speaker.getHeight() - 5);
     	

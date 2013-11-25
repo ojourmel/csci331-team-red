@@ -1,12 +1,16 @@
 package csci331.team.red.shared;
 
-public class Document {
+import java.util.HashMap;
 
-	public Type DocumentType;
-	public String[] TextFields;
+public class Document {
+	public Type documentType;
+	public HashMap<String, String> characterAttributes;
+	public Face face;
 
 	public enum Type {
-		DriversLicence, GoldenTicket,
+		DriversLicence, 
+		GoldenTicket, 
+		Passport,
 	}
 
 	/**
@@ -16,9 +20,9 @@ public class Document {
 	public Document() {
 	}
 
-	public Document(Type t, String[] TextFields) {
-		DocumentType = t;
-		this.TextFields = TextFields;
+	public Document(Type t, HashMap<String, String> characterAttributes, Face face) {
+		documentType = t;
+		this.characterAttributes = characterAttributes;
+		this.face = face;
 	}
-
 }

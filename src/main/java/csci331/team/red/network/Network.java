@@ -1,6 +1,5 @@
 package csci331.team.red.network;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +22,8 @@ import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 import csci331.team.red.shared.SoundTrack;
+import csci331.team.red.shared.callbacks.DBCallback;
+import csci331.team.red.shared.callbacks.FieldCallback;
 
 /**
  * This class is a convenient place to keep things common to both the client and
@@ -41,6 +42,7 @@ public class Network {
 	 * @param endPoint
 	 */
 	static public void register(EndPoint endPoint) {
+
 		/*
 		 * Instantiate the serializer
 		 */
@@ -70,20 +72,18 @@ public class Network {
 		kryo.register(Result.class);
 		kryo.register(Role.class);
 		kryo.register(SoundTrack.class);
-		
+
+		kryo.register(DBCallback.class);
+		kryo.register(FieldCallback.class);
+
 		kryo.register(List.class);
 		kryo.register(LinkedList.class);
-		kryo.register(ArrayList.class);
-		
+
 		kryo.register(String.class);
 		kryo.register(String[].class);
-	    
-	    
-	    
-	    
-	    
-	  
-	    
-	    
+		
+		kryo.register(csci331.team.red.client.DatabaseBoundingBoxes.class);
+		kryo.register(csci331.team.red.shared.Query.class);
+		
 	}
 }

@@ -40,6 +40,7 @@ public class CharacterDAO {
 	public static final String COUNTRY = "country";
 	public static final String OCCUPATION = "occupation";
 	public static final String GENDER = "gender";
+	public static final String PICTURE = "picture"; 
 
 	private static final int EARLIEST_YEAR = Calendar.getInstance().get(
 			Calendar.YEAR) - 95;
@@ -77,7 +78,7 @@ public class CharacterDAO {
 	 * @return Date of Birth
 	 * @author melanyw
 	 */
-	private String getDOB() {
+	protected String getDOB() {
 		String dob;
 
 		GregorianCalendar gc = new GregorianCalendar();
@@ -110,7 +111,7 @@ public class CharacterDAO {
 	 * @return DriversID
 	 * @author melany
 	 */
-	private String getDriversID() {
+	protected String getDriversID() {
 		// TODO: Verify data using jUnit testing
 		return String
 				.valueOf(((int) (Math.random() * ((9999999 - 1000000) + 1) + 1000000)));
@@ -123,7 +124,7 @@ public class CharacterDAO {
 	 * @return FirstName from database
 	 * @author melany
 	 */
-	private String getFName(int id) {
+	protected String getFName(int id) {
 		return executeStatement(FIRSTNAME, id);
 	}
 
@@ -134,7 +135,7 @@ public class CharacterDAO {
 	 * @return LastName from database
 	 * @author melany
 	 */
-	private String getLName(int id) {
+	protected String getLName(int id) {
 		return executeStatement(LASTNAME, id);
 	}
 
@@ -145,7 +146,7 @@ public class CharacterDAO {
 	 * @return PassportID from database
 	 * @author melany
 	 */
-	private String getPassportID(int id) {
+	protected String getPassportID(int id) {
 		return executeStatement(PASSPORTID, id);
 	}
 
@@ -156,7 +157,7 @@ public class CharacterDAO {
 	 * @return address from database
 	 * @author melany
 	 */
-	private String getAddress(int id) {
+	protected String getAddress(int id) {
 		return executeStatement(ADDRESS, id);
 	}
 
@@ -167,7 +168,7 @@ public class CharacterDAO {
 	 * @return city from the database
 	 * @author melany
 	 */
-	private String getCity(int id) {
+	protected String getCity(int id) {
 		return executeStatement(CITY, id);
 	}
 
@@ -179,7 +180,7 @@ public class CharacterDAO {
 	 * @return region from the database
 	 * @author melany
 	 */
-	private String getRegion(int id) {
+	protected String getRegion(int id) {
 		return executeStatement(REGION, id);
 	}
 
@@ -190,7 +191,7 @@ public class CharacterDAO {
 	 * @return postal code from the database
 	 * @author melany
 	 */
-	private String getPostal(int id) {
+	protected String getPostal(int id) {
 		return executeStatement(POSTAL, id);
 	}
 
@@ -201,7 +202,7 @@ public class CharacterDAO {
 	 * @return country from the database
 	 * @author melany
 	 */
-	private String getCountry(int id) {
+	protected String getCountry(int id) {
 		return executeStatement(COUNTRY, id);
 	}
 
@@ -212,7 +213,7 @@ public class CharacterDAO {
 	 * @return occupation from the database
 	 * @author melany
 	 */
-	private String getOccupation(int id) {
+	protected String getOccupation(int id) {
 		return executeStatement(OCCUPATION, id);
 	}
 
@@ -251,7 +252,7 @@ public class CharacterDAO {
 	 * @return random id
 	 * @author melany
 	 */
-	private int randomID(String tableName) {
+	protected int randomID(String tableName) {
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 		int tableID = -1;

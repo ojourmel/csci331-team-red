@@ -1,6 +1,7 @@
 package csci331.team.red.client;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import aurelienribon.tweenengine.Tween;
@@ -27,6 +28,8 @@ import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
+import csci331.team.red.shared.Document.Type;
+import csci331.team.red.shared.Face;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
@@ -84,23 +87,23 @@ public class FieldAgentScreen implements Screen
 		
 		// Sets up links to our parent
 		parentEngine = parent;
-		batch = parentEngine.primarySpriteBatch;
+		batch = ClientEngine.primarySpriteBatch;
 		
 		tweenManager = new TweenManager();
 		Tween.registerAccessor(Actor.class, new ActorTweener());
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(parentEngine.currentLevel.getInteractive()));
+		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(parentEngine.currentLevel.getInteractive()));
 		
 		// and the background music
-		BackgroundMusic = parentEngine.gameMusicManager.get(parentEngine.BackgroundMusic.get(parentEngine.currentLevel.getSoundTrack()));
+		BackgroundMusic = ClientEngine.gameMusicManager.get(ClientEngine.BackgroundMusic.get(parentEngine.currentLevel.getSoundTrack()));
 		BackgroundMusic.setLooping(true);
 		BackgroundMusic.play();
 		
 		
 		// Loads other textures
-		clipBoard = parentEngine.gameTextureManager.get(parentEngine.Textures.get("clipboard"));
+		clipBoard = ClientEngine.gameTextureManager.get(ClientEngine.Textures.get("clipboard"));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -135,7 +138,7 @@ public class FieldAgentScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    		    parentEngine.network.send(Message.ONPOSTURECHANGE, Posture.PASSIVE);
+    		    ClientEngine.network.send(Message.ONPOSTURECHANGE, Posture.PASSIVE);
     	    	
     	    };
     		
@@ -155,7 +158,7 @@ public class FieldAgentScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
-    	    	parentEngine.network.send(Message.ONPOSTURECHANGE, Posture.AGGRESSIVE);
+    	    	ClientEngine.network.send(Message.ONPOSTURECHANGE, Posture.AGGRESSIVE);
     	    	
     	    };
     		
@@ -185,7 +188,7 @@ public class FieldAgentScreen implements Screen
     	    	
     	    	
     	    	
-    	    	parentEngine.network.send(Message.ONDECISIONEVENT, Decision.DETAIN);
+    	    	ClientEngine.network.send(Message.ONDECISIONEVENT, Decision.DETAIN);
     	    	detainPerson();
     	    };
     		
@@ -221,7 +224,7 @@ public class FieldAgentScreen implements Screen
 //    		    Dialogue[] d = Dialogue.returnDialogArray(strarr);
 //    		    displayDialogue(d);
     	    	
-    	    	parentEngine.network.send(Message.ONDECISIONEVENT, Decision.ALLOW);
+    	    	ClientEngine.network.send(Message.ONDECISIONEVENT, Decision.ALLOW);
     	    	allowPerson();
 
     		    
@@ -274,13 +277,45 @@ public class FieldAgentScreen implements Screen
 //    		
 //    	});
 	    
+	    List<Document> test = new LinkedList<Document>();
 	    
+//		public static final String ID = "ID";
+//		public static final String FIRSTNAME = "firstName";
+//		public static final String LASTNAME = "lastName";
+//		public static final String DRIVERSID = "driversID";
+//		public static final String DOB = "dob";
+//		public static final String PASSPORTID = "passportID";
+//		public static final String ADDRESS = "address";
+//		public static final String CITY = "city";
+//		public static final String REGION = "region";
+//		public static final String POSTAL = "postal";
+//		public static final String COUNTRY = "country";
+//		public static final String OCCUPATION = "occupation";
+//		final String GENDER = "gender";
+//		final String PICTURE = "picture";
+	    
+	    test.add(new Document(Type.DriversLicence , new HashMap<String, String>(){{
+	    	put("firstName" , "Test");
+	    	put("lastName" , "mcTest");
+	    	put("dob" , "0/0/0000");
+	    	put("driversID" , "4543543");
+	    	put("address" , "4543543 Fake St.");
+	    	put("city" , "Salt Lake");
+	    	put("region" , "Virgina");
+	    	put("postal" , "10234");
+	    	put("country" , "America");
+	    	put("gender" , "F");
+	    
+	    }} , Face.FEMALE1));
+
+	    
+	    produceDocuments(test);
 	}
 	
 	void displayNewPerson(Character person)
 	{
 
-		currentPerson = new TransparentActor(parentEngine.gamePixmapManager.get(parentEngine.PersonPictures.get(person.getAvatar())) , tweenManager);
+		currentPerson = new TransparentActor(ClientEngine.gamePixmapManager.get(ClientEngine.PersonAvatars.get(person.getAvatar())) , tweenManager);
 		    
 		   
 		charactersStage.addActor(currentPerson);
@@ -385,26 +420,33 @@ public class FieldAgentScreen implements Screen
 	public void produceDocuments(List<Document> documents)
 	{
 		for(Document document : documents){
-			switch(document.DocumentType)
+			switch(document.documentType)
 			{
 				case DriversLicence:
-					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
+					ticket = new DriversLicence(ClientEngine.gamePixmapManager.get(ClientEngine.Documents.get(document.documentType)) , tweenManager, document.characterAttributes , document.face);
 					break;
 				case GoldenTicket:
-					ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
+					//ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
 					break;
 				default:
 					break;
 			}
+			
+			ticket.setDragable();
+			ticket.scale(-1);
+			ticket.setPosition(300, 400);
+			Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
+			    
+			papersStage.addActor(ticket);
 		}
 		
 		
-		ticket.setDragable();
-		ticket.scale(-1);
-		ticket.setPosition(300, 400);
-		Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
-		    
-		papersStage.addActor(ticket);
+//		ticket.setDragable();
+//		ticket.scale(-1);
+//		ticket.setPosition(300, 400);
+//		Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
+//		    
+//		papersStage.addActor(ticket);
 
 	
 	}
@@ -428,16 +470,16 @@ public class FieldAgentScreen implements Screen
 		DialogueWindow iteratorOld = null;
 		if(dialogueArray.length > 1)
 		{
-			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode(), callbackObject);
+			iteratorOld = new DialogueWindow(dialogueArray[dialogueArray.length-1].getDialogue(), dialogueArray[dialogueArray.length-1].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 25 , false, null , dialogueArray[dialogueArray.length-1].getCallbackCode(),Gdx.graphics.getHeight(),  callbackObject , Gdx.graphics.getWidth() );
 			
 			
 			for(int i = dialogueArray.length-2; i > 0 ; i--)
 			{
-				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , false, iteratorOld ,dialogueArray[i].getCallbackCode(), callbackObject);
+				DialogueWindow iteratorNew = new DialogueWindow (dialogueArray[i].getDialogue(), dialogueArray[i].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 25 , false, iteratorOld ,dialogueArray[i].getCallbackCode(), Gdx.graphics.getHeight(),  callbackObject , Gdx.graphics.getWidth());
 				iteratorOld = iteratorNew;
 			}
 		}
-		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 20 , true, iteratorOld , dialogueArray[0].getCallbackCode(), callbackObject);
+		new DialogueWindow(dialogueArray[0].getDialogue(), dialogueArray[0].getSpeaker(), parentEngine.dialogueStyle , dialogueStage, true , 25 , true, iteratorOld , dialogueArray[0].getCallbackCode(), Gdx.graphics.getHeight(),  callbackObject , Gdx.graphics.getWidth());
 		
 	}
 	

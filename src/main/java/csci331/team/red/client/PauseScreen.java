@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import csci331.team.red.shared.Background;
+import csci331.team.red.shared.Message;
 
 
 /**
@@ -40,11 +41,11 @@ public class PauseScreen implements Screen
 	{
 		// Sets up links to our parent
 		parentEngine = parent;
-		batch = parentEngine.primarySpriteBatch;
+		batch = ClientEngine.primarySpriteBatch;
 		
 		
 		// Loads the background image
-		backgroundImage = parentEngine.gameTextureManager.get(parentEngine.Backgrounds.get(Background.WAITING));
+		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(Background.WAITING));
 		
 		// Sets up the camera
 	    camera = new OrthographicCamera();
@@ -72,6 +73,7 @@ public class PauseScreen implements Screen
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
+    	    	ClientEngine.network.send(Message.QUIT);
     	    	parentEngine.previousScreen.dispose();
     	    	parentEngine.switchToNewScreen(ScreenEnumerations.MainMenu);
     	    	
