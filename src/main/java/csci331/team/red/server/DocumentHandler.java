@@ -137,14 +137,8 @@ public class DocumentHandler {
 		characterAttributes.put(COUNTRY, incident.getActor().getCountry());
 		characterAttributes
 				.put(OCCUPATION, incident.getActor().getOccupation());
-
-		if (incident.getActor().getGender() == Gender.MALE) {
-			characterAttributes.put(GENDER, incident.getActor().getGender()
-					.toString());
-		} else {
-			characterAttributes.put(GENDER, incident.getActor().getGender()
-					.toString());
-		}
+		characterAttributes.put(GENDER, incident.getActor().getGender()
+				.toString());
 
 		// If incident.fraudCaught, (ie, fraud messed up) or
 		// incident.ClericalError has been flagged

@@ -1,7 +1,6 @@
 package csci331.team.red.shared;
 
 import java.util.List;
-import java.util.Random;
 
 import csci331.team.red.server.AlertHandler;
 import csci331.team.red.server.DialogueHandler;
@@ -29,9 +28,6 @@ public class Incident {
 	public boolean clericalError;
 	public boolean clericalErrorCaught = false;
 
-	// Probability Factor (currently a 3 in 7 chance of error)
-	private final static int PROBABILITY = 7;
-
 	/**
 	 * All Serializable classes MUST provide a zero-argument constructor
 	 */
@@ -49,6 +45,8 @@ public class Incident {
 	 */
 	public Incident(Character actor) {
 		this(actor, null, null, null, null);
+		fraud = false;
+		clericalError = false;
 	}
 
 	/**
@@ -115,29 +113,5 @@ public class Incident {
 
 	public void setIncidentDocuments(List<Document> incidentDocuments) {
 		this.incidentDocuments = incidentDocuments;
-		alerts = null;
-		dbDialogue = null;
-		fieldDialogue = null;
-
-		Random random = new Random();
-
-		// Determine if this incident has a fraud/error factor
-		if (random.nextInt(PROBABILITY) == 0) {
-			this.fraud = true;
-			this.clericalError = false;
-
-		} else if (random.nextInt(PROBABILITY) == 0) {
-			this.fraud = false;
-			this.clericalError = true;
-
-		} else if (random.nextInt(PROBABILITY) == 0) {
-			this.fraud = true;
-			this.clericalError = true;
-
-		} else {
-			this.fraud = false;
-			this.clericalError = false;
-		}
-
 	}
 }

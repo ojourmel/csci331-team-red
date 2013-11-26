@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -208,9 +207,9 @@ public class ClientEngine extends Game
 		// Characters...
 		PersonAvatars.put(PersonPicture.THUG1, new AssetDescriptor<Pixmap>("characters/level1thug.png" , Pixmap.class));
 		PersonAvatars.put(PersonPicture.MALE1, new AssetDescriptor<Pixmap>("characters/maleExtra.png" , Pixmap.class));
-		PersonAvatars.put(PersonPicture.FEMALE1, new AssetDescriptor<Pixmap>("characters/femaleExtra.png" , Pixmap.class));
+		PersonAvatars.put(PersonPicture.INTROFEMALE1, new AssetDescriptor<Pixmap>("characters/level1intro.png" , Pixmap.class));
 
-		PersonFaces.put(Face.FEMALE1, new AssetDescriptor<Pixmap>("characterPortraits/campusfemalefullnoface.png" , Pixmap.class));
+		PersonFaces.put(Face.INTROFEMALE1, new AssetDescriptor<Pixmap>("characterPortraits/campusfemalefullnoface.png" , Pixmap.class));
 		
 		
 		// Dynamic Props...

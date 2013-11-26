@@ -29,13 +29,13 @@ public class CharacterTest {
 		// to create, so lets make some now...
 		x = new Character("dob", "driverID", "fName", "lName", "passId",
 				"address", "city", "region", "postal", "contry", "occupation",
-				Gender.FEMALE, PersonPicture.FEMALE1);
+				Gender.FEMALE, PersonPicture.INTROFEMALE1);
 		y = new Character("dob", "driverID", "fName", "lName", "passId",
 				"address", "city", "region", "postal", "contry", "occupation",
-				Gender.FEMALE, PersonPicture.FEMALE1);
+				Gender.FEMALE, PersonPicture.INTROFEMALE1);
 		z = new Character("dob", "driverID", "fName", "lName", "passId",
 				"address", "city", "region", "postal", "contry", "occupation",
-				Gender.FEMALE, PersonPicture.FEMALE1);
+				Gender.FEMALE, PersonPicture.INTROFEMALE1);
 		other = new Character("otherDob", "ohterDriverID", "fName", "lName",
 				"passId", "address", "city", "region", "postal", "contry",
 				"occupation", Gender.MALE, PersonPicture.MALE1);

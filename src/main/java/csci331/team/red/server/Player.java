@@ -11,7 +11,7 @@ import csci331.team.red.shared.Role;
  */
 public class Player {
 	private Role role = Role.UNDEFINDED;
-	private Posture posture;
+	private Posture posture = Posture.PASSIVE;
 
 	protected int win = 0;
 	protected int fail = 0;

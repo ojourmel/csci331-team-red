@@ -326,11 +326,13 @@ public class CharacterRepository extends CharacterDAO {
 		String country = "Adanac";
 		String occupation = "University Student";
 		Gender gender = Gender.FEMALE;
-		PersonPicture avatar = PersonPicture.FEMALE1;
+		PersonPicture avatar = PersonPicture.INTROFEMALE1;
 
 		intro = new Character(dob, driversID, firstName, lastName, passportID,
 				address, city, region, postal, country, occupation, gender,
 				avatar);
+		
+		intro.setFraud(false);
 
 		return intro;
 	}

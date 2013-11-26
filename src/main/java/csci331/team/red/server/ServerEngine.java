@@ -148,9 +148,9 @@ public class ServerEngine extends Thread {
 		}
 
 		// Now begin the standard, random incidents
-		for (int i = 0; i < 15; i++) {
+		for (int i = 0; i < 6; i++) {
 
-			// TODO: Allow for past events to affect future events
+			// LONG-TERM: Allow for past events to affect future events
 
 			System.err.println("Starting Incident " + i);
 			if (!doIncident()) {
@@ -173,15 +173,13 @@ public class ServerEngine extends Thread {
 				dialogueHandler.GAME_OVER(playerTwo));
 
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(30000);
 		} catch (InterruptedException ex) {
 			// go ahead and swallow this exception...
 		}
 
 		tearDown();
 		return;
-
-		// Talk to Lochlin about doing a game over screen
 	}
 
 	/**
@@ -346,7 +344,8 @@ public class ServerEngine extends Thread {
 					playerOne.epicWin++;
 					playerTwo.epicWin++;
 					System.err.println("epicwin");
-					network.sendAll(Message.DIALOGUE, dialogueHandler.EPIC_WIN());
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.EPIC_WIN());
 				}
 
 				break;
@@ -356,12 +355,14 @@ public class ServerEngine extends Thread {
 					playerOne.superFail++;
 					playerTwo.superFail++;
 					System.err.println("superfail");
-					network.sendAll(Message.DIALOGUE, dialogueHandler.SUPER_FAIL());
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.SUPER_FAIL());
 				} else {
 					playerOne.fail++;
 					playerTwo.fail++;
 					System.err.println("fail");
-					network.sendAll(Message.DIALOGUE, dialogueHandler.SUPER_FAIL());
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.SUPER_FAIL());
 				}
 
 				// bad
@@ -386,13 +387,15 @@ public class ServerEngine extends Thread {
 					playerOne.superFail++;
 					playerTwo.superFail++;
 					System.err.println("superfail");
-					network.sendAll(Message.DIALOGUE, dialogueHandler.SUPER_FAIL());
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.SUPER_FAIL());
 				} else {
 
 					playerOne.superFail++;
 					playerTwo.superFail++;
 					System.err.println("superfail");
-					network.sendAll(Message.DIALOGUE, dialogueHandler.SUPER_FAIL());
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.SUPER_FAIL());
 				}
 
 				break;
@@ -402,7 +405,8 @@ public class ServerEngine extends Thread {
 					playerOne.epicWin++;
 					playerTwo.epicWin++;
 					System.err.println("epicwin");
-					network.sendAll(Message.DIALOGUE, dialogueHandler.EPIC_WIN());
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.EPIC_WIN());
 				} else if (incident.clericalError
 						&& incident.clericalErrorCaught) {
 					playerOne.win++;
@@ -456,7 +460,8 @@ public class ServerEngine extends Thread {
 		for (int i = 0; i < MIN_INCIDENTS; i++) {
 			Incident incident = new Incident(repo.getCharacter());
 			documentHandler.initDocuments(incident);
-			dialogueHandler.initDialogue(incident);
+			// the dialogue on an incident will be generated at "go-time" as it
+			// is posture sensitive...
 			incidents.add(incident);
 		}
 
@@ -518,6 +523,17 @@ public class ServerEngine extends Thread {
 
 		Character character = repo.getBossCharacter(boss);
 		Incident incident = new Incident(character);
+
+		switch (boss) {
+		case THUGLIFE:
+			// This guy is bad, but not that bad.
+			incident.fraud = true;
+			incident.fraudCaught = false;
+			incident.clericalError = false;
+			incident.clericalErrorCaught = false;
+			break;
+		}
+
 		documentHandler.initBossDocuments(incident, boss);
 		dialogueHandler.initBossDialogue(incident, boss);
 		incident.setAlerts(alertHandler.getBossAlerts(incident, boss));
@@ -592,7 +608,8 @@ public class ServerEngine extends Thread {
 		}
 
 		documentHandler.initDocuments(incident);
-		dialogueHandler.initDialogue(incident);
+		// the dialogue on an incident will be generated at "go-time" as it is
+		// posture sensitive...
 		incidents.add(incident);
 
 		List<Alert> alerts = new LinkedList<Alert>();
@@ -602,8 +619,17 @@ public class ServerEngine extends Thread {
 		alerts.addAll(alertHandler.getAlerts(incidents.get(RANDOM
 				.nextInt(incidents.size()))));
 
+		// Hack because no other way to get the FIELDAGENT player...
+		Player field = null;
+		if (playerOne.getRole() == Role.FIELDAGENT) {
+			field = playerOne;
+		} else {
+			field = playerTwo;
+		}
+
 		// get one for this incident, removing it from the queue
 		incident = incidents.pollFirst();
+		dialogueHandler.initDialogue(incident, field.getPosture());
 		// assign the alerts, the only thing not yet initialized.
 		incident.setAlerts(alerts);
 

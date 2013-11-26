@@ -50,9 +50,9 @@ public class PersonPictureTest {
 
 	@Test
 	public void testEnum() {
-		persPic = PersonPicture.FEMALE1;
+		persPic = PersonPicture.INTROFEMALE1;
 		assertEquals("Enum failed to set persPic", persPic,
-				PersonPicture.FEMALE1);
+				PersonPicture.INTROFEMALE1);
 
 		persPic = PersonPicture.MALE1;
 		assertEquals("Enum failed to set persPic", persPic, PersonPicture.MALE1);

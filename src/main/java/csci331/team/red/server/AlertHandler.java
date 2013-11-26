@@ -93,7 +93,7 @@ public class AlertHandler {
 
 		public String isVisiting(Character character) {
 
-			String body = "A " + character.getGender().toString()
+			String body = "A " + character.getGender().toFull()
 					+ " who was born on " + character.getDob() + " from "
 					+ character.getCountry() + " is visiting town";
 			return body;
@@ -257,7 +257,7 @@ public class AlertHandler {
 						message = "Local "
 								+ dao.getOccupation(dao.randomID(OCCUPATION))
 								+ " reports seeing a shifty looking "
-								+ incident.getActor().getGender().toString();
+								+ incident.getActor().getGender().toFull();
 
 						alertPending = false;
 					}
@@ -272,7 +272,7 @@ public class AlertHandler {
 
 						String age = incident.getActor().getDob().split("-")[0];
 						message = "A "
-								+ incident.getActor().getGender().toString()
+								+ incident.getActor().getGender().toFull()
 								+ " born in " + age
 								+ " has been reported as a Con Artist!";
 
@@ -301,7 +301,8 @@ public class AlertHandler {
 				}
 			}
 		} else {
-			// TODO: Generate a "boring" alert. Nothing special
+			// FIXME: Generate a "boring" alert. Nothing special. Note that
+			return genericAlert();
 		}
 
 		// now build the alert

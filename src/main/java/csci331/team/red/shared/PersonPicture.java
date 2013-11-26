@@ -12,11 +12,14 @@ import java.util.ArrayList;
  * @author Lduperron
  */
 public enum PersonPicture {
-	MALE1(Face.MALE1, Gender.MALE), FEMALE1(Face.FEMALE1, Gender.FEMALE), THUG1(
-			Face.THUG1, Gender.MALE);
+	MALE1(Face.MALE1, Gender.MALE, true), INTROFEMALE1(Face.INTROFEMALE1,
+			Gender.FEMALE, false), THUG1(Face.THUG1, Gender.MALE, false);
 
 	public final Face f;
 	public final Gender g;
+
+	// Do not allow boss, or intro PP's to be in general circulation
+	private final boolean regular;
 
 	/**
 	 * All Serializable classes MUST provide a zero-argument constructor
@@ -25,11 +28,13 @@ public enum PersonPicture {
 	private PersonPicture() {
 		f = null;
 		g = null;
+		regular = false;
 	}
 
-	private PersonPicture(Face f, Gender g) {
+	private PersonPicture(Face f, Gender g, boolean regular) {
 		this.f = f;
 		this.g = g;
+		this.regular = regular;
 	}
 
 	private static final Random RANDOM = new Random();
@@ -40,7 +45,7 @@ public enum PersonPicture {
 		PersonPicture[] arr = values();
 
 		for (PersonPicture pp : arr) {
-			if (pp.g == g) {
+			if (pp.g == g && pp.regular) {
 				rightGender.add(pp);
 			}
 		}

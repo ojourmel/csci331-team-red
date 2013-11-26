@@ -1,7 +1,6 @@
 package csci331.team.red.client;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import aurelienribon.tweenengine.Tween;
@@ -28,12 +27,9 @@ import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
-import csci331.team.red.shared.Document.Type;
-import csci331.team.red.shared.Face;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
-import static csci331.team.red.dao.CharacterDAO.*;
 /**
  * Screen for the field agent
  * @author Lduperron
@@ -81,6 +77,7 @@ public class FieldAgentScreen implements Screen
 	FieldDialogueCallback<Callback> callbackObject;
 	Incident currentIncident;
 	
+
 
 	public FieldAgentScreen(ClientEngine parent)
 	{
@@ -203,7 +200,6 @@ public class FieldAgentScreen implements Screen
 	    allowButton.setPosition(Gdx.graphics.getWidth()-allowButton.getWidth(), detainButton.getHeight());
 	    allowButton.addListener(new ClickListener() {
     		
-    		// TODO: Part of Tutorial Code. To be removed
     	    @Override
     	    public void clicked(InputEvent event, float x, float y) 
     	    {
@@ -277,27 +273,27 @@ public class FieldAgentScreen implements Screen
 //    	    };
 //    		
 //    	});
-	    
-	    List<Document> test = new LinkedList<Document>();
+//	    
+//	    List<Document> test = new LinkedList<Document>();
 	    
 
 	    
-	    test.add(new Document(Type.DriversLicence , new HashMap<String, String>(){{
-	    	put(FIRSTNAME , "Test");
-	    	put(LASTNAME , "mcTest");
-	    	put(DOB , "0/0/0000");
-	    	put(DRIVERSID , "4543543");
-	    	put(ADDRESS , "4543543 Fake St.");
-	    	put(CITY , "Salt Lake");
-	    	put(REGION , "Virgina");
-	    	put(POSTAL , "10234");
-	    	put(COUNTRY , "America");
-	    	put(GENDER , "F");
-	    
-	    }} , Face.FEMALE1));
-
-	    
-	    produceDocuments(test);
+//	    test.add(new Document(Type.DriversLicence , new HashMap<String, String>(){{
+//	    	put(FIRSTNAME , "Test");
+//	    	put(LASTNAME , "mcTest");
+//	    	put(DOB , "0/0/0000");
+//	    	put(DRIVERSID , "4543543");
+//	    	put(ADDRESS , "4543543 Fake St.");
+//	    	put(CITY , "Salt Lake");
+//	    	put(REGION , "Virgina");
+//	    	put(POSTAL , "10234");
+//	    	put(COUNTRY , "America");
+//	    	put(GENDER , "F");
+//	    
+//	    }} , Face.INTROFEMALE1));
+//
+//	    
+//	    produceDocuments(test);
 	}
 	
 	void displayNewPerson(Character person)
