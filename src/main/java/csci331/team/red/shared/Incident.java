@@ -3,8 +3,6 @@ package csci331.team.red.shared;
 import java.util.List;
 import java.util.Random;
 
-import com.sun.beans.decoder.DocumentHandler;
-
 import csci331.team.red.server.AlertHandler;
 import csci331.team.red.server.DialogueHandler;
 

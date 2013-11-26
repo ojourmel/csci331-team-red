@@ -1,6 +1,7 @@
 package csci331.team.red.client;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import aurelienribon.tweenengine.Tween;
@@ -27,9 +28,12 @@ import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Decision;
 import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Document;
+import csci331.team.red.shared.Document.Type;
+import csci331.team.red.shared.Face;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
+import static csci331.team.red.dao.CharacterDAO.*;
 /**
  * Screen for the field agent
  * @author Lduperron
@@ -274,39 +278,26 @@ public class FieldAgentScreen implements Screen
 //    		
 //    	});
 	    
-//	    List<Document> test = new LinkedList<Document>();
+	    List<Document> test = new LinkedList<Document>();
 	    
-//		public static final String ID = "ID";
-//		public static final String FIRSTNAME = "firstName";
-//		public static final String LASTNAME = "lastName";
-//		public static final String DRIVERSID = "driversID";
-//		public static final String DOB = "dob";
-//		public static final String PASSPORTID = "passportID";
-//		public static final String ADDRESS = "address";
-//		public static final String CITY = "city";
-//		public static final String REGION = "region";
-//		public static final String POSTAL = "postal";
-//		public static final String COUNTRY = "country";
-//		public static final String OCCUPATION = "occupation";
-//		final String GENDER = "gender";
-//		final String PICTURE = "picture";
+
 	    
-//	    test.add(new Document(Type.DriversLicence , new HashMap<String, String>(){{
-//	    	put(FIRSTNAME , "Test");
-//	    	put(LASTNAME , "mcTest");
-//	    	put(DOB , "0/0/0000");
-//	    	put(DRIVERSID , "4543543");
-//	    	put(ADDRESS , "4543543 Fake St.");
-//	    	put(CITY , "Salt Lake");
-//	    	put(REGION , "Virgina");
-//	    	put(POSTAL , "10234");
-//	    	put(COUNTRY , "America");
-//	    	put(GENDER , "F");
-//	    
-//	    }} , Face.FEMALE1));
-//
-//	    
-//	    produceDocuments(test);
+	    test.add(new Document(Type.DriversLicence , new HashMap<String, String>(){{
+	    	put(FIRSTNAME , "Test");
+	    	put(LASTNAME , "mcTest");
+	    	put(DOB , "0/0/0000");
+	    	put(DRIVERSID , "4543543");
+	    	put(ADDRESS , "4543543 Fake St.");
+	    	put(CITY , "Salt Lake");
+	    	put(REGION , "Virgina");
+	    	put(POSTAL , "10234");
+	    	put(COUNTRY , "America");
+	    	put(GENDER , "F");
+	    
+	    }} , Face.FEMALE1));
+
+	    
+	    produceDocuments(test);
 	}
 	
 	void displayNewPerson(Character person)
@@ -318,7 +309,7 @@ public class FieldAgentScreen implements Screen
 		charactersStage.addActor(currentPerson);
 		Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(300, 300).ease(Quad.IN).start(tweenManager);
 		Tween.to(currentPerson,ActorTweener.ZOOM, 3.0f).target(300-currentPerson.getWidth()/2 ,(300-currentPerson.getHeight()/2)-200  ,  2 , 2).ease(Quad.IN).delay(2).start(tweenManager);
-		
+
 	  
 			
 		
@@ -488,7 +479,7 @@ public class FieldAgentScreen implements Screen
 	    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-500, -500).ease(Quad.IN).start(tweenManager);
 	    if(ticket!=null)
 	    {
-	    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-500, ticket.getY()).ease(Quad.IN).start(tweenManager);
+	    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-1000, ticket.getY()).ease(Quad.IN).start(tweenManager);
 	    }
 	    
 		
@@ -502,7 +493,7 @@ public class FieldAgentScreen implements Screen
 	    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-500, -500).ease(Quad.IN).start(tweenManager);
 	    if(ticket!=null)
 	    {
-	    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-500, ticket.getY()).ease(Quad.IN).start(tweenManager);
+	    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-1000, ticket.getY()).ease(Quad.IN).start(tweenManager);
 	    }
 	    
 		
