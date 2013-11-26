@@ -45,4 +45,22 @@ public enum Gender {
 		}
 		return s;
 	}
+
+
+	/**
+	 * @return the full string equivalent of <b>this</b>
+	 */
+	public String toFull() {
+
+		String s = "Female";
+		switch (this) {
+		case MALE:
+			s = "Male";
+			break;
+		case FEMALE:
+			s = "Female";
+			break;
+		}
+		return s;
+	}
 }

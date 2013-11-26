@@ -81,7 +81,7 @@ public class DriversLicence extends TransparentActor
 		    DriverName = "Name: " + characterAttributes.get(FIRSTNAME) + " " + characterAttributes.get(LASTNAME);
 		    DateOfBirth = "DoB:  " + characterAttributes.get(DOB);
 		    Address = "Address: " + characterAttributes.get(ADDRESS);
-		    City = "City: " + characterAttributes.get(CITY) + "," + characterAttributes.get(REGION);
+		    City = "City: " + characterAttributes.get(CITY) + ", " + characterAttributes.get(REGION);
 		    Postal = "Postal: " + characterAttributes.get(POSTAL);
 		    Gender = "Gender: " + characterAttributes.get(GENDER);
 		    DriversID = "Drivers ID #: " + characterAttributes.get(DRIVERSID);

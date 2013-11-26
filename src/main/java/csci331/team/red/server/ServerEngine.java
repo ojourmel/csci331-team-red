@@ -21,6 +21,7 @@ import csci331.team.red.shared.Level;
 import csci331.team.red.shared.Message;
 import csci331.team.red.shared.Posture;
 import csci331.team.red.shared.Query;
+import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 
 /**
@@ -78,12 +79,20 @@ public class ServerEngine extends Thread {
 	// Various random game element handlers
 	private DialogueHandler dialogueHandler = new DialogueHandler(RANDOM);
 	private DocumentHandler documentHandler = new DocumentHandler(RANDOM);
+	private DatabaseHandler databaseHandler;
 	private AlertHandler alertHandler;
+
+	// Current incident, so that various callbacks can interact with incident
+	// data
+
+	private Incident currentIncident = null;
 
 	// Locks and conditions for blocking on conditions while threading.
 	private final Lock lock = new ReentrantLock();
 	private final Condition clientsConnected = lock.newCondition();
 	private final Condition incidentOver = lock.newCondition();
+
+	private final Lock incidentLock = new ReentrantLock();
 
 	/**
 	 * Create a new {@link ServerEngine} object. Use
@@ -94,6 +103,7 @@ public class ServerEngine extends Thread {
 	public ServerEngine() {
 
 		repo = new CharacterRepository();
+		databaseHandler = new DatabaseHandler(repo);
 		alertHandler = new AlertHandler(RANDOM, repo);
 
 		incidents = new LinkedList<Incident>();
@@ -121,7 +131,6 @@ public class ServerEngine extends Thread {
 				clientsConnected.await();
 			} catch (InterruptedException e) {
 				tearDown();
-
 				return;
 			} finally {
 				lock.unlock();
@@ -140,9 +149,9 @@ public class ServerEngine extends Thread {
 		}
 
 		// Now begin the standard, random incidents
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 6; i++) {
 
-			// TODO: Allow for past events to affect future events
+			// LONG-TERM: Allow for past events to affect future events
 
 			System.err.println("Starting Incident " + i);
 			if (!doIncident()) {
@@ -157,12 +166,23 @@ public class ServerEngine extends Thread {
 			return;
 		}
 
-		// Depending on how the players did...
-		// Yah! Level One is done. On to level 2!
-		// or...
-		// Ohw. Level One was Too Hard. Game Over!
-		// Or...
-		// Well, you did mediocre, but that won't cut it. Level 1 AGAIN!
+		// Do the final game over dialogue, and quit
+
+		network.sendClient(playerOne.getRole(), Message.DIALOGUE,
+				dialogueHandler.GAME_OVER(playerOne));
+		network.sendClient(playerTwo.getRole(), Message.DIALOGUE,
+				dialogueHandler.GAME_OVER(playerTwo));
+
+		// 60 second time out, this will most likely be interrupted by the
+		// clients, when the finish reading the end game dialogue
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException ex) {
+			// go ahead and swallow this exception...
+		}
+
+		tearDown();
+		return;
 	}
 
 	/**
@@ -173,11 +193,18 @@ public class ServerEngine extends Thread {
 	 */
 	public void onDatabaseSearch(Query query) {
 		System.err.println("onDatabaseSearch: " + query.queryText);
-		query.queryText = query.queryText.toUpperCase();
+		Incident incident = null;
 
-		// network.send(Message.DB_RESULT, Result.INVALID_COMMAND);
+		incidentLock.lock();
+		incident = currentIncident;
+		incidentLock.unlock();
 
-		// TODO: Handle database queries
+		List<Result> results = databaseHandler.execute(query.queryText,
+				incident);
+
+		for (Result result : results) {
+			network.sendClient(Role.DATABASE, Message.DBRESULT, result);
+		}
 	}
 
 	/**
@@ -307,12 +334,111 @@ public class ServerEngine extends Thread {
 	public void onIncidentComplete(Decision decition) {
 		System.err.println("onIncidentCompleate " + decition.toString());
 
-		// TODO: update player scores from the outcome of this incident.
+		incidentLock.lock();
+		Incident incident = currentIncident;
+		incidentLock.unlock();
 
-		/*
-		 * Update any environment variables, and tell run() to wake up, and do
-		 * another incident
-		 */
+		if (incident.fraud) {
+			switch (decition) {
+			case DETAIN:
+				// good
+				if (incident.fraudCaught) {
+					playerOne.win++;
+					playerTwo.win++;
+					System.err.println("win");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.WIN());
+				} else {
+					playerOne.epicWin++;
+					playerTwo.epicWin++;
+					System.err.println("epicwin");
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.EPIC_WIN());
+				}
+
+				break;
+			case ALLOW:
+
+				if (incident.fraudCaught) {
+					playerOne.superFail++;
+					playerTwo.superFail++;
+					System.err.println("superfail");
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.SUPER_FAIL());
+				} else {
+					playerOne.fail++;
+					playerTwo.fail++;
+					System.err.println("fail");
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.SUPER_FAIL());
+				}
+
+				// bad
+				break;
+			}
+
+			// else not fraud
+		} else if (!incident.fraud) {
+
+			switch (decition) {
+			case DETAIN:
+				// good
+
+				if (incident.clericalError && !incident.clericalErrorCaught) {
+					playerOne.fail++;
+					playerTwo.fail++;
+					System.err.println("fail");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.FAIL());
+
+				} else if (incident.clericalError
+						&& incident.clericalErrorCaught) {
+					playerOne.superFail++;
+					playerTwo.superFail++;
+					System.err.println("superfail");
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.SUPER_FAIL());
+				} else {
+
+					playerOne.superFail++;
+					playerTwo.superFail++;
+					System.err.println("superfail");
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.SUPER_FAIL());
+				}
+
+				break;
+			case ALLOW:
+
+				if (incident.clericalError && !incident.clericalErrorCaught) {
+					playerOne.epicWin++;
+					playerTwo.epicWin++;
+					System.err.println("epicwin");
+					network.sendAll(Message.DIALOGUE,
+							dialogueHandler.EPIC_WIN());
+				} else if (incident.clericalError
+						&& incident.clericalErrorCaught) {
+					playerOne.win++;
+					playerTwo.win++;
+					System.err.println("win");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.WIN());
+				} else {
+					playerOne.win++;
+					playerTwo.win++;
+					System.err.println("win");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.WIN());
+				}
+			}
+		} else {
+			throw new RuntimeException("Missing Decision Case!");
+		}
+
+		// Once this incident is over, the dialouge will be cleared... thus,
+		// wait a bit for the the player to recognize the win/fail
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException ex) {
+			// go ahead and swallow this exception...
+		}
 
 		lock.lock();
 		incidentOver.signal();
@@ -341,7 +467,8 @@ public class ServerEngine extends Thread {
 		for (int i = 0; i < MIN_INCIDENTS; i++) {
 			Incident incident = new Incident(repo.getCharacter());
 			documentHandler.initDocuments(incident);
-			dialogueHandler.initDialogue(incident);
+			// the dialogue on an incident will be generated at "go-time" as it
+			// is posture sensitive...
 			incidents.add(incident);
 		}
 
@@ -353,7 +480,6 @@ public class ServerEngine extends Thread {
 				playerOne.getRole());
 		network.sendClient(playerTwo.getRole(), Message.SET_ROLE,
 				playerTwo.getRole());
-
 	}
 
 	/**
@@ -367,6 +493,10 @@ public class ServerEngine extends Thread {
 		dialogueHandler.initIntroDialogue(incident);
 		incident.setAlerts(alertHandler.getIntroAlerts(incident));
 
+		incidentLock.lock();
+		currentIncident = incident;
+		incidentLock.unlock();
+
 		System.err.println("Starting First (Scripted) Tutorial Incident");
 		network.sendAll(Message.START_INCIDENT, incident);
 
@@ -375,6 +505,8 @@ public class ServerEngine extends Thread {
 				incident.getDbDialogue());
 		network.sendClient(Role.FIELDAGENT, Message.DIALOGUE,
 				incident.getFieldDialogue());
+		network.sendClient(Role.DATABASE, Message.DBRESULT,
+				databaseHandler.startUp());
 
 		// wait for player's decision.
 		try {
@@ -399,9 +531,24 @@ public class ServerEngine extends Thread {
 
 		Character character = repo.getBossCharacter(boss);
 		Incident incident = new Incident(character);
+
+		switch (boss) {
+		case THUGLIFE:
+			// This guy is bad, but not that bad.
+			incident.fraud = true;
+			incident.fraudCaught = false;
+			incident.clericalError = false;
+			incident.clericalErrorCaught = false;
+			break;
+		}
+
 		documentHandler.initBossDocuments(incident, boss);
 		dialogueHandler.initBossDialogue(incident, boss);
 		incident.setAlerts(alertHandler.getBossAlerts(incident, boss));
+
+		incidentLock.lock();
+		currentIncident = incident;
+		incidentLock.unlock();
 
 		System.err.println("Starting (Scripted) Boss Incident "
 				+ boss.toString());
@@ -469,7 +616,8 @@ public class ServerEngine extends Thread {
 		}
 
 		documentHandler.initDocuments(incident);
-		dialogueHandler.initDialogue(incident);
+		// the dialogue on an incident will be generated at "go-time" as it is
+		// posture sensitive...
 		incidents.add(incident);
 
 		List<Alert> alerts = new LinkedList<Alert>();
@@ -479,15 +627,24 @@ public class ServerEngine extends Thread {
 		alerts.addAll(alertHandler.getAlerts(incidents.get(RANDOM
 				.nextInt(incidents.size()))));
 
+		// Hack because no other way to get the FIELDAGENT player...
+		Player field = null;
+		if (playerOne.getRole() == Role.FIELDAGENT) {
+			field = playerOne;
+		} else {
+			field = playerTwo;
+		}
+
 		// get one for this incident, removing it from the queue
 		incident = incidents.pollFirst();
+		dialogueHandler.initDialogue(incident, field.getPosture());
 		// assign the alerts, the only thing not yet initialized.
 		incident.setAlerts(alerts);
 
-		// Server/Client responsibilities:
-		// Characters, -- Client
-		// Alerts, -- Client
-		// Dialogue, -- Client
+		incidentLock.lock();
+		currentIncident = incident;
+		incidentLock.unlock();
+
 		network.sendAll(Message.START_INCIDENT, incident);
 		network.sendClient(Role.DATABASE, Message.DIALOGUE,
 				incident.getDbDialogue());

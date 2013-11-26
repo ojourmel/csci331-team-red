@@ -1,6 +1,8 @@
 package csci331.team.red.shared;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Wrapper class for words said by the players and actors. <br>
@@ -64,6 +66,24 @@ public class Dialogue {
 		}
 
 		return temp.toArray(new Dialogue[0]);
+	}
+
+	public static List<Dialogue> returnDialogList(List<List<String>> strings,
+			Enum<?>[] callbackArray) {
+		LinkedList<Dialogue> temp = new LinkedList<Dialogue>();
+
+		for (int i = 0; i < strings.size(); i++) {
+			Dialogue tempDialog = null;
+			if ((i < callbackArray.length) && (callbackArray[i] != null)) {
+				tempDialog = new Dialogue(strings.get(i).get(0), strings.get(i)
+						.get(1), callbackArray[i]);
+			} else {
+				tempDialog = new Dialogue(strings.get(i).get(0), strings.get(i)
+						.get(1));
+			}
+			temp.add(tempDialog);
+		}
+		return temp;
 	}
 
 	public String getDialogue() {

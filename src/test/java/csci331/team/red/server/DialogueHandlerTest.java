@@ -6,18 +6,18 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import csci331.team.red.dao.CharacterRepository;
+import csci331.team.red.dao.CharacterDAO;
+import csci331.team.red.shared.Dialogue;
+import csci331.team.red.shared.Incident;
 
 /**
  * 
- * Not actually JUnit unit tests, simply manual verification tests to view alert
- * generation
- * 
- * 
+ * Not actually JUnit unit tests, simply manual verification tests to view some
+ * dialogue generation.
  * 
  * @author ojourmel
  */
-public class AlertHandlerTest {
+public class DialogueHandlerTest {
 
 	@BeforeClass
 	public static void setUp() {
@@ -32,19 +32,21 @@ public class AlertHandlerTest {
 	}
 
 	@Test
-	public void genericAlertTest() {
+	public void momTest() {
 
 		System.out.println("************GenericAlerts************");
 		System.out.println("\n");
 
-		AlertHandler handle = new AlertHandler(new Random(),
-				new CharacterRepository());
+		CharacterDAO dao = new CharacterDAO();
+		DialogueHandler handle = new DialogueHandler(new Random());
 		for (int i = 0; i < 50; i++) {
 
-			System.out.println(handle.genericAlert().alertText);
-			System.out.println();
+			for (Dialogue d : handle.momsCuriosity(new Incident(dao
+					.getCharacter()))) {
+				System.out.println(d.getDialogue() + " : " + d.getSpeaker());
+				System.out.println();
+			}
 			System.out.println();
 		}
 	}
-
 }

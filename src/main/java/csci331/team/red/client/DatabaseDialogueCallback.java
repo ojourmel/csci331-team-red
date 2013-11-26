@@ -26,6 +26,9 @@ public class DatabaseDialogueCallback<T extends Callback> implements
 		case stopAlerts:
 			entity.changeAlertStage(false);
 			break;
+		case endGame:
+			entity.parentEngine.LeaveGame();
+			break;
 		default:
 			break;
 		}

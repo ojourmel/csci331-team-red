@@ -50,9 +50,9 @@ public class PersonPictureTest {
 
 	@Test
 	public void testEnum() {
-		persPic = PersonPicture.FEMALE1;
+		persPic = PersonPicture.INTROFEMALE0;
 		assertEquals("Enum failed to set persPic", persPic,
-				PersonPicture.FEMALE1);
+				PersonPicture.INTROFEMALE0);
 
 		persPic = PersonPicture.MALE1;
 		assertEquals("Enum failed to set persPic", persPic, PersonPicture.MALE1);
@@ -70,8 +70,7 @@ public class PersonPictureTest {
 		assertEquals("getRandom gender incorrectly set", Gender.FEMALE,
 				persPic.g);
 		persPic = PersonPicture.getRandom(Gender.MALE);
-		assertEquals("getRandom gender incorrectly set", Gender.MALE,
-				persPic.g);
+		assertEquals("getRandom gender incorrectly set", Gender.MALE, persPic.g);
 
 		persPic = PersonPicture.getRandom(Gender.fromChar('b'));
 		// TODO: Complete me

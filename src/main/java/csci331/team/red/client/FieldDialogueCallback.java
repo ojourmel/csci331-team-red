@@ -26,6 +26,10 @@ public class FieldDialogueCallback<T extends Callback> implements
 				entity.produceDocuments(entity.currentIncident.getIncidentDocuments());
 			}
 
+			break;
+		case endGame:
+			entity.parentEngine.LeaveGame();
+			break;
 		default:
 			break;
 

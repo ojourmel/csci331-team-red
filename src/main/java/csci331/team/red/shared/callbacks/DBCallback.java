@@ -5,5 +5,5 @@ import csci331.team.red.client.Callback;
 
 public enum DBCallback implements Callback {
 
-	startAlerts, stopAlerts, MaryTestAlert,
+	startAlerts, stopAlerts, MaryTestAlert, endGame,
 }
