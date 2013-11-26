@@ -84,6 +84,18 @@ public class DatabaseHandler {
 		}
 
 		// now, each string will represent some search parameter...
+		// Do a quick check for "mary test", as that will produce some rather
+		// specal output.
+		if (tokenizedString.length == 5) {
+			if (tokenizedString[2].equalsIgnoreCase(NAME)
+					&& tokenizedString[3].equalsIgnoreCase("Mary")
+					&& tokenizedString[4].equalsIgnoreCase("Test")) {
+
+				results.add(new Result(
+						"Mary Test --\n Age: 22\n Status: Deceased"));
+				return results;
+			}
+		}
 
 		Set<Character> characters = new HashSet<Character>();
 		HashMap<String, String> search = new HashMap<String, String>();
@@ -141,7 +153,6 @@ public class DatabaseHandler {
 
 				i++;
 				while (i < tokenizedString.length) {
-
 
 					if (tokenizedString[i].equals(NAME)
 							|| (tokenizedString[i].equals(NUMBER))
