@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -497,6 +498,9 @@ public class ClientEngine extends Game
 	{
 		if(fieldAgentScreen != null)
 		{
+			fieldAgentScreen.papersStage.clear();
+			fieldAgentScreen.charactersStage.clear();
+			
 			fieldAgentScreen.currentIncident = incident;
 			fieldAgentScreen.displayNewPerson(incident.getActor());
 			

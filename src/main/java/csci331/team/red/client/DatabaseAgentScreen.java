@@ -3,17 +3,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -70,7 +75,16 @@ public class DatabaseAgentScreen implements Screen
 	
 	long lastAlertTime;
 	Array<Alert> potentialAlerts = new Array<Alert>();
-
+	
+	BitmapFont alertFont = ClientEngine.generator.generateFont(15);
+	
+	LabelStyle alertStyle;
+	{
+		alertStyle = new LabelStyle();
+		alertStyle.font = alertFont;
+		alertStyle.fontColor = Color.BLACK;
+	}
+	
 	public DatabaseAgentScreen(ClientEngine parent)
 	{
 		
@@ -320,7 +334,7 @@ public class DatabaseAgentScreen implements Screen
 		dialogueStage.act();
 		dialogueStage.draw();
 		
-	    if(TimeUtils.millis() - lastAlertTime > 2000  && displayingAlerts)
+	    if(TimeUtils.millis() - lastAlertTime > 5000  && displayingAlerts)
 	    {
 	    	addAlert();
 	    	lastAlertTime = TimeUtils.millis();
@@ -343,7 +357,7 @@ public class DatabaseAgentScreen implements Screen
 	public void addAlert(Alert alert)
 	{
 		
-    	Label newCommandLabel = new Label(alert.alertFrom + " " + alert.alertText , parentEngine.rawTextStyle);
+    	Label newCommandLabel = new Label(alert.alertFrom + " " + alert.alertText + "\r\n\r\n" , alertStyle);
     	newCommandLabel.setWrap(true);
     	float alertScreenLength = alertTextScrollingTable.getWidth();
 
@@ -391,7 +405,7 @@ public class DatabaseAgentScreen implements Screen
 	
 	public void displayComputerResponse(String responseText)
 	{
-    	Label newResponseLabel = new Label(responseText + "\r\n\r\n" , parentEngine.rawTextStyle);
+    	Label newResponseLabel = new Label(responseText + "\r\n\r\n" , alertStyle);
     	newResponseLabel.setWrap(true);
     	
 	    computerTextLabelContainingTable.add(newResponseLabel).left().minWidth(computerTextScrollingTable.getWidth()-20).fill();

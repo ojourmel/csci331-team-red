@@ -50,24 +50,21 @@ public class DriversLicence extends TransparentActor
     private static final int AddressX = 190;
     private static final int AddressY = 225;
     
-    private static final int Address2X = 350;
-    private static final int Address2Y = 200;
-    
     private static final int CityX = 190;
-    private static final int CityY = 175;
+    private static final int CityY = 200;
     
     private static final int PostalX = 190;
-    private static final int PostalY = 150;
+    private static final int PostalY = 175;
     
     
     private static final int GenderX = 190;
-    private static final int GenderY = 125;
+    private static final int GenderY = 150;
     
     private static final int DriversIDX = 190;
-    private static final int DriversIDY = 100;
+    private static final int DriversIDY = 125;
     
     private static final int CountryX = 190;
-    private static final int CountryY = 75;
+    private static final int CountryY = 100;
     
 	public DriversLicence(Pixmap incomingPixmap , TweenManager manager , HashMap<String, String> characterAttributes , Face face)
 	{
@@ -77,15 +74,13 @@ public class DriversLicence extends TransparentActor
 		// Could maybe be generated during first init, but it's fine here for now.
 		if(font == null)
 		{
-			font = ClientEngine.generator.generateFont(20);
+			font = ClientEngine.generator.generateFont(10);
 		}
 	    font.setColor(0,0,0 , 1);  
 
 		    DriverName = "Name: " + characterAttributes.get(FIRSTNAME) + " " + characterAttributes.get(LASTNAME);
 		    DateOfBirth = "DoB:  " + characterAttributes.get(DOB);
-		    Address = "Address: " + characterAttributes.get(ADDRESS).substring( 0 ,Math.min(characterAttributes.get(ADDRESS).length(), 13));
-		    Address2 = characterAttributes.get(ADDRESS).substring(Math.min(characterAttributes.get(ADDRESS).length(), 13) ,
-		    																Math.min(characterAttributes.get(ADDRESS).length(), 30));
+		    Address = "Address: " + characterAttributes.get(ADDRESS);
 		    City = "City: " + characterAttributes.get(CITY) + "," + characterAttributes.get(REGION);
 		    Postal = "Postal: " + characterAttributes.get(POSTAL);
 		    Gender = "Gender: " + characterAttributes.get(GENDER);
@@ -116,11 +111,7 @@ public class DriversLicence extends TransparentActor
         font.draw(batch , Address,
         		getX() +  AddressX * getScaleX(),
         		getY() + AddressY* getScaleY());
-        
-        font.draw(batch , Address2,
-        		getX() +  Address2X * getScaleX(),
-        		getY() + Address2Y* getScaleY());
-        
+               
         font.draw(batch , City,
         		getX() +  CityX * getScaleX(),
         		getY() + CityY* getScaleY() , 0, City.length());
