@@ -207,16 +207,16 @@ public class ClientEngine extends Game {
 		PersonFaces.put(Face.INTROFEMALE0, new AssetDescriptor<Pixmap>(
 				"characterPortraits/campusfemale0face.png", Pixmap.class));
 
-		// All Females
-		PersonAvatars.put(PersonPicture.FEMALE1, new AssetDescriptor<Pixmap>(
-				"characters/campusfemale1.png", Pixmap.class));
-		PersonFaces.put(Face.FEMALE1, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusfemale1face.png", Pixmap.class));
-
-		PersonAvatars.put(PersonPicture.FEMALE2, new AssetDescriptor<Pixmap>(
-				"characters/campusfemale2.png", Pixmap.class));
-		PersonFaces.put(Face.FEMALE2, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusfemale2face.png", Pixmap.class));
+//		// All Females
+//		PersonAvatars.put(PersonPicture.FEMALE1, new AssetDescriptor<Pixmap>(
+//				"characters/campusfemale1.png", Pixmap.class));
+//		PersonFaces.put(Face.FEMALE1, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusfemale1face.png", Pixmap.class));
+//
+//		PersonAvatars.put(PersonPicture.FEMALE2, new AssetDescriptor<Pixmap>(
+//				"characters/campusfemale2.png", Pixmap.class));
+//		PersonFaces.put(Face.FEMALE2, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusfemale2face.png", Pixmap.class));
 
 		PersonAvatars.put(PersonPicture.FEMALE3, new AssetDescriptor<Pixmap>(
 				"characters/campusfemale3.png", Pixmap.class));
@@ -232,26 +232,26 @@ public class ClientEngine extends Game {
 				"characters/campusfemale5.png", Pixmap.class));
 		PersonFaces.put(Face.FEMALE5, new AssetDescriptor<Pixmap>(
 				"characterPortraits/campusfemale5face.png", Pixmap.class));
-
-		PersonAvatars.put(PersonPicture.FEMALE6, new AssetDescriptor<Pixmap>(
-				"characters/campusfemale6.png", Pixmap.class));
-		PersonFaces.put(Face.FEMALE6, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusfemale6face.png", Pixmap.class));
-
-		PersonAvatars.put(PersonPicture.FEMALE7, new AssetDescriptor<Pixmap>(
-				"characters/campusfemale7.png", Pixmap.class));
-		PersonFaces.put(Face.FEMALE7, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusfemale7face.png", Pixmap.class));
-
-		PersonAvatars.put(PersonPicture.FEMALE8, new AssetDescriptor<Pixmap>(
-				"characters/campusfemale8.png", Pixmap.class));
-		PersonFaces.put(Face.FEMALE8, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusfemale8face.png", Pixmap.class));
-
-		PersonAvatars.put(PersonPicture.FEMALE9, new AssetDescriptor<Pixmap>(
-				"characters/campusfemale9.png", Pixmap.class));
-		PersonFaces.put(Face.FEMALE9, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusfemale9face.png", Pixmap.class));
+//
+//		PersonAvatars.put(PersonPicture.FEMALE6, new AssetDescriptor<Pixmap>(
+//				"characters/campusfemale6.png", Pixmap.class));
+//		PersonFaces.put(Face.FEMALE6, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusfemale6face.png", Pixmap.class));
+//
+//		PersonAvatars.put(PersonPicture.FEMALE7, new AssetDescriptor<Pixmap>(
+//				"characters/campusfemale7.png", Pixmap.class));
+//		PersonFaces.put(Face.FEMALE7, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusfemale7face.png", Pixmap.class));
+//
+//		PersonAvatars.put(PersonPicture.FEMALE8, new AssetDescriptor<Pixmap>(
+//				"characters/campusfemale8.png", Pixmap.class));
+//		PersonFaces.put(Face.FEMALE8, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusfemale8face.png", Pixmap.class));
+//
+//		PersonAvatars.put(PersonPicture.FEMALE9, new AssetDescriptor<Pixmap>(
+//				"characters/campusfemale9.png", Pixmap.class));
+//		PersonFaces.put(Face.FEMALE9, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusfemale9face.png", Pixmap.class));
 
 		// All Males
 		PersonAvatars.put(PersonPicture.MALE1, new AssetDescriptor<Pixmap>(
@@ -268,21 +268,21 @@ public class ClientEngine extends Game {
 				"characters/campusmale3.png", Pixmap.class));
 		PersonFaces.put(Face.MALE3, new AssetDescriptor<Pixmap>(
 				"characterPortraits/campusmale3face.png", Pixmap.class));
-
-		PersonAvatars.put(PersonPicture.MALE4, new AssetDescriptor<Pixmap>(
-				"characters/campusmale4.png", Pixmap.class));
-		PersonFaces.put(Face.MALE4, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusmale4face.png", Pixmap.class));
-
-		PersonAvatars.put(PersonPicture.MALE5, new AssetDescriptor<Pixmap>(
-				"characters/campusmale5.png", Pixmap.class));
-		PersonFaces.put(Face.MALE5, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusmale5face.png", Pixmap.class));
-
-		PersonAvatars.put(PersonPicture.MALE6, new AssetDescriptor<Pixmap>(
-				"characters/campusmale6.png", Pixmap.class));
-		PersonFaces.put(Face.MALE6, new AssetDescriptor<Pixmap>(
-				"characterPortraits/campusmale6face.png", Pixmap.class));
+//
+//		PersonAvatars.put(PersonPicture.MALE4, new AssetDescriptor<Pixmap>(
+//				"characters/campusmale4.png", Pixmap.class));
+//		PersonFaces.put(Face.MALE4, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusmale4face.png", Pixmap.class));
+//
+//		PersonAvatars.put(PersonPicture.MALE5, new AssetDescriptor<Pixmap>(
+//				"characters/campusmale5.png", Pixmap.class));
+//		PersonFaces.put(Face.MALE5, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusmale5face.png", Pixmap.class));
+//
+//		PersonAvatars.put(PersonPicture.MALE6, new AssetDescriptor<Pixmap>(
+//				"characters/campusmale6.png", Pixmap.class));
+//		PersonFaces.put(Face.MALE6, new AssetDescriptor<Pixmap>(
+//				"characterPortraits/campusmale6face.png", Pixmap.class));
 
 		// Dynamic Props...
 		Documents.put(Document.Type.GoldenTicket, new AssetDescriptor<Pixmap>(

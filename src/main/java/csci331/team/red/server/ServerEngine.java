@@ -149,7 +149,7 @@ public class ServerEngine extends Thread {
 		}
 
 		// Now begin the standard, random incidents
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 3; i++) {
 
 			// LONG-TERM: Allow for past events to affect future events
 
