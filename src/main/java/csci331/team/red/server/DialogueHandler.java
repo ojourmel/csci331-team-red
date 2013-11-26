@@ -288,7 +288,7 @@ public class DialogueHandler {
 				{ "Others are suspicious.  Like that 'Mary Test' one.",
 						Voice.OMINIOUS.who },
 				{
-						"We should do a bit of research on her.\nType 'search prism mary test'\non your phone.",
+						"We should do a bit of research on her.\nType \"search prism name mary test\"\non your phone.",
 						Voice.OMINIOUS.who },
 				{
 						"I assume you did it, given I'm just a voice. If you ever have questions about the phone, just type \"help\", and it should give you a hand.",

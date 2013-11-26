@@ -17,7 +17,7 @@ public class DatabaseDialogueCallback<T extends Callback> implements
 		switch (c) {
 		case MaryTestAlert:
 
-			entity.addAlert(new Alert("Mary Test Spotted - Looks Very Suspicous, Old Woman Reports" , "VUI ALERT: "));
+			entity.addAlert(new Alert("Mary Test Spotted - Looks Very Suspicous, Old Woman Reports" , "University of Island Visionaries ALERT! "));
 			entity.changeAlertStage(false);
 			break;
 		case startAlerts:
