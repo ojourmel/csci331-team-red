@@ -34,6 +34,45 @@ public class DialogueHandler {
 		this.RANDOM = RANDOM;
 	}
 
+	public List<Dialogue> WIN() {
+		LinkedList<Dialogue> dialogues = new LinkedList<Dialogue>();
+		dialogues.add(new Dialogue("Good Job Kiddo", Voice.OMINIOUS.who));
+		return dialogues;
+	}
+
+	public List<Dialogue> EPIC_WIN() {
+		LinkedList<Dialogue> dialogues = new LinkedList<Dialogue>();
+		dialogues.add(new Dialogue(
+				"Holy 80085 batman, that was ruddy brilliant",
+				Voice.OMINIOUS.who));
+		return dialogues;
+	}
+
+	public List<Dialogue> FAIL() {
+		LinkedList<Dialogue> dialogues = new LinkedList<Dialogue>();
+		dialogues.add(new Dialogue("Better luck next time. You f***ed it up",
+				Voice.OMINIOUS.who));
+		return dialogues;
+	}
+
+	public List<Dialogue> SUPER_FAIL() {
+		LinkedList<Dialogue> dialogues = new LinkedList<Dialogue>();
+		dialogues
+				.add(new Dialogue(
+						"Wow! That was so spectaculary bad, I almost felt bad for you... almost",
+						Voice.OMINIOUS.who));
+		return dialogues;
+	}
+
+	public Object GAME_OVER(Player playerOne) {
+
+		// TODO: Imbed paluer win/fail statis
+
+		LinkedList<Dialogue> dialogues = new LinkedList<Dialogue>();
+		dialogues.add(new Dialogue("Game Over", Voice.OMINIOUS.who));
+		return dialogues;
+	}
+
 	/**
 	 * @param incident
 	 *            to generate dialogue from
@@ -132,8 +171,11 @@ public class DialogueHandler {
 		case THUGLIFE:
 
 			// Database Dialogue
-			String[][] dbStrArr = { { "This is it, your moment to shine",
-					Voice.MOM.who }, };
+			String[][] dbStrArr = {
+					{ "This is it, your moment to shine", Voice.MOM.who },
+					{ "I here we are facing quite the bad a**", Voice.MOM.who },
+					{ "A little birdy told me that his name is \"icE cOld\"",
+							Voice.MOM.who }, { "...", Voice.YOU.who } };
 
 			DBCallback[] dbCallArr = { DBCallback.startAlerts };
 

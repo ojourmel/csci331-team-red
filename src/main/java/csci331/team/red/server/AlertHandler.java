@@ -236,65 +236,74 @@ public class AlertHandler {
 		Voice voice = Voice.UIV;
 		ActionWord word = ActionWord.NOTICE;
 		String message = "";
-
 		boolean alertPending = true;
-		while (alertPending) {
-			// what variable do you focus on ?
-			int focus = RANDOM.nextInt(3);
 
-			switch (focus) {
-			case 0:
-				// look at fraud
-				if (incident.fraud) {
-					// generate a vague warning regarding this person
-					voice = Voice.values()[RANDOM
-							.nextInt(Voice.values().length)];
-					word = ActionWord.NOTICE;
+		if (incident.fraud || incident.fraudCaught
+				|| incident.clericalErrorCaught) {
 
-					message = "Local "
-							+ dao.getOccupation(dao.randomID(OCCUPATION))
-							+ " reports seeing a shifty looking "
-							+ incident.getActor().getGender().toString();
+			while (alertPending) {
+				// what variable do you focus on ?
+				int focus = RANDOM.nextInt(3);
 
-					alertPending = false;
+				switch (focus) {
+				case 0:
+					// look at fraud
+					if (incident.fraud) {
+						// generate a vague warning regarding this person
+						voice = Voice.values()[RANDOM
+								.nextInt(Voice.values().length)];
+						word = ActionWord.NOTICE;
+
+						message = "Local "
+								+ dao.getOccupation(dao.randomID(OCCUPATION))
+								+ " reports seeing a shifty looking "
+								+ incident.getActor().getGender().toString();
+
+						alertPending = false;
+					}
+					break;
+				case 1:
+					// look at fraudCaught
+					if (incident.fraudCaught) {
+						// generate a specific alert regarding this person
+						voice = Voice.values()[RANDOM
+								.nextInt(Voice.values().length)];
+						word = ActionWord.ALERT;
+
+						String age = incident.getActor().getDob().split("-")[0];
+						message = "A "
+								+ incident.getActor().getGender().toString()
+								+ " born in " + age
+								+ " has been reported as a Con Artist!";
+
+						alertPending = false;
+					}
+					break;
+				case 2:
+					// look at clericalErrorCaught
+					// look at fraud
+					if (incident.clericalErrorCaught) {
+						// generate a aplolgetic notice regarding false
+						// documents.
+						voice = Voice.values()[RANDOM
+								.nextInt(Voice.values().length)];
+						word = ActionWord.NOTICE;
+
+						message = "It has come to the attention of the "
+								+ voice.who
+								+ " that certian errors have been make in processing the information of a one "
+								+ incident.getActor().getFirstName() + " "
+								+ incident.getActor().getLastName() + ".";
+
+						alertPending = false;
+					}
+					break;
 				}
-				break;
-			case 1:
-				// look at fraudCaught
-				if (incident.fraudCaught) {
-					// generate a specific alert regarding this person
-					voice = Voice.values()[RANDOM
-							.nextInt(Voice.values().length)];
-					word = ActionWord.ALERT;
-
-					String age = incident.getActor().getDob().split("-")[0];
-					message = "A " + incident.getActor().getGender().toString()
-							+ " born in " + age
-							+ " has been reported as a Con Artist!";
-
-					alertPending = false;
-				}
-				break;
-			case 2:
-				// look at clericalErrorCaught
-				// look at fraud
-				if (incident.clericalErrorCaught) {
-					// generate a aplolgetic notice regarding false documents.
-					voice = Voice.values()[RANDOM
-							.nextInt(Voice.values().length)];
-					word = ActionWord.NOTICE;
-
-					message = "It has come to the attention of the "
-							+ voice.who
-							+ " that certian errors have been make in processing the information of a one "
-							+ incident.getActor().getFirstName() + " "
-							+ incident.getActor().getLastName() + ".";
-
-					alertPending = false;
-				}
-				break;
 			}
+		} else {
+			// TODO: Generate a "boring" alert. Nothing special
 		}
+
 		// now build the alert
 		alert.append(word.toString());
 		alert.append("!\n");

@@ -3,7 +3,6 @@ package csci331.team.red.network;
 import java.io.IOException;
 import java.util.HashMap;
 
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;

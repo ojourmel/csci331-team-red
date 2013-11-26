@@ -1,5 +1,18 @@
 package csci331.team.red.server;
 
+import static csci331.team.red.dao.CharacterDAO.ADDRESS;
+import static csci331.team.red.dao.CharacterDAO.CITY;
+import static csci331.team.red.dao.CharacterDAO.COUNTRY;
+import static csci331.team.red.dao.CharacterDAO.DOB;
+import static csci331.team.red.dao.CharacterDAO.DRIVERSID;
+import static csci331.team.red.dao.CharacterDAO.FIRSTNAME;
+import static csci331.team.red.dao.CharacterDAO.GENDER;
+import static csci331.team.red.dao.CharacterDAO.LASTNAME;
+import static csci331.team.red.dao.CharacterDAO.OCCUPATION;
+import static csci331.team.red.dao.CharacterDAO.PASSPORTID;
+import static csci331.team.red.dao.CharacterDAO.POSTAL;
+import static csci331.team.red.dao.CharacterDAO.REGION;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +23,6 @@ import csci331.team.red.shared.Boss;
 import csci331.team.red.shared.Document;
 import csci331.team.red.shared.Gender;
 import csci331.team.red.shared.Incident;
-import static csci331.team.red.dao.CharacterDAO.*;
 
 /**
  * Responsible for generating documents, corrupting them as we go

@@ -148,7 +148,7 @@ public class ServerEngine extends Thread {
 		}
 
 		// Now begin the standard, random incidents
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 15; i++) {
 
 			// TODO: Allow for past events to affect future events
 
@@ -165,12 +165,23 @@ public class ServerEngine extends Thread {
 			return;
 		}
 
-		// Depending on how the players did...
-		// Yah! Level One is done. On to level 2!
-		// or...
-		// Ohw. Level One was Too Hard. Game Over!
-		// Or...
-		// Well, you did mediocre, but that won't cut it. Level 1 AGAIN!
+		// Do the final game over dialogue, and quit
+
+		network.sendClient(playerOne.getRole(), Message.DIALOGUE,
+				dialogueHandler.GAME_OVER(playerOne));
+		network.sendClient(playerTwo.getRole(), Message.DIALOGUE,
+				dialogueHandler.GAME_OVER(playerTwo));
+
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException ex) {
+			// go ahead and swallow this exception...
+		}
+
+		tearDown();
+		return;
+
+		// Talk to Lochlin about doing a game over screen
 	}
 
 	/**
@@ -318,12 +329,105 @@ public class ServerEngine extends Thread {
 	public void onIncidentComplete(Decision decition) {
 		System.err.println("onIncidentCompleate " + decition.toString());
 
-		// TODO: update player scores from the outcome of this incident.
+		incidentLock.lock();
+		Incident incident = currentIncident;
+		incidentLock.unlock();
 
-		/*
-		 * Update any environment variables, and tell run() to wake up, and do
-		 * another incident
-		 */
+		if (incident.fraud) {
+			switch (decition) {
+			case DETAIN:
+				// good
+				if (incident.fraudCaught) {
+					playerOne.win++;
+					playerTwo.win++;
+					System.err.println("win");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.WIN());
+				} else {
+					playerOne.epicWin++;
+					playerTwo.epicWin++;
+					System.err.println("epicwin");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.EPIC_WIN());
+				}
+
+				break;
+			case ALLOW:
+
+				if (incident.fraudCaught) {
+					playerOne.superFail++;
+					playerTwo.superFail++;
+					System.err.println("superfail");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.SUPER_FAIL());
+				} else {
+					playerOne.fail++;
+					playerTwo.fail++;
+					System.err.println("fail");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.SUPER_FAIL());
+				}
+
+				// bad
+				break;
+			}
+
+			// else not fraud
+		} else if (!incident.fraud) {
+
+			switch (decition) {
+			case DETAIN:
+				// good
+
+				if (incident.clericalError && !incident.clericalErrorCaught) {
+					playerOne.fail++;
+					playerTwo.fail++;
+					System.err.println("fail");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.FAIL());
+
+				} else if (incident.clericalError
+						&& incident.clericalErrorCaught) {
+					playerOne.superFail++;
+					playerTwo.superFail++;
+					System.err.println("superfail");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.SUPER_FAIL());
+				} else {
+
+					playerOne.superFail++;
+					playerTwo.superFail++;
+					System.err.println("superfail");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.SUPER_FAIL());
+				}
+
+				break;
+			case ALLOW:
+
+				if (incident.clericalError && !incident.clericalErrorCaught) {
+					playerOne.epicWin++;
+					playerTwo.epicWin++;
+					System.err.println("epicwin");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.EPIC_WIN());
+				} else if (incident.clericalError
+						&& incident.clericalErrorCaught) {
+					playerOne.win++;
+					playerTwo.win++;
+					System.err.println("win");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.WIN());
+				} else {
+					playerOne.win++;
+					playerTwo.win++;
+					System.err.println("win");
+					network.sendAll(Message.DIALOGUE, dialogueHandler.WIN());
+				}
+			}
+		} else {
+			throw new RuntimeException("Missing Decision Case!");
+		}
+
+		// Once this incident is over, the dialouge will be cleared... thus,
+		// wait a bit for the the player to recognize the win/fail
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException ex) {
+			// go ahead and swallow this exception...
+		}
 
 		lock.lock();
 		incidentOver.signal();
@@ -506,7 +610,7 @@ public class ServerEngine extends Thread {
 		incidentLock.lock();
 		currentIncident = incident;
 		incidentLock.unlock();
-		
+
 		network.sendAll(Message.START_INCIDENT, incident);
 		network.sendClient(Role.DATABASE, Message.DIALOGUE,
 				incident.getDbDialogue());

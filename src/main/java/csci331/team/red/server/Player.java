@@ -12,7 +12,12 @@ import csci331.team.red.shared.Role;
 public class Player {
 	private Role role = Role.UNDEFINDED;
 	private Posture posture;
-	
+
+	protected int win = 0;
+	protected int fail = 0;
+	protected int epicWin = 0;
+	protected int superFail = 0;
+
 	/**
 	 * @param role
 	 *            {@link Role} to set
