@@ -4,6 +4,6 @@ import csci331.team.red.client.Callback;
 
 
 public enum FieldCallback implements Callback {
-	giveDocuments, approachPerson,
+	giveDocuments, approachPerson, endGame,
 
 }

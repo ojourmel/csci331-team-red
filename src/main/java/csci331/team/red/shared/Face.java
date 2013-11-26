@@ -22,4 +22,11 @@ public enum Face {
 	MALE4,
 	MALE5,
 	MALE6;
+
+	/**
+	 * All Serializable classes MUST provide a zero-argument constructor
+	 */
+	@Deprecated
+	private Face() {
+	}
 }

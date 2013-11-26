@@ -317,8 +317,14 @@ public class CharacterDAO {
 
 			return (calendar.after(eDate) && calendar.before(lDate));
 		} else if (column == DRIVERSID) {
-			return ((Integer.valueOf(value) > 1000000) && (Integer
-					.valueOf(value) < 9999999));
+
+			try {
+				isValid = ((Integer.valueOf(value) > 1000000) && (Integer
+						.valueOf(value) < 9999999));
+			} catch (NumberFormatException e) {
+				return false;
+			}
+			return isValid;
 		}
 
 		PreparedStatement statement = null;

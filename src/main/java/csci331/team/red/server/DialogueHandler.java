@@ -12,6 +12,7 @@ import csci331.team.red.shared.Dialogue;
 import csci331.team.red.shared.Incident;
 import csci331.team.red.shared.Character;
 import csci331.team.red.shared.Posture;
+import csci331.team.red.shared.Role;
 import csci331.team.red.shared.callbacks.DBCallback;
 import csci331.team.red.shared.callbacks.FieldCallback;
 
@@ -27,7 +28,7 @@ public class DialogueHandler {
 
 	private final Random RANDOM;
 	// The likly hood that mom will pop into the office
-	private final double MOMS_NOSINESS = 0.15;
+	private final double MOMS_NOSINESS = 0.25;
 
 	// If people have coffee, they are much more likely to be nice...
 	private final double COFFEE_FACTOR = 0.90;
@@ -146,12 +147,12 @@ public class DialogueHandler {
 	}
 
 	/**
-	 * Generates final dialogues, that *should* end the game
+	 * Generates final dialogues, that end the game
 	 * 
 	 * @param player
 	 * @return
 	 */
-	public Object GAME_OVER(Player player) {
+	public List<Dialogue> GAME_OVER(Player player) {
 		// LONG-TERM: count number of arrests, innocents, criminals, etc...
 
 		int score = player.win + player.epicWin * 2 - player.fail - player.fail
@@ -203,7 +204,14 @@ public class DialogueHandler {
 		dialogues.add(new Dialogue(stats.toString(), Voice.OMINIOUS.who));
 		dialogues.add(new Dialogue(closer, Voice.OMINIOUS_ALIEN.who));
 		dialogues.add(new Dialogue(ps, Voice.OMINIOUS_ALIEN.who));
-		dialogues.add(new Dialogue(pps, Voice.OMINIOUS_ALIEN.who));
+
+		if (player.getRole() == Role.DATABASE) {
+			dialogues.add(new Dialogue(pps, Voice.OMINIOUS_ALIEN.who,
+					DBCallback.endGame));
+		} else if (player.getRole() == Role.FIELDAGENT) {
+			dialogues.add(new Dialogue(pps, Voice.OMINIOUS_ALIEN.who,
+					FieldCallback.endGame));
+		}
 		return dialogues;
 	}
 
@@ -281,14 +289,17 @@ public class DialogueHandler {
 						"We should do a bit of research on her.\nType 'search prism mary test'\non your phone.",
 						Voice.OMINIOUS.who },
 				{
-						"I assume you did it, given I'm just a voice.  That's an inconsistancy!  We should warn our partner if we see anything suspicious.",
+						"I assume you did it, given I'm just a voice. If you ever have questions about the phone, just type \"help\", and it should give you a hand.",
+						Voice.OMINIOUS.who },
+				{
+						"That's an inconsistancy!  We should warn our partner if we see anything suspicious.",
 						Voice.OMINIOUS.who },
 				{
 						"Your partner will also be reporting suspicious data to you to look up.  You might want to check in on them, and see how their doing...",
 						Voice.OMINIOUS.who },
 				{ "...", Voice.OMINIOUS.who },
 				{
-						"These can occasionally bring up a large amount of infomation, and again, you must decide what is important to relay.",
+						"Searching for information can occasionally bring up a large amount of infomation, and again, you must decide what is important to relay.",
 						Voice.OMINIOUS.who },
 				{ "I have no more guidance to give you.", Voice.OMINIOUS.who },
 				{ "Mom, get out of my office...", Voice.YOU.who }, };
@@ -541,9 +552,14 @@ public class DialogueHandler {
 					answer = "Do I go around asking if you like YOUR job? Jeez Louise";
 				} else if (posture == Posture.PASSIVE) {
 
-					answer = "Well, to be honest sometimes working as a "
-							+ character.getOccupation()
-							+ " can get kind of tedious";
+					if (RANDOM.nextBoolean()) {
+						answer = "Well, to be honest sometimes working as a "
+								+ character.getOccupation()
+								+ " can get kind of tedious";
+					} else {
+						answer = "Oh yes, I love working as a "
+								+ character.getOccupation() + ".";
+					}
 				}
 			}
 
@@ -584,7 +600,7 @@ public class DialogueHandler {
 		return qa;
 	}
 
-	private List<Dialogue> momsCuriosity(Incident incident) {
+	protected List<Dialogue> momsCuriosity(Incident incident) {
 		List<Dialogue> dialogues = new LinkedList<Dialogue>();
 
 		String mom = MOMMY[RANDOM.nextInt(MOMMY.length)];

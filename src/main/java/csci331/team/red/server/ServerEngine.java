@@ -79,7 +79,7 @@ public class ServerEngine extends Thread {
 	// Various random game element handlers
 	private DialogueHandler dialogueHandler = new DialogueHandler(RANDOM);
 	private DocumentHandler documentHandler = new DocumentHandler(RANDOM);
-	private DatabaseHandler databaseHandler = new DatabaseHandler();
+	private DatabaseHandler databaseHandler;
 	private AlertHandler alertHandler;
 
 	// Current incident, so that various callbacks can interact with incident
@@ -103,6 +103,7 @@ public class ServerEngine extends Thread {
 	public ServerEngine() {
 
 		repo = new CharacterRepository();
+		databaseHandler = new DatabaseHandler(repo);
 		alertHandler = new AlertHandler(RANDOM, repo);
 
 		incidents = new LinkedList<Incident>();
@@ -172,8 +173,10 @@ public class ServerEngine extends Thread {
 		network.sendClient(playerTwo.getRole(), Message.DIALOGUE,
 				dialogueHandler.GAME_OVER(playerTwo));
 
+		// 60 second time out, this will most likely be interrupted by the
+		// clients, when the finish reading the end game dialogue
 		try {
-			Thread.sleep(30000);
+			Thread.sleep(60000);
 		} catch (InterruptedException ex) {
 			// go ahead and swallow this exception...
 		}
@@ -196,8 +199,12 @@ public class ServerEngine extends Thread {
 		incident = currentIncident;
 		incidentLock.unlock();
 
-		Result result = databaseHandler.execute(query.queryText, incident);
-		network.sendClient(Role.DATABASE, Message.DBRESULT, result);
+		List<Result> results = databaseHandler.execute(query.queryText,
+				incident);
+
+		for (Result result : results) {
+			network.sendClient(Role.DATABASE, Message.DBRESULT, result);
+		}
 	}
 
 	/**
@@ -473,7 +480,6 @@ public class ServerEngine extends Thread {
 				playerOne.getRole());
 		network.sendClient(playerTwo.getRole(), Message.SET_ROLE,
 				playerTwo.getRole());
-
 	}
 
 	/**
@@ -499,6 +505,8 @@ public class ServerEngine extends Thread {
 				incident.getDbDialogue());
 		network.sendClient(Role.FIELDAGENT, Message.DIALOGUE,
 				incident.getFieldDialogue());
+		network.sendClient(Role.DATABASE, Message.DBRESULT,
+				databaseHandler.startUp());
 
 		// wait for player's decision.
 		try {

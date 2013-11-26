@@ -126,8 +126,9 @@ public class CharacterRepository extends CharacterDAO {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
+				// Search for "contains" in Drivers ID
 				for (Character character : characters) {
-					if (character.getDriversID().equalsIgnoreCase(val)) {
+					if (character.getDriversID().contains(val)) {
 						l.add(character);
 					}
 				}
@@ -137,8 +138,9 @@ public class CharacterRepository extends CharacterDAO {
 					l = new LinkedList<Character>();
 					singleMatches.put(type, l);
 				}
+				// Search for "contains" in Passport ID
 				for (Character character : characters) {
-					if (character.getPassportID().equalsIgnoreCase(val)) {
+					if (character.getPassportID().contains(val)) {
 						l.add(character);
 					}
 				}
@@ -161,7 +163,7 @@ public class CharacterRepository extends CharacterDAO {
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getAddress().equalsIgnoreCase(val)) {
+					if (character.getAddress().contains(val)) {
 						l.add(character);
 					}
 				}
@@ -194,7 +196,7 @@ public class CharacterRepository extends CharacterDAO {
 					singleMatches.put(type, l);
 				}
 				for (Character character : characters) {
-					if (character.getPostal().equalsIgnoreCase(val)) {
+					if (character.getPostal().contains(val)) {
 						l.add(character);
 					}
 				}
@@ -331,8 +333,10 @@ public class CharacterRepository extends CharacterDAO {
 		intro = new Character(dob, driversID, firstName, lastName, passportID,
 				address, city, region, postal, country, occupation, gender,
 				avatar);
-		
+
 		intro.setFraud(false);
+		
+		characters.add(intro);
 
 		return intro;
 	}
@@ -364,6 +368,8 @@ public class CharacterRepository extends CharacterDAO {
 					occupation, gender, avatar);
 
 		}
+		
+		characters.add(bossCharacter);
 
 		return bossCharacter;
 	}
