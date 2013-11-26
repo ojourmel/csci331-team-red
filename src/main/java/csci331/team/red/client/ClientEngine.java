@@ -692,7 +692,7 @@ public class ClientEngine extends Game {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		// System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
-		cfg.title = "Final Project Beta";
+		cfg.title = "Final Project Prototype";
 		cfg.useGL20 = true;
 		cfg.width = 1024; // 1200
 		cfg.height = 768; // 675
