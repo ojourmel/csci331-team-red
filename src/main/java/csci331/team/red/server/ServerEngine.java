@@ -49,18 +49,20 @@ public class ServerEngine extends Thread {
 	 */
 	private static final int MIN_INCIDENTS = 5;
 
-	private static final double FRAUD_CHANCE = 0.25;
+	private static final int LEVEL_SIZE = 7;
+
+	private static final double FRAUD_CHANCE = 0.40;
 	private static final double ERROR_CHANCE = 0.25;
 
 	/**
-	 * The probiblity that his fraud is a scrub, and thus, get's caught.
+	 * The probability that his fraud is a scrub, and thus, get's caught.
 	 */
-	private static final double FRAUD_SCRUB_LEVEL = 0.25;
+	private static final double FRAUD_SCRUB_LEVEL = .9;
 	/**
-	 * The probability that the clerk is a beast, and catches a prievious
+	 * The probability that the clerk is a beast, and catches a previous
 	 * mistake
 	 */
-	private static final double CLERK_BEAST_LEVEL = 0.25;
+	private static final double CLERK_BEAST_LEVEL = 0.9;
 
 	// Core game assets
 	private NetServer network;
@@ -149,7 +151,7 @@ public class ServerEngine extends Thread {
 		}
 
 		// Now begin the standard, random incidents
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < LEVEL_SIZE; i++) {
 
 			// LONG-TERM: Allow for past events to affect future events
 
@@ -435,7 +437,7 @@ public class ServerEngine extends Thread {
 		// wait a bit for the the player to recognize the win/fail
 
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 		} catch (InterruptedException ex) {
 			// go ahead and swallow this exception...
 		}
@@ -465,10 +467,39 @@ public class ServerEngine extends Thread {
 
 		// preload a few incidents, to be used in this level
 		for (int i = 0; i < MIN_INCIDENTS; i++) {
-			Incident incident = new Incident(repo.getCharacter());
+			Character character = repo.getCharacter();
+			Incident incident = new Incident(character);
+
+			if (RANDOM.nextDouble() < FRAUD_CHANCE) {
+				character.setFraud(true);
+				incident.fraud = true;
+
+				if (RANDOM.nextDouble() < FRAUD_SCRUB_LEVEL) {
+					incident.fraudCaught = true;
+				} else {
+					incident.fraudCaught = false;
+				}
+			} else {
+				character.setFraud(false);
+				incident.fraud = false;
+			}
+
+			if (RANDOM.nextDouble() < ERROR_CHANCE) {
+				incident.clericalError = true;
+
+				if (RANDOM.nextDouble() < CLERK_BEAST_LEVEL) {
+					incident.clericalErrorCaught = true;
+				} else {
+					incident.clericalErrorCaught = false;
+				}
+			} else {
+				incident.clericalError = false;
+			}
+
 			documentHandler.initDocuments(incident);
 			// the dialogue on an incident will be generated at "go-time" as it
 			// is posture sensitive...
+
 			incidents.add(incident);
 		}
 
@@ -619,7 +650,6 @@ public class ServerEngine extends Thread {
 		// the dialogue on an incident will be generated at "go-time" as it is
 		// posture sensitive...
 		incidents.add(incident);
-
 		List<Alert> alerts = new LinkedList<Alert>();
 		// alerts pertain to two future, (or current) incidents
 		alerts.addAll(alertHandler.getAlerts(incidents.get(RANDOM
