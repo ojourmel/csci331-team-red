@@ -28,6 +28,7 @@ public class DatabaseDialogueCallback<T extends Callback> implements
 			break;
 		case endGame:
 			entity.parentEngine.LeaveGame();
+			break;
 		default:
 			break;
 		}

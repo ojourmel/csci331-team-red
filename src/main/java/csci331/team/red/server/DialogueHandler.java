@@ -226,7 +226,9 @@ public class DialogueHandler {
 		// faDialogue
 
 		LinkedList<Dialogue> dbDialogues = new LinkedList<Dialogue>();
-
+		
+		dbDialogues.add(new Dialogue(null, null, DBCallback.startAlerts));
+		
 		LinkedList<Dialogue> faDialogues = new LinkedList<Dialogue>();
 
 		/*
@@ -575,8 +577,7 @@ public class DialogueHandler {
 					answer = "For however long I feel like, *sir*";
 				} else {
 
-					answer = RANDOM.nextInt(52) + " more weeks Officer";
-					answer = "I'm " + character.getFirstName();
+					answer = RANDOM.nextInt(52) + " more weeks, Officer";
 				}
 				break;
 			case 1:

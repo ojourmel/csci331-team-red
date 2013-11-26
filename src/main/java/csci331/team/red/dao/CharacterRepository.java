@@ -33,7 +33,7 @@ import csci331.team.red.shared.PersonPicture;
 public class CharacterRepository extends CharacterDAO {
 
 	ArrayList<Character> characters;
-	private static final int MIN_RESULT = 10;
+	private static final int MIN_RESULT = 4;
 
 	/**
 	 * @author melany
@@ -275,9 +275,18 @@ public class CharacterRepository extends CharacterDAO {
 					} else if (type.equals(DOB)) {
 						temp.setDob(val);
 					} else if (type.equals(DRIVERSID)) {
-						temp.setDriversID(val);
+						// Only reset data if matchesAll is empty
+						if (matchesAll.isEmpty()) {
+							temp.setDriversID(val);
+							matchesAll.add(temp);
+						}
+						return matchesAll;
 					} else if (type.equals(PASSPORTID)) {
-						temp.setPassportID(val);
+						if (matchesAll.isEmpty()) {
+							temp.setPassportID(val);
+							matchesAll.add(temp);
+						}
+						return matchesAll;
 					} else if (type.equals(OCCUPATION)) {
 						temp.setOccupation(val);
 					} else if (type.equals(ADDRESS)) {
@@ -335,7 +344,7 @@ public class CharacterRepository extends CharacterDAO {
 				avatar);
 
 		intro.setFraud(false);
-		
+
 		characters.add(intro);
 
 		return intro;
@@ -368,7 +377,7 @@ public class CharacterRepository extends CharacterDAO {
 					occupation, gender, avatar);
 
 		}
-		
+
 		characters.add(bossCharacter);
 
 		return bossCharacter;

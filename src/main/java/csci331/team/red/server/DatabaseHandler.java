@@ -28,6 +28,11 @@ public class DatabaseHandler {
 	private String ACTION = "search";
 	private String DB = "prism";
 
+	private String NAME = "name";
+	private String NUMBER = "number";
+	private String JOB = "occupation";
+	private String OTHER = "other";
+
 	private final CharacterRepository repo;
 
 	public DatabaseHandler(CharacterRepository repo) {
@@ -60,7 +65,7 @@ public class DatabaseHandler {
 		}
 
 		// split on whitespace
-		String[] tokenizedString = command.split("\\s", 3);
+		String[] tokenizedString = command.split(" ");
 
 		if (tokenizedString.length < 3) {
 			results.add(Result.INVALID_COMMAND);
@@ -81,47 +86,128 @@ public class DatabaseHandler {
 		// now, each string will represent some search parameter...
 
 		Set<Character> characters = new HashSet<Character>();
+		HashMap<String, String> search = new HashMap<String, String>();
 
 		for (int i = 2; i < tokenizedString.length; i++) {
 			String param = tokenizedString[i];
 
-			HashMap<String, String> search = new HashMap<String, String>();
+			if (param.equals(NAME)) {
+				if (i + 2 < tokenizedString.length) {
+					i++;
+					search.put(FIRSTNAME, tokenizedString[i]);
+					i++;
+					search.put(LASTNAME, tokenizedString[i]);
+				} else if (i + 1 < tokenizedString.length) {
+					i++;
+					search.put(FIRSTNAME, tokenizedString[i]);
+				} else {
+					results.clear();
+					results.add(Result.INVALID_COMMAND);
+					return results;
+				}
 
-			search.put(FIRSTNAME, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+				characters.addAll(repo.getCharacters(search));
+				search.clear();
+			}
 
-			search.put(DRIVERSID, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+			if (param.equals(NUMBER)) {
+				if (i + 1 < tokenizedString.length) {
+					i++;
+					search.put(DRIVERSID, tokenizedString[i]);
 
-			search.put(DOB, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
 
-			search.put(PASSPORTID, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+					search.put(PASSPORTID, tokenizedString[i]);
 
-			search.put(ADDRESS, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
 
-			search.put(CITY, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+					search.put(DOB, tokenizedString[i]);
 
-			search.put(REGION, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
 
-			search.put(COUNTRY, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+					search.put(ADDRESS, tokenizedString[i]);
 
-			search.put(OCCUPATION, param);
-			characters.addAll(repo.getCharacters(search));
-			search.clear();
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+				}
+			}
+
+			if (param.equals(JOB)) {
+
+				String occ = "";
+
+				i++;
+				while (i < tokenizedString.length) {
+
+
+					if (tokenizedString[i].equals(NAME)
+							|| (tokenizedString[i].equals(NUMBER))
+							|| (tokenizedString[i].equals(OTHER))) {
+						i--;
+						break;
+					} else {
+						occ += tokenizedString[i];
+						occ += " ";
+					}
+				}
+
+				occ.trim();
+
+				search.put(OCCUPATION, occ);
+				characters.addAll(repo.getCharacters(search));
+				search.clear();
+			}
+
+			if (param.equals(OTHER)) {
+
+				if (i + 1 < tokenizedString.length) {
+					i++;
+					param = tokenizedString[i];
+
+					search.put(FIRSTNAME, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(LASTNAME, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(DRIVERSID, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(DOB, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(PASSPORTID, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(ADDRESS, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(CITY, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(REGION, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(COUNTRY, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+
+					search.put(OCCUPATION, param);
+					characters.addAll(repo.getCharacters(search));
+					search.clear();
+				}
+			}
 		}
 
 		if (characters.isEmpty()) {
@@ -141,10 +227,10 @@ public class DatabaseHandler {
 
 		help.append("Usage: ");
 		help.append("\n");
-		help.append("<search> <prism> [param] [param] [or] [para]");
+		help.append("<search> <prism> <keyword> [param] ...");
 		help.append("\n");
 
-		help.append("Example: \"search prism foo\" will return all entries matching foo");
+		help.append("Keywords: name<val>[val];\n number<val>;\n occupation<val>...;\n other<val>");
 		help.append("\n");
 
 		return new Result(help.toString());
