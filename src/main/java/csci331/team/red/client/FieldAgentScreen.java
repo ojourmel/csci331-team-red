@@ -408,6 +408,15 @@ public class FieldAgentScreen implements Screen
 			{
 				case DriversLicence:
 					ticket = new DriversLicence(ClientEngine.gamePixmapManager.get(ClientEngine.Documents.get(document.documentType)) , tweenManager, document.characterAttributes , document.face);
+					
+					
+					ticket.setDragable();
+					ticket.scale(-1);
+					ticket.setPosition(300, 400);
+					Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
+					    
+					papersStage.addActor(ticket);
+					
 					break;
 				case GoldenTicket:
 					//ticket = new DriversLicence(parentEngine.gamePixmapManager.get(parentEngine.Documents.get(document.DocumentType)) , tweenManager, document.TextFields);
@@ -415,13 +424,7 @@ public class FieldAgentScreen implements Screen
 				default:
 					break;
 			}
-			
-			ticket.setDragable();
-			ticket.scale(-1);
-			ticket.setPosition(300, 400);
-			Tween.to(ticket, ActorTweener.ZOOM , 1.0f).target(200 ,100  ,  1 , 1).ease(Quad.IN).start(tweenManager);
-			    
-			papersStage.addActor(ticket);
+
 		}
 		
 		
@@ -472,7 +475,7 @@ public class FieldAgentScreen implements Screen
 		
 	    tweenManager.killTarget(currentPerson);
 	    tweenManager.killTarget(ticket);
-	    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-500, -500).ease(Quad.IN).start(tweenManager);
+	    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-1000, -1000).ease(Quad.IN).start(tweenManager);
 	    if(ticket!=null)
 	    {
 	    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-1000, ticket.getY()).ease(Quad.IN).start(tweenManager);
@@ -486,7 +489,7 @@ public class FieldAgentScreen implements Screen
 		
 	    tweenManager.killTarget(currentPerson);
 	    tweenManager.killTarget(ticket);
-	    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-500, -500).ease(Quad.IN).start(tweenManager);
+	    Tween.to(currentPerson,ActorTweener.POSITION_XY, 1.0f).target(-1000, -1000).ease(Quad.IN).start(tweenManager);
 	    if(ticket!=null)
 	    {
 	    	Tween.to(ticket,ActorTweener.POSITION_XY, 1.0f).target(-1000, ticket.getY()).ease(Quad.IN).start(tweenManager);

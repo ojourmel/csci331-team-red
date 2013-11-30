@@ -77,7 +77,7 @@ public class DialogueHandler {
 			"Yes Mom, OK Mom, Whatever Mom, Thanks Mom, I Will Mom, Love You Mom..." };
 
 	private String[] HAPPY_HELLO = { "Good Morning, may I have a word",
-			"Excuse me, may I speek with you",
+			"Excuse me, may I speak with you",
 			"Pardon me, I need to ask you a few questsions",
 			"Hello there, is there anything I can help you with?",
 			"What a fine day it is today!",
@@ -169,7 +169,7 @@ public class DialogueHandler {
 		}
 
 		StringBuilder header = new StringBuilder();
-		header.append("Well, well, this is it. You have tested your skills against the most average aoung us... and you have ");
+		header.append("Well, well, this is it. You have tested your skills against the most average among us... and you have ");
 		header.append(winText);
 		header.append("\n");
 		if (win) {

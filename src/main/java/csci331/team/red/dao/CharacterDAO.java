@@ -297,7 +297,7 @@ public class CharacterDAO {
 		boolean isValid = false;
 
 		if (column == DOB) {
-			DateFormat formatter = new SimpleDateFormat("YYYY-MMM-DD");
+			DateFormat formatter = new SimpleDateFormat("yyyy-MMM-DD");
 			formatter.setLenient(false);
 			Date date = null;
 			try {
