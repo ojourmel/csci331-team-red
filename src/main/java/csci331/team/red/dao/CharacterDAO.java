@@ -16,7 +16,7 @@ import csci331.team.red.shared.Gender;
 import csci331.team.red.shared.PersonPicture;
 
 /**
- * CSCI331-TAG MW SUPERCLASS<br>
+ * CSCI331T MW SUPERCLASS<br>
  * <br>
  * 
  * CharacterDAO is the superclass of CharacterRepository. CharacterDAO was
@@ -113,7 +113,6 @@ public class CharacterDAO {
 	 * @author melany
 	 */
 	public String getDriversID() {
-		// TODO: Verify data using jUnit testing
 		return String
 				.valueOf(((int) (Math.random() * ((9999999 - 1000000) + 1) + 1000000)));
 	}
@@ -297,6 +296,14 @@ public class CharacterDAO {
 		boolean isValid = false;
 
 		if (column == DOB) {
+			/**
+			 * CSCI331T MW DYNAMICBINDING<br>
+			 * <br>
+			 * DateFormat formatter created as new simpleDateFormat, when
+			 * setLenient() called the simpleDateFormat's method is called the
+			 * binding is resolved at runtime, and therefore is dynamic binding
+			 * 
+			 */
 			DateFormat formatter = new SimpleDateFormat("yyyy-MMM-DD");
 			formatter.setLenient(false);
 			Date date = null;
