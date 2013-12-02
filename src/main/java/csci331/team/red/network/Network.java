@@ -29,7 +29,7 @@ import csci331.team.red.shared.callbacks.DBCallback;
 import csci331.team.red.shared.callbacks.FieldCallback;
 
 /**
- * CSCI331 ML SUPERCLASS
+ * CSCI331T ML SUPERCLASS
  * 
  * This class is a convenient place to keep things common to both the client and
  * server
@@ -48,6 +48,8 @@ public class Network {
 	}
 
 	/**
+	 * CSCI331T ML STATICBINDING
+	 * 
 	 * Registers objects that will be sent over the network
 	 * 
 	 * @param endPoint

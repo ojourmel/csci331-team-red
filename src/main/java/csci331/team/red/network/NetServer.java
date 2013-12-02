@@ -21,18 +21,23 @@ import csci331.team.red.shared.Role;
  * 
  * @see https://code.google.com/p/kryonet/
  * 
- *      CSCI331 ML INTERFACE
+ *      CSCI331T ML INTERFACE
  * 
  *      Provides an network API for the {@link ServerEngine} that hides the
  *      complexity of the network implementation from the ServerEngine and
  *      protects network properties from external modification using controlled
  *      access
  * 
- *      CSCI331 ML SUBCLASS
+ *      CSCI331T ML SUBCLASS
  * 
  *      Implements Server specific functionality for {@link Network} - provides
  *      an network API for the {@link ServerEngine} - overrides {@link Listener}
  *      to implement calls to the {@link ServerEngine} API
+ * 
+ *      CSCI331T ML PATTERN
+ * 
+ *      A behaviour pattern that is used to reduce communication complexity
+ *      between multiple objects or classes.
  * 
  * @author marius
  */
@@ -82,7 +87,7 @@ public class NetServer extends Network {
 		 */
 		server.addListener(new Listener() {
 			/**
-			 * CSCI331 ML OVERRIDING
+			 * CSCI331T ML OVERRIDING
 			 * 
 			 * Override received method of Listener to specify game specific
 			 * management of received objects
@@ -168,7 +173,7 @@ public class NetServer extends Network {
 	} // end of constructor
 
 	/**
-	 * CSCI331 ML ENCAPSULATION
+	 * CSCI331T ML ENCAPSULATION
 	 * 
 	 * Public access means that anyone outside of this class can modify the
 	 * value, outside of the class's control. By having it private we can not
@@ -208,7 +213,7 @@ public class NetServer extends Network {
 	}
 
 	/**
-	 * CSCI331 COMMUNICATION
+	 * CSCI331T COMMUNICATION
 	 * 
 	 * Send an Enumerated {@link Message} and a registered (
 	 * {@link Kryo#register(Class)}) Object to all {@link Client}s
@@ -217,6 +222,9 @@ public class NetServer extends Network {
 	 * @param obj
 	 */
 	public void sendAll(Message msg, Object obj) {
+		/**
+		 * CSCI331T ML DYNAMICBINDING
+		 */
 		NetMessage netMsg = new NetMessage(msg, obj);
 		server.sendToAllTCP(netMsg);
 	}
@@ -243,7 +251,7 @@ public class NetServer extends Network {
 	}
 
 	/**
-	 * CSCI331 COMMUNICATION
+	 * CSCI331T COMMUNICATION
 	 * 
 	 * Send an Enumerated {@link Message} and a registered (
 	 * {@link Kryo#register(Class)}) Object to the client with a specific

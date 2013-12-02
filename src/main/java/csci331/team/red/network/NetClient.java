@@ -25,17 +25,22 @@ import csci331.team.red.shared.Role;
  * 
  * @see https://code.google.com/p/kryonet/
  * 
- *      CSCI331 ML INTERFACE
+ *      CSCI331T ML INTERFACE
  * 
  *      Provides an network API for the {@link ClientEngine} that hides the
  *      complexity of the network implementation from the ClientEngine and
  *      protects network properties from external modification using controlled
  *      access
  * 
- *      CSCI331 ML SUBCLASS
+ *      CSCI331T ML SUBCLASS
  * 
  *      Implements Client specific functionality for {@link Network} - overrides
  *      {@link Listener} to implement calls to the {@link ClientEngine} API
+ * 
+ *      CSCI331T ML PATTERN
+ * 
+ *      A behaviour pattern that is used to reduce communication complexity
+ *      between multiple objects or classes.
  * 
  * @author marius
  */
@@ -85,7 +90,7 @@ public class NetClient extends Network {
 			private Dialogue[] dialogues;
 
 			/**
-			 * CSCI331 ML OVERRIDING
+			 * CSCI331T ML OVERRIDING
 			 * 
 			 * Override received method of Listener to specify game specific
 			 * management of received objects
