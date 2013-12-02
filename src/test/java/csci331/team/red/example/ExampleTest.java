@@ -11,12 +11,37 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tester class for {@link Example}
- *
+ * Tester class for {@link Example} <br>
+ * <br>
+ * <br>
+ * <br>
+ * 
+ * CSCI331T OJ JUnit Testing<br>
+ * <br>
+ * <br>
+ * 
+ * Because of the nature of this project, proper JUnit testing was difficult for
+ * the various packages. The largest possibility's of JUnit testing was in the
+ * shared package
+ * 
+ * <br>
+ * <br>
+ * The various Data classes that are used through this project all have simple,
+ * small functionality that can be easily tested using JUnit testing.
+ * 
+ * <br>
+ * <br>
+ * Proper JUnit testing could be done by using a tool like Mockito, which allows
+ * for objects to be "Mocked". These "Mocked" objects can then be used to test
+ * the functionality of other classes that use them.
+ * 
+ * <br>
+ * <br>
+ * This JUnit test was written as an example of good hashCode, and equals tester
  * 
  * 
  * 
- * @author jourmeob
+ * @author ojourmel
  * 
  */
 public class ExampleTest {

@@ -29,6 +29,19 @@ public class AlertHandler {
 
 	/**
 	 * The probability that any given {@link Alert} is relevant to an incident
+	 * 
+	 * <br>
+	 * <br>
+	 * <br>
+	 * 
+	 * 
+	 * CSCI331T OJ Static binding<br>
+	 * <br>
+	 * 
+	 * All static fields in a class are statically bond. Moreover, doubles and
+	 * ints are primitive types, and are thus bound at compile time <br>
+	 * <br>
+	 * See the private static final String[] COLORS
 	 */
 	private static final double ALERT_NOISE = 0.6;
 	private static final int MIN_ALERTS = 6;

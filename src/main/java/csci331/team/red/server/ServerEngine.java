@@ -30,6 +30,49 @@ import csci331.team.red.shared.Role;
  * 
  * Implements {@link Thread} and is runnable via {@link ServerEngine#start()}
  * 
+ * <br>
+ * <br>
+ * <br>
+ * 
+ * CSCI331T OJ Pattern Controller<br>
+ * <br>
+ * 
+ * This is the first non-UI thread that instantiates, maintains, and controls
+ * most, if not all non-UI elements of the game. The {@link CharacterRepository}
+ * and the various handlers:<br>
+ * {@link AlertHandler}<br>
+ * {@link DatabaseHandler}<br>
+ * {@link DialogueHandler}<br>
+ * {@link DocumentHandler}
+ * 
+ * 
+ * <br>
+ * <br>
+ * <br>
+ * 
+ * 
+ * CSCI331T OJ Interface <br>
+ * <br>
+ * 
+ * This class is my main interface with the game. There are various callback
+ * methods, usually of the form: onAction(). These methods are called primarily
+ * from {@link NetServer} <br>
+ * I am also responsible for most of the Handler code, and that code is used
+ * inside the server package <br>
+ * 
+ * <br>
+ * <br>
+ * <br>
+ * 
+ * CSCI331T OJ Encapsulation<br>
+ * <br>
+ * 
+ * This class provides many callback methods which provide encapsulation of core
+ * game logic to others. <br>
+ * For example, the {@link ServerEngine#onPlayerConnect(Connection)} method
+ * allows the {@link NetServer} to notify the server of an additional
+ * connection, without having to know how many players have, or should connect,
+ * and how to handle player connections.
  * 
  * <br>
  * <br>
@@ -49,18 +92,29 @@ public class ServerEngine extends Thread {
 	 */
 	private static final int MIN_INCIDENTS = 5;
 
+	/**
+	 * The number of random incidents that will be played before the boss
+	 * incident
+	 */
 	private static final int LEVEL_SIZE = 7;
 
+	/**
+	 * Probability that any given incident will contain a fraud
+	 */
 	private static final double FRAUD_CHANCE = 0.40;
+
+	/**
+	 * Probability that any given incident will contain a clerical error
+	 */
 	private static final double ERROR_CHANCE = 0.25;
 
 	/**
 	 * The probability that his fraud is a scrub, and thus, get's caught.
 	 */
 	private static final double FRAUD_SCRUB_LEVEL = .9;
+
 	/**
-	 * The probability that the clerk is a beast, and catches a previous
-	 * mistake
+	 * The probability that the clerk is a beast, and catches a previous mistake
 	 */
 	private static final double CLERK_BEAST_LEVEL = 0.9;
 
@@ -86,7 +140,6 @@ public class ServerEngine extends Thread {
 
 	// Current incident, so that various callbacks can interact with incident
 	// data
-
 	private Incident currentIncident = null;
 
 	// Locks and conditions for blocking on conditions while threading.
@@ -104,6 +157,13 @@ public class ServerEngine extends Thread {
 	 */
 	public ServerEngine() {
 
+		/**
+		 * CSCI331T OJ Dynamic Binding
+		 * 
+		 * The repo variable is dynamically bound to a CharacterRepository
+		 * object. Only the pointer to that object is statically bound, at
+		 * compile time.
+		 */
 		repo = new CharacterRepository();
 		databaseHandler = new DatabaseHandler(repo);
 		alertHandler = new AlertHandler(RANDOM, repo);
@@ -115,7 +175,16 @@ public class ServerEngine extends Thread {
 	}
 
 	/**
-	 * Main entry point to game logic. Called via {@link ServerEngine#start()}
+	 * Main entry point to game logic. Called via {@link ServerEngine#start()} <br>
+	 * <br>
+	 * <br>
+	 * 
+	 * CSCI331T OJ Overriding<br>
+	 * <br>
+	 * 
+	 * This method overrides the {@link Thread#run()} method It is the main
+	 * entry point of any instance of a {@link ServerEngine} object after
+	 * calling {@link ServerEngine#start()}
 	 */
 	@Override
 	public void run() {
