@@ -12,6 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * CSCI331 ML JUNIT
+ * 
  * Tester class for {@link PersonPicture}
  * 
  * @author marius

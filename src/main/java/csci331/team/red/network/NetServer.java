@@ -3,6 +3,7 @@ package csci331.team.red.network;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -16,20 +17,26 @@ import csci331.team.red.shared.Query;
 import csci331.team.red.shared.Role;
 
 /**
- * CSCI331 ML INTERFACE
- */
-/**
  * Server end for KryoNet network communications
  * 
  * @see https://code.google.com/p/kryonet/
+ * 
+ *      CSCI331 ML INTERFACE
+ * 
+ *      Provides an network API for the {@link ServerEngine} that hides the
+ *      complexity of the network implementation from the ServerEngine and
+ *      protects network properties from external modification using controlled
+ *      access
+ * 
+ *      CSCI331 ML SUBCLASS
+ * 
+ *      Implements Server specific functionality for {@link Network} - provides
+ *      an network API for the {@link ServerEngine} - overrides {@link Listener}
+ *      to implement calls to the {@link ServerEngine} API
+ * 
  * @author marius
  */
-public class NetServer {
-	/**
-	 * for singleton public static Singleton getInstance () { if (uniqueInstance
-	 * == null) { uniqueInstance = new Singleton(); } return uniqueInstance; }
-	 */
-	// private static NetServer uniqueInstance; // only for singleton
+public class NetServer extends Network {
 	private ServerEngine gameServer;
 	private Server server;
 	private HashMap<Integer, Role> roles;
@@ -43,23 +50,26 @@ public class NetServer {
 	 */
 	public NetServer(final ServerEngine incomingGameServer) throws IOException {
 		this.gameServer = incomingGameServer;
-		server = new Server(Network.BUFFER_SIZE, Network.BUFFER_SIZE);
+		server = new Server(BUFFER_SIZE, BUFFER_SIZE);
 		/* start a thread to handle incoming connections */
 		server.start();
 
 		try {
-			server.bind(Network.tcpPort);
+			server.bind(tcpPort);
 		} catch (IOException e) {
 			throw new IOException("Unable to bind to port");
 		}
-		/* Create HashMap to map connections to roles */
+		/**
+		 * Create HashMap to map connections to roles
+		 */
 		roles = new HashMap<Integer, Role>();
 
 		/**
 		 * For consistency, the classes to be sent over the network are
-		 * registered by the same method for both the client and server.
+		 * registered by the same method for both the client and server
+		 * inherited from SuperClass Network.
 		 */
-		Network.register(server);
+		register(server);
 
 		/**
 		 * Add a Listener to handle receiving objects
@@ -73,8 +83,7 @@ public class NetServer {
 		server.addListener(new Listener() {
 			/**
 			 * CSCI331 ML OVERRIDING
-			 */
-			/**
+			 * 
 			 * Override received method of Listener to specify game specific
 			 * management of received objects
 			 */
@@ -83,7 +92,9 @@ public class NetServer {
 				if (object instanceof NetMessage) {
 					NetMessage netMsg = (NetMessage) object;
 
-					// process message
+					/**
+					 * Process message received from client
+					 */
 					switch (netMsg.msg) {
 					case CONNECT:
 						if (roles.containsKey(connection.getID())) {
@@ -160,13 +171,12 @@ public class NetServer {
 	 * CSCI331 ML ENCAPSULATION
 	 * 
 	 * Public access means that anyone outside of this class can modify the
-	 * value, outside of the class's control By having it private we can not
+	 * value, outside of the class's control. By having it private we can not
 	 * only control access, but also the values we allow.
 	 * 
 	 * In this case I need to fetch the connectionID from the connection before
 	 * I add that and the role into a HashMap.
-	 */
-	/**
+	 * 
 	 * Set an Enumerated {@link Role} for {@link Connection}
 	 * 
 	 * @param connection
@@ -189,20 +199,17 @@ public class NetServer {
 	}
 
 	/**
-	 * CSCI331 ML STATICBINDING
+	 * Send an Enumerated {@link Message} to all {@link Client}s
 	 * 
-	 * Explain how the system will decide which method to invoke/variable to
-	 * access.
-	 */
-	/**
 	 * @param msg
-	 *            Send an Enumerated {@link Message} to all {@link Client}s
 	 */
 	public void sendAll(Message msg) {
 		sendAll(msg, null);
 	}
 
 	/**
+	 * CSCI331 COMMUNICATION
+	 * 
 	 * Send an Enumerated {@link Message} and a registered (
 	 * {@link Kryo#register(Class)}) Object to all {@link Client}s
 	 * 
@@ -236,6 +243,8 @@ public class NetServer {
 	}
 
 	/**
+	 * CSCI331 COMMUNICATION
+	 * 
 	 * Send an Enumerated {@link Message} and a registered (
 	 * {@link Kryo#register(Class)}) Object to the client with a specific
 	 * {@link Role}

@@ -29,6 +29,8 @@ import csci331.team.red.shared.callbacks.DBCallback;
 import csci331.team.red.shared.callbacks.FieldCallback;
 
 /**
+ * CSCI331 ML SUPERCLASS
+ * 
  * This class is a convenient place to keep things common to both the client and
  * server
  * 
@@ -40,6 +42,10 @@ public class Network {
 	public static final int udpPort = 54777;
 
 	public static final int BUFFER_SIZE = 16384;
+
+	public Network() {
+		super();
+	}
 
 	/**
 	 * Registers objects that will be sent over the network

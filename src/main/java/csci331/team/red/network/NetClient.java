@@ -21,15 +21,25 @@ import csci331.team.red.shared.Result;
 import csci331.team.red.shared.Role;
 
 /**
- * CSCI331 ML INTERFACE
- */
-/**
  * Client end for KryoNet network communications
  * 
  * @see https://code.google.com/p/kryonet/
+ * 
+ *      CSCI331 ML INTERFACE
+ * 
+ *      Provides an network API for the {@link ClientEngine} that hides the
+ *      complexity of the network implementation from the ClientEngine and
+ *      protects network properties from external modification using controlled
+ *      access
+ * 
+ *      CSCI331 ML SUBCLASS
+ * 
+ *      Implements Client specific functionality for {@link Network} - overrides
+ *      {@link Listener} to implement calls to the {@link ClientEngine} API
+ * 
  * @author marius
  */
-public class NetClient {
+public class NetClient extends Network {
 	private final ClientEngine gameClient;
 	private final Client client;
 	private static final int timeout = 5000;
@@ -46,41 +56,46 @@ public class NetClient {
 	public NetClient(final ClientEngine incomingGameClient, String host)
 			throws IOException {
 		this.gameClient = incomingGameClient;
-		// connects to a server
-		client = new Client(Network.BUFFER_SIZE, Network.BUFFER_SIZE);
+		client = new Client(BUFFER_SIZE, BUFFER_SIZE);
 		client.start();
 
-		// For consistency, the classes to be sent over the network are
-		// registered by the same method for both the client and server.
-		Network.register(client);
+		/**
+		 * For consistency, the classes to be sent over the network are
+		 * registered by the same method for both the client and server
+		 * inherited from SuperClass Network.
+		 */
+		register(client);
 
 		try {
-			client.connect(timeout, host, Network.tcpPort);
+			client.connect(timeout, host, tcpPort);
 		} catch (IOException e) {
 			throw new IOException("Unable to connect to Server");
 		}
 		this.send(Message.CONNECT);
-		/*
+		/**
 		 * change timeout to 60 secs so that client will not accidently
 		 * disconnect
 		 */
 		setTimeout(60000);
 
-		// ThreadedListener runs the listener methods on a different thread.
+		/**
+		 *  ThreadedListener runs the listener methods on a different thread.
+		 */
 		client.addListener(new ThreadedListener(new Listener() {
 			private Dialogue[] dialogues;
 
 			/**
 			 * CSCI331 ML OVERRIDING
-			 */
-			/**
+			 * 
 			 * Override received method of Listener to specify game specific
 			 * management of received objects
 			 */
 			public void received(Connection connection, Object object) {
 				if (object instanceof NetMessage) {
 					final NetMessage netMsg = (NetMessage) object;
-					// process message
+					/**
+					 *  Process the message received from the server
+					 */
 					switch (netMsg.msg) {
 					case ALERT:
 						if (netMsg.obj instanceof Alert) {
@@ -213,14 +228,9 @@ public class NetClient {
 	} // end of constructor
 
 	/**
-	 * CSCI331 ML STATICBINDING
+	 * Send an Enumerated {@link Message}
 	 * 
-	 * Explain how the system will decide which method to invoke/variable to
-	 * access.
-	 */
-	/**
 	 * @param msg
-	 *            Send an Enumerated {@link Message}
 	 */
 	public void send(Message msg) {
 		send(msg, null);
@@ -249,7 +259,7 @@ public class NetClient {
 	}
 
 	/**
-	 * Disconnects the kryo client
+	 * Disconnects the KryoNet Client
 	 */
 	public void kill() {
 		client.stop();
