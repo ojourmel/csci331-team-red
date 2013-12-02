@@ -3,7 +3,7 @@ package csci331.team.red.shared;
 import java.util.List;
 
 /**
- * Enumerated values for message to be passed from client to server.
+ * Enumerated values for Message to be passed from client to server.
  */
 public enum Message {
 

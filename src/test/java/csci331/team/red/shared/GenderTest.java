@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * CSCI331 ML JUNIT
+ * 
  * Tester class for {@link Gender}
  * 
  * @author marius

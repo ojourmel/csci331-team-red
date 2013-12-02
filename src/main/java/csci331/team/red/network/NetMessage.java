@@ -13,7 +13,7 @@ public class NetMessage {
 	Object obj;
 
 	/**
-	 * Used for kryonet's serialization
+	 * Used for Kryonet's serialization
 	 */
 	@SuppressWarnings("unused")
 	private NetMessage() {
