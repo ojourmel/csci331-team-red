@@ -3,27 +3,26 @@ package csci331.team.red.dao;
 import java.sql.Connection;
 
 /**
- * CSCI331-TAG MW SINGLETON PATTERN <br>
+ * CSCI331T MW PATTERN SINGLETON <br>
  * <br>
  * 
- * DBConnection creates a single database connection.
- * By restricting the number of instances of a DBConnection to one,
- * This is a singleton pattern. <br>
+ * DBConnection creates a single database connection. By restricting the number
+ * of instances of a DBConnection to one, This is a singleton pattern. <br>
  * 
- * The constructor of DBConnection is private, and holds the code
- * that creates a database connection.<br>
+ * The constructor of DBConnection is private, and holds the code that creates a
+ * database connection.<br>
  * 
- * Because the constructor is private another method, getDB(), controls
- * the number of DBConnections we want to establish, in this case one.
- * getDBCon() checks the unique instance variable, db, and if it is null
- * than the constructor is called and a new DBConnection is returned.
- * Otherwise, the existing DBConnection is returned.<br>
+ * Because the constructor is private another method, getDB(), controls the
+ * number of DBConnections we want to establish, in this case one. getDBCon()
+ * checks the unique instance variable, db, and if it is null than the
+ * constructor is called and a new DBConnection is returned. Otherwise, the
+ * existing DBConnection is returned.<br>
  * 
- * By doing this, we are able to limit the number of instances
- * of DBConnection to one.  <br>
+ * By doing this, we are able to limit the number of instances of DBConnection
+ * to one. <br>
  * 
- * The singleton pattern was employed because only one database connection
- * needs to be instantiated/game play.
+ * The singleton pattern was employed because only one database connection needs
+ * to be instantiated/game play.
  * 
  * 
  * @author melany

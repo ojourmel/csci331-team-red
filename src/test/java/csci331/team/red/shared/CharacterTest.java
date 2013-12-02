@@ -11,7 +11,15 @@ import csci331.team.red.shared.Character;
 import csci331.team.red.shared.PersonPicture;
 
 /**
- * Tester class for {@link Character}
+ * CSCI331T MW JUNIT <br>
+ * <br>
+ * 
+ * Tester class for {@link Character}<br>
+ * <br>
+ * 
+ * Create some characters, and test the hash code and equals override functions<br>
+ * This is a small class, and therefore, has only a few fields that need be
+ * tested
  * 
  * @author melany
  */

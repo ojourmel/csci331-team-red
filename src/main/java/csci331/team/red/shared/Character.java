@@ -6,7 +6,7 @@ package csci331.team.red.shared;
  * CharacterDAO.<br>
  * <br>
  * 
- * CSCI331-TAG MW ENCAPSULATION<br>
+ * CSCI331T MW ENCAPSULATION<br>
  * <br>
  * By creating getters and setters for all attributes of the Character class,
  * implementation is hidden from the outside world. This also prevents unwanted
