@@ -1,6 +1,8 @@
-csci331.team.red
+com.badlogic.gdx.scenes.scene2d.ui
 csci331.team.red.client
 csci331.team.red.dao
-csci331.team.red.net
+csci331.team.red.example
+csci331.team.red.network
 csci331.team.red.server
 csci331.team.red.shared
+csci331.team.red.shared.callbacks
