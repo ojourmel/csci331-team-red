@@ -47,6 +47,16 @@ import csci331.team.red.shared.SoundTrack;
  * 
  * @author Lduperron
  */
+
+
+/**
+ * 
+ * CSCI331T LD Interface
+ * The ClientEngine is the main interface for the clientside / graphics portion of the game to interface 
+ * with the server.  It exposes the public methods necessary for the server to control the game client via
+ * the network.
+ */
+
 public class ClientEngine extends Game {
 	// Server used for hosting games
 	ServerEngine server;
@@ -150,6 +160,9 @@ public class ClientEngine extends Game {
 		Texture.setEnforcePotImages(false);
 		Tween.setCombinedAttributesLimit(4);
 
+		
+		
+		
 		primarySpriteBatch = new SpriteBatch();
 
 		stillLoading = true;
@@ -196,8 +209,6 @@ public class ClientEngine extends Game {
 
 		// Characters...
 
-		// FIXME: ojoumel adds all of these avatars, and faces, however, the
-		// resolutions is wrong, and they tween out of place
 		PersonAvatars.put(PersonPicture.THUG1, new AssetDescriptor<Pixmap>(
 				"characters/level1thug.png", Pixmap.class));
 
@@ -343,6 +354,9 @@ public class ClientEngine extends Game {
 
 	}
 
+	
+	
+	
 	@Override
 	public void render() {
 
@@ -480,14 +494,10 @@ public class ClientEngine extends Game {
 		return;
 	}
 
-	/**
-	 * Given a ScreenEnumeration (which is really just a list of all possible
-	 * screens) it ensures it has been generated (lazy init) and then switches
-	 * to it.
-	 * 
-	 * @param newLevel
-	 */
 
+/**
+ * Pauses the game.  Takes nothing, used by the network
+ */
 	public void PauseGame() {
 
 		previousScreen = getScreen();
@@ -495,11 +505,17 @@ public class ClientEngine extends Game {
 
 	}
 
+	/**
+	 * Unpauses the game.  Takes nothing, used by the network
+	 */
 	public void UnpauseGame() {
 		setScreen(previousScreen);
 	}
 
-	public void JoinGame(String desiredConnectTarget) {
+	/**
+	 * Joins a game, given an IP address
+	 */
+	protected void JoinGame(String desiredConnectTarget) {
 		try {
 			network = new NetClient(this, desiredConnectTarget);
 			network.send(Message.CONNECT);
@@ -511,6 +527,9 @@ public class ClientEngine extends Game {
 
 	}
 
+	/**
+	 * Leaves the current game, taking us back to the main menu.  Takes nothing, used by the network
+	 */
 	public void LeaveGame() {
 		switchToNewScreen(ScreenEnumerations.MainMenu);
 		if (network != null) {
@@ -519,13 +538,16 @@ public class ClientEngine extends Game {
 		}
 	}
 
+	/**
+	 * Called when the server disconects the client by force (Error, etc)
+	 */
 	public void DisconnectByServer() {
 		errorText = "Disconnected by remote host";
 		switchToNewScreen(ScreenEnumerations.ErrorScreen);
 
 	}
 
-	public void HostGame() {
+	protected void HostGame() {
 		server = new ServerEngine();
 
 		server.start();
@@ -537,7 +559,9 @@ public class ClientEngine extends Game {
 		server.kill();
 
 	}
-
+	/**
+	 * Switches a client to a new role
+	 */
 	public void SetRole(Role role) {
 		switch (role) {
 		case DATABASE:
@@ -554,13 +578,19 @@ public class ClientEngine extends Game {
 		}
 
 	}
-
+	/**
+	 * Initializes the level (but does not start it yet)
+	 */
 	public void setLevel(Level level) {
 
 		currentLevel = level;
 
 	}
 
+	/**
+	 * Clears the previous incident (if one exists) and sets the current incident to the provided one.
+	 * Sets potential alerts that are provided.
+	 */
 	public void startIncident(Incident incident) {
 		if (fieldAgentScreen != null) {
 			fieldAgentScreen.papersStage.clear();
@@ -578,21 +608,27 @@ public class ClientEngine extends Game {
 		}
 
 	}
-
+	/**
+	 * Adds a specific, non-random alert
+	 */
 	public void addAlert(Alert alert) {
 		if (databaseAgentScreen != null) {
 			databaseAgentScreen.addAlert(alert);
 		}
 
 	}
-
+	/**
+	 * Displays a result on the computer screen
+	 */
 	public void DatabaseQueryResult(Result result) {
 		if (databaseAgentScreen != null) {
 			databaseAgentScreen.displayComputerResponse(result.getResultText());
 		}
 
 	}
-
+	/**
+	 * Displays a dialogue for both roles
+	 */
 	public void DisplayDialouge(Dialogue[] dialogue) {
 		if (databaseAgentScreen != null) {
 			databaseAgentScreen.displayDialogue(dialogue);
@@ -601,6 +637,15 @@ public class ClientEngine extends Game {
 			fieldAgentScreen.displayDialogue(dialogue);
 		}
 	}
+	
+	
+	/**
+	 * Given a ScreenEnumeration (which is really just a list of all possible
+	 * screens) it ensures it has been generated (lazy init) and then switches
+	 * to it.
+	 * 
+	 * @param newLevel
+	 */
 
 	public void switchToNewScreen(ScreenEnumerations newLevel) {
 		switch (newLevel) {

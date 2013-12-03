@@ -4,11 +4,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 /**
- * Menu Nine Patch.  Based off of code found on the Internet, this is 
- * designed just to wrap the nine-patch caller with default values of 
+ * Menu Nine Patch. This is designed just to wrap the nine-patch caller with default values of 
  * all '8's
  * @author Lduperron
  */
+
+/**
+ * 
+ * CSCI331T LD Pattern:  Singleton
+ * The MenuNinePatch is a singleton entity that provides the same instance of a MenuNinePatch after being initialized (or provides the default
+ * texture if it's called before being initialized).
+ * 
+ */
+
 public class MenuNinePatch extends NinePatch {
         private static MenuNinePatch instance;
         
@@ -25,7 +33,14 @@ public class MenuNinePatch extends NinePatch {
         	instance = new MenuNinePatch(t);
         }
         
-        public static MenuNinePatch getInstance(){
+        public static MenuNinePatch getInstance()
+        {
+        	if(instance == null)
+        	{
+        		instance = new MenuNinePatch(ClientEngine.gameTextureManager.get(ClientEngine.Textures
+        				.get("dialogueNinePatchTexture")));
+        	}
+        	
                 return instance;
         }
 }

@@ -19,6 +19,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
  * @author Lduperron
  */
 
+/**
+ * 
+ * CSCI331T LD Superclass
+ * The TransparentActor is my defined superclass (and is and of itself a subclass of Actor)
+ * It does such things such as handle collision detection for all TransparentActors that 
+ * handles ignoring clicks on the transparent part.  Subclassed actors will further extend 
+ * TransparentActor if it's required for additional utility (such as the documents requring an
+ * expanded draw function)
+ */
+
+/**
+ * 
+ * CSCI331T LD Encapsulation
+ * The TransparentActor encapsulates its pixmap and texture, meaning that once they are set, they are 
+ * no longer publicly accessible.  This is because both of these units are only used internally to the
+ * TransparentActor; the texture is generated from the Pixmap only on object creation and the Pixmap is
+ * used to calculate collisions.  There is no need for external access. 
+ */
 
 
 public class TransparentActor extends Actor 
@@ -42,7 +60,13 @@ public class TransparentActor extends Actor
 		pixmap = incomingPixmap;
 		tweenmanager = incomingTweener;
 		
-			
+		/**
+		 * 
+		 * CSCI331T LD Dynamic Binding
+		 * The texture inside of the transparent actor is dynamically bound at runtime on object creation
+		 * This is because it is instantiated with the 'new' keyword 
+		 */
+		
 		texture = new Texture(pixmap);
 		
 		localCords = new Vector2();
@@ -98,6 +122,25 @@ public class TransparentActor extends Actor
 		return this.getBoundingRectangle();
 		
 	}
+	
+	
+	/**
+	 * 
+	 * CSCI331T Collision
+	 * The hit method overrides the default Actor's hit method in order to provide pixel-perfect collision detection between the mouse and the actor.
+	 * The method first checks to see if the mouse is in the bounding box of the actor, then checks to see if the pixel is transparent.  If it is,
+	 * it discards the hit event.
+	 */
+	
+	/**
+	 * 
+	 * CSCI331T LD Overriding 
+	 * The hit method for the TransparentActor is overriden to provide additional functionality;
+	 * the original hit method only checked the bounding box, however, the overriden hit method also
+	 * includes a check to see if the clicked area is on a transparent area of the actor, and if it is,
+	 * to discard the hit.
+	 */
+
 	
 	@Override
 	public Actor hit(float x, float y, boolean touchable) 
