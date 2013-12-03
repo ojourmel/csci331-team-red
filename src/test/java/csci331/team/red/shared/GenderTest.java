@@ -7,11 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * CSCI331 ML JUNIT
+ * CSCI331 LD JUNIT
  * 
  * Tester class for {@link Gender}
  * 
- * @author marius
+ * @author Lduperron
  */
 public class GenderTest {
 	private static Gender gender = null;

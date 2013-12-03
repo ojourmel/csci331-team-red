@@ -85,6 +85,7 @@ public class FieldAgentScreen implements Screen
 		
 		// Sets up links to our parent
 		parentEngine = parent;
+		
 		batch = ClientEngine.primarySpriteBatch;
 		
 		tweenManager = new TweenManager();
@@ -92,6 +93,14 @@ public class FieldAgentScreen implements Screen
 		
 		
 		// Loads the background image
+		
+		/**
+		 * 
+		 * CSCI331T LD Static Binding
+		 * The background image here is being set from the gameTextureManager, which is a static variable.  Because the compiler/interpter has no
+		 * instance of the ClientEngine with which to get the type of gameTextureManager dynmically (and because gameTextureManager is defined as 
+		 * static) the compiler has to set the type of gameTextureManager at compile time, statically binding it.  
+		 */
 		backgroundImage = ClientEngine.gameTextureManager.get(ClientEngine.Backgrounds.get(parentEngine.currentLevel.getInteractive()));
 		
 		// and the background music
@@ -313,6 +322,15 @@ public class FieldAgentScreen implements Screen
 		
 	}
 	
+	/**
+	 * 
+	 * CSCI331T Graphics
+	 * This is one of the main render methods used for the game.  (Each screen has its own customized render method, however)
+	 * This method first clears the screen, updates the camera (used for handling aspect ratio translations), handles calls that need
+	 * to be called every render (such as handling animations) and then does the drawing.
+	 * It does this by calling the draw function of each stage, which handles the drawing of the contained actors.
+	 * It's draw functions all the way down.
+	 */
 	
 	@Override
 	public void render(float delta) 
